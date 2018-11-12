@@ -80,3 +80,8 @@ h1 {
   font-weight: 300;
   margin-bottom: 40px;
 }
+
+#carouselHeader
+{
+ z-index: -9;
+}
