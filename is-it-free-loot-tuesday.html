@@ -1,12 +1,26 @@
 <script src="https://momentjs.com/downloads/moment.min.js"></script>
 <script src="/script/bootstrap.min.js"></script>
 <script src="/script/jquery-3.2.1.slim.min.js"></script>
+
+
+<html>
+	<div class="jumbotron vertical-center" id="answer">aa</div>
+</html>
+
+
 <script>
 	let theDay = moment().format('LLLL').split(',')[0];
 	
 	if(theDay == "Tuesday") $('#answer').text("IT IS FREE LOOT TUESDAY");
 </script>
 
-<html>
-	<div class="text-center" id="answer">aa</div>
-</html>
+<style>
+
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+}
+<style>
