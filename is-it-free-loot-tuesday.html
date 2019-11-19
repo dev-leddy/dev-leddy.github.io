@@ -4,14 +4,24 @@
 
 
 <html>
-	<div class="jumbotron vertical-center" id="answer">aa</div>
+	<div class="jumbotron vertical-center">
+		<div id="answer">No</div>
+		<div class="container">
+			<img id="yes" src="https://cdn.discordapp.com/attachments/616323602236702730/646390780642197504/image0.gif">
+		</div>
+	</div>
 </html>
 
 
 <script>
 	let theDay = moment().format('LLLL').split(',')[0];
 	
-	if(theDay == "Tuesday") $('#answer').text("IT IS FREE LOOT TUESDAY");
+	$('#yes').toggle();
+	if(theDay == "Tuesday") 
+	{
+		$('#answer').text("IT IS FREE LOOT TUESDAY");
+		$('#yes').toggle();
+	}
 </script>
 
 <style>
