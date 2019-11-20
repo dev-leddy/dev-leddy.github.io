@@ -26,14 +26,15 @@
 
 <script>
 	let theDay = moment().format('LLLL').split(',')[0];
+    theDay = moment().format('dddd,MM/DD/YY').split(',');
     //theDay = "Tuesday";
 	
-	if(theDay == "Tuesday") 
+	if(theDay[0] == "Tuesday" || theDay[1] == "12/24/19" || theDay == "12/31/19") 
 	{
 		$('#answer').text("YES, IT IS FREE LOOT TUESDAY");
 		$('#pixxor').html('<img src="https://cdn.discordapp.com/attachments/616323602236702730/646390780642197504/image0.gif">');
 	}
-	else
+	else if(theDay[0] != "Tuesday" || theDay[1] == "12/30/19" || theDay[1] == "01/6/19")
 	{
 		$('#answer').text("NO ( ͡° ʖ̯ ͡°)");
 		$('#pixxor').html('<img src="https://cdn.discordapp.com/attachments/193869868406276097/646757551391768676/tenor.gif">');
