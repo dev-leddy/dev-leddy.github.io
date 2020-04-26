@@ -1,0 +1,340 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/f4e2c2b9a2.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+<script src="scripts/bootstrap-input-spinner.js"></script>
+
+<head>
+    <link href="css/mana.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+<style>
+    body{
+      background: #222629;
+    }
+    
+    .input-group-text{  
+        background: #222629;
+        border: #222629;
+        color: white; 
+        width:200px;
+    }
+    
+    .form-control{
+        background: #222629;
+        border: #222629;
+        color: white;     
+    }
+    
+    .modal-header, .modal-body, .modal-footer 
+    { 
+        background-color:#343a40!important;
+        color:white!important;
+        border: 1px solid rgba(0,0,0,.125);
+    }
+       
+    .form-control:focus {
+      background-color: #303538;
+      color: white;
+    }
+
+    .container {
+      max-width: 100%;
+    }
+    
+    .card-custom {
+        max-width: 450px;
+    }
+</style>
+<html>
+    <body>
+        <nav class="navbar navbar-dark bg-dark">
+          <a class="navbar-brand">Life Commander</a>
+         <a id="test"></a>
+          <div class="ml-auto">
+            <button class="btn btn-outline-light my-2 my-sm-0 ml-auto" id="addPlayerBtn">Add Player</button>
+          </div>  
+        </nav>
+        <div class="container">
+            <div id="playerCards" class="row ml-1 mr-1">
+
+            </div>
+        </div>
+    </body>   
+</html>
+
+<script>
+    let players = {};
+    let commanderDamageAllowed = true;
+    let commanderSearchData;
+    let selectedCommander = {};
+    
+    $(document).ready(function(){
+        //
+    });
+    
+    $('#addPlayerBtn').on('click', function(){
+        $('#playerCards').append(addPlayer(Object.keys(players).length));
+        addPlayerDamage();
+    });
+    
+    
+    $(document).on('dblclick', '.card-header', function(){
+       playerSettingsModal(this.id);
+    });
+    
+    $(document).on('contextmenu', '.card-header', function(e){
+       e.preventDefault();
+       playerSettingsModal(this.id);
+    });
+    
+    $(document).on('click', '.list-group-item', function(){
+        $(".list-group-item").removeClass("active");
+        $(this).addClass("active");
+        selectedCommander = 
+            {
+                name: $(this).attr("card-name"),
+                colors: $(this).attr("card-colors")
+            }
+    });
+    
+    $(document).on('click', '#commanderSearchBtn', function(){
+        let urlRequest = "https://api.scryfall.com/cards/search?q=" + $('#commanderSearchInput').val();
+        //https://api.scryfall.com/cards/search?q=
+        let cardList = "";       
+        
+        $.getJSON( urlRequest, function( json ) {
+            commanderSearchData = json;
+            for(let i = 0; i < json.data.length; i++)
+                {
+                    let card = json.data[i];
+                    console.log("CARD", card);
+                    console.log("CARD NAME", card.name);
+                    console.log("COLOR IDENTITY", card.color_identity);
+                    cardList +=`<a href="#" class="list-group-item list-group-item-action" card-name="`+card.name+`" card-colors="`+card.color_identity+`">
+                                    ` + card.name + `  
+                                    <img src="`+card.image_uris.small+`" class="rounded float-right">
+                                </a>
+                                `;
+                }
+                console.log(cardList);
+                $('#commanderSearchResults').html(cardList);
+         });           
+    });
+    
+    function playerSettingsModal(player){
+        let nameInputHtml = `<div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Player's Name</span>
+                              </div>
+                              <input type="text" class="form-control" style="background-color:#303538;" value="`+players[player].name+`" id="nameField">
+                            </div>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" placeholder="Commander" id="commanderSearchInput">
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-light" type="button" id="commanderSearchBtn">Search</button>
+                              </div>
+                            </div>
+                            <div class="list-group" id="commanderSearchResults">
+                            </div>
+                            `;
+        
+        bootbox.dialog({ 
+            title: players[player].name + "'s Settings",
+            message: nameInputHtml,
+            size: 'medium',
+            onEscape: true,
+            animate: false,
+            buttons: {
+                ok: {
+                    label: 'Ok',
+                    className: 'btn-primary',
+                    callback: function(){
+                        result = $('#nameField').val();
+                        players[player].name = result;
+                        $('#' + player).text(result);
+
+                        addPlayerDamage();
+                        
+                        if(Object.keys(selectedCommander).length > 0) 
+                        {
+                            addCommanderNameAndColors(player);
+                        }
+
+                    }
+                },
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-danger',
+                    callback: function(){
+
+                    }
+                }
+            }
+        });
+    }
+    
+    function addCommanderNameAndColors(player){
+        let colors = selectedCommander.colors.split(",");
+
+        
+        $('#' + player + '_CommanderName').html(selectedCommander.name);
+        
+        
+        for(let i = 0; i < colors.length; i++)
+        {
+          $('#' + player + '_CommanderColors').append(manaSymbol(colors[i]));                  
+        }
+        
+        
+        
+        $('#' + player + '_CommanderInfo').show();
+
+        selectedCommander = {};
+    }
+        
+    function addPlayerDamage(){        
+        for(let i = 0; i < Object.keys(players).length; i++)
+            {         
+                let commandersHTML = '<div>Commander Damage</div>';
+                for(let j = 0; j < Object.keys(players).length; j++)
+                {
+                    if(i != j) 
+                    {
+                        //Add to object
+                        players[i]["CommanderDamageFrom_" + j] = 0;
+                        if(commanderDamageAllowed)
+                            {
+                                //Appends to html
+                                commandersHTML += `<div class="input-group mb-1">
+                                                      <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="fas fa-fist-raised"></i>&nbsp;`+players[j].name+`
+                                                        </span>
+                                                      </div>
+                                                        <input type="number" value="0" class="form-control text-center">
+                                                    </div>`;
+                            }                      
+                    }
+                }
+                
+                //Set player card html
+                if(commandersHTML.length > 27) $('#'+i+'_Commanders').html(commandersHTML);
+            }
+    }                                           
+
+    function addPlayer(playerID){
+        players[playerID] = 
+            {   
+                life: 40, 
+                poison: 0,
+                name: "Player " + playerID
+            }       
+        
+        return `
+                <!--                PLAYER CARD-->
+                                <div class="card card-custom text-white bg-dark col mt-1 mx-auto pl-1 col-6">
+                                  <div class="card-header text-center" style="font-size: 1.1em" id="`+playerID+`">`+players[playerID].name+`</div>
+                                  <div class="card-body">                                                                      
+                                    <div class="card-text">
+                                        <div class="row">
+                                            <div class="input-group mb-1" id="`+playerID+`_CommanderInfo" style="display: none !important;">
+                                              <div class="input-group-prepend">
+                                                <span class="input-group-text" id="`+playerID+`_CommanderName">
+                                                    Commander
+                                                </span>
+                                              </div>
+                                                <button type="number" id="`+playerID+`_CommanderColors" class="form-control text-center"></button>
+                                            </div>
+                <!--                            LIFE TOTAL-->
+                                            <div class="input-group mb-1">
+                                              <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-heart" style="color:#d3202a"></i>&nbsp;Life Total
+                                                </span>
+                                              </div>
+                                                <input type="number" id="`+playerID+`_Life" value="40" class="form-control text-center">
+                                            </div>
+
+                <!--                            POISON-->
+                                            <div class="input-group mb-1">
+                                              <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <!--<i class="fas fa-skull-crossbones" style="color:#89ab92"></i>&nbsp;Poison Damage-->
+                                                    <i class="ms ms-p" style="color:#89ab92"></i>&nbsp;Poison Damage
+                                                </span>
+                                              </div>           
+                                                <input type="number" id="`+playerID+`_Poison"value="0" class="form-control text-center">
+                                            </div>
+
+                <!--                            COMMANDER DAMAGE-->                                           
+                                            <span id="`+playerID+`_Commanders" class="w-100"></span>
+
+                                        </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                <!--                PLAYER CARD END-->
+                `
+    }
+    
+    function manaSymbol(colorPassed)
+    {
+        
+        let color = ""; 
+        let front = ""; 
+        let back = "";
+        
+        switch(colorPassed)
+        {
+            case "blue":
+            case "U":
+            case "{U}":
+                color = "u";
+                front = "#0E68AB";
+                back = "#b3ceea";               
+                break;
+            case "white":
+            case "W":
+            case "{W}":
+                color = "w";
+                front = "#f9faf4";
+                back = "#b99f82";
+                break;
+            case "black":
+            case "B":
+            case "{B}":
+                color = "b";
+                front = "#150b00";
+                back = "#a69f9d";
+                break;
+            case "red":
+            case "R":
+            case "{R}":
+                color = "r";
+                front = "#d3202a";
+                back = "#eb9f82";
+                break;
+            case "green":
+            case "G":
+            case "{G}":
+                color = "g";
+                front = "#00733E";
+                back = "#c4d3ca";
+                break;             
+        }
+        
+        if(color.length > 0)
+        {
+            return `<span class="fa-layers ml-2">
+                    <i class="fas fa-circle" style="color:`+back+`;font-size: 1.4em"></i>
+                    <i class="ms ms-`+color+`" style="color:`+front+`;margin-left: 3px"></i>
+                </span>`;
+        }
+        return;
+    }
+    
+</script>
