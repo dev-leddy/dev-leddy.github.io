@@ -86,6 +86,10 @@
        playerSettingsModal(this.id);
     });
     
+    $(document).on('touchend', '.card-header', function(){
+       playerSettingsModal(this.id);
+    });
+    
     $(document).on('contextmenu', '.card-header', function(e){
        e.preventDefault();
        playerSettingsModal(this.id);
