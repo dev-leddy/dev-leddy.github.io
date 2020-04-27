@@ -49,19 +49,13 @@
         max-width: 450px;
     }
     
-    .opacity-01{
-        opacity: 0.1;
-    }
-    
-    .opacity-02{
-        opacity: 0.2;
-    }
-    
     .img-css{
         opacity: 0.2;
-        object-fit: cover;
-        height: 100%;
-        width: 100%;
+        position: absolute;
+    }
+    
+    .card-header{
+        z-index: 10;
     }
 </style>
 <html>
@@ -261,9 +255,9 @@
         
         return `
                 <!--                PLAYER CARD-->
-                                <div class="card card-custom text-white bg-dark col mt-1 mx-auto pl-1 col-6">
-                                  <img class="card-img-top img-css w-100" id="`+playerID+`_CommanderArt" src="images/placeholder_background.png">
-                                  <div class="card-img-overlay">
+                                <div class="card text-white bg-dark col mt-1 mx-auto pl-1 col-6">
+                                  <img class="card-img-top img-css" height="100%" width="100%" id="`+playerID+`_CommanderArt" src="images/placeholder_background.png">
+
                                   <div class="card-header text-center" style="font-size: 1.1em" id="`+playerID+`">`+players[playerID].name+`</div>
                                   <div class="card-body">                                                                      
                                     <div class="card-text">
@@ -303,7 +297,7 @@
                                         </div> 
                                     </div>
                                   </div>
-                                </div>
+
                                 </div>
                 <!--                PLAYER CARD END-->
                 `
