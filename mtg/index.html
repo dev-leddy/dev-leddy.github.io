@@ -48,6 +48,21 @@
     .card-custom {
         max-width: 450px;
     }
+    
+    .opacity-01{
+        opacity: 0.1;
+    }
+    
+    .opacity-02{
+        opacity: 0.2;
+    }
+    
+    .img-css{
+        opacity: 0.2;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
 </style>
 <html>
     <body>
@@ -101,7 +116,8 @@
         selectedCommander = 
             {
                 name: $(this).attr("card-name"),
-                colors: $(this).attr("card-colors")
+                colors: $(this).attr("card-colors"),
+                art: $(this).attr("card-art")
             }
     });
     
@@ -118,7 +134,11 @@
                     console.log("CARD", card);
                     console.log("CARD NAME", card.name);
                     console.log("COLOR IDENTITY", card.color_identity);
-                    cardList +=`<a href="#" class="list-group-item list-group-item-action" card-name="`+card.name+`" card-colors="`+card.color_identity+`">
+                    cardList +=`<a href="#" class="list-group-item list-group-item-action
+                                "card-name="`+card.name+`
+                                "card-colors="`+card.color_identity+`
+                                "card-art="`+card.image_uris.art_crop+`"
+                                ">
                                     ` + card.name + `  
                                     <img src="`+card.image_uris.small+`" class="rounded float-right">
                                 </a>
@@ -183,19 +203,20 @@
     
     function addCommanderNameAndColors(player){
         let colors = selectedCommander.colors.split(",");
-
-        
+        let colorsHtml = "";
+       
         $('#' + player + '_CommanderName').html(selectedCommander.name);
-        
-        
+                
         for(let i = 0; i < colors.length; i++)
         {
-          $('#' + player + '_CommanderColors').append(manaSymbol(colors[i]));                  
+          colorsHtml += manaSymbol(colors[i]);                  
         }
-        
-        
+        $('#' + player + '_CommanderColors').html(colorsHtml);    
         
         $('#' + player + '_CommanderInfo').show();
+        
+        $('#' + player + '_CommanderArt').attr('src', selectedCommander.art);
+        
 
         selectedCommander = {};
     }
@@ -213,7 +234,7 @@
                         if(commanderDamageAllowed)
                             {
                                 //Appends to html
-                                commandersHTML += `<div class="input-group mb-1 col-m-12 col-s-6">
+                                commandersHTML += `<div class="input-group mb-1">
                                                       <div class="input-group-prepend">
                                                         <span class="input-group-text">
                                                             <i class="fas fa-fist-raised"></i>&nbsp;`+players[j].name+`
@@ -241,17 +262,19 @@
         return `
                 <!--                PLAYER CARD-->
                                 <div class="card card-custom text-white bg-dark col mt-1 mx-auto pl-1 col-6">
+                                  <img class="card-img-top img-css w-100" id="`+playerID+`_CommanderArt" src="images/placeholder_background.png">
+                                  <div class="card-img-overlay">
                                   <div class="card-header text-center" style="font-size: 1.1em" id="`+playerID+`">`+players[playerID].name+`</div>
                                   <div class="card-body">                                                                      
                                     <div class="card-text">
                                         <div class="row">
-                                            <div class="input-group mb-1" id="`+playerID+`_CommanderInfo" style="display: none !important;">
+                                            <div class="input-group mb-1" id="`+playerID+`_CommanderInfo">
                                               <div class="input-group-prepend">
                                                 <span class="input-group-text" id="`+playerID+`_CommanderName">
                                                     Commander
                                                 </span>
                                               </div>
-                                                <button type="number" id="`+playerID+`_CommanderColors" class="form-control text-center"></button>
+                                                <button type="number" id="`+playerID+`_CommanderColors" class="form-control text-center">-</button>
                                             </div>
                 <!--                            LIFE TOTAL-->
                                             <div class="input-group mb-1">
@@ -281,6 +304,7 @@
                                     </div>
                                   </div>
                                 </div>
+                                </div>
                 <!--                PLAYER CARD END-->
                 `
     }
@@ -291,6 +315,8 @@
         let color = ""; 
         let front = ""; 
         let back = "";
+        
+        colorPassed = colorPassed.replace(/\s/g,'');
         
         switch(colorPassed)
         {
@@ -328,7 +354,9 @@
                 color = "g";
                 front = "#00733E";
                 back = "#c4d3ca";
-                break;             
+                break;
+            default:
+                console.log("ERROR:: WTF IS THIS???", colorPassed, colorPassed.length);
         }
         
         if(color.length > 0)
