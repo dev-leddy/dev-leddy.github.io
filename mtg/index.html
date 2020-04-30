@@ -77,73 +77,71 @@
 
 <script>
     let players = {};
+    let currentPlayer;
     let commanderDamageAllowed = true;
-    let commanderSearchData;
-    let selectedCommander = {};
     
     $(document).ready(function(){
-        //
-    });
-    
-    $('#addPlayerBtn').on('click', function(){
-        $('#playerCards').append(addPlayer(Object.keys(players).length));
-        addPlayerDamage();
-    });
-    
-    
-    $(document).on('dblclick', '.card-header', function(){
-       playerSettingsModal(this.id);
-    });
-    
-    $(document).on('touchend', '.card-header', function(){
-       playerSettingsModal(this.id);
-    });
-    
-    $(document).on('contextmenu', '.card-header', function(e){
-       e.preventDefault();
-       playerSettingsModal(this.id);
-    });
-    
-    $(document).on('click', '.list-group-item', function(){
-        $(".list-group-item").removeClass("active");
-        $(this).addClass("active");
-        selectedCommander = 
-            {
-                name: $(this).attr("card-name"),
-                colors: $(this).attr("card-colors"),
-                art: $(this).attr("card-art")
-            }
-    });
-    
-    $(document).on('click', '#commanderSearchBtn', function(){
-        let urlRequest = "https://api.scryfall.com/cards/search?q=" + $('#commanderSearchInput').val();
-        //https://api.scryfall.com/cards/search?q=
-        let cardList = "";       
         
-        $.getJSON( urlRequest, function( json ) {
-            commanderSearchData = json;
-            for(let i = 0; i < json.data.length; i++)
+        $('#addPlayerBtn').on('click', function(){
+            $('#playerCards').append(addPlayer(Object.keys(players).length));
+            addPlayerDamage();
+        });
+
+        $(document).on('dblclick', '.card-header', function(){
+           playerSettingsModal(this.id);
+        });
+
+        $(document).on('touchend', '.card-header', function(){
+           playerSettingsModal(this.id);
+        });
+
+        $(document).on('contextmenu', '.card-header', function(e){
+           e.preventDefault();
+           playerSettingsModal(this.id);
+        });
+
+        $(document).on('click', '.list-group-item', function(){
+            let card = $(this).data("json");
+            
+            $(".list-group-item").removeClass("active");
+            $(this).addClass("active");
+            
+            console.log("CARD: ", card.color_identity);
+            currentPlayer.selectedCommander = 
                 {
-                    let card = json.data[i];
-                    console.log("CARD", card);
-                    console.log("CARD NAME", card.name);
-                    console.log("COLOR IDENTITY", card.color_identity);
-                    cardList +=`<a href="#" class="list-group-item list-group-item-action
-                                "card-name="`+card.name+`
-                                "card-colors="`+card.color_identity+`
-                                "card-art="`+card.image_uris.art_crop+`"
-                                ">
-                                    ` + card.name + `  
-                                    <img src="`+card.image_uris.small+`" class="rounded float-right">
-                                </a>
-                                `;
+                    name: card.name,
+                    colors: card.color_identity,
+                    art: card.image_uris.art_crop
                 }
-                console.log(cardList);
-                $('#commanderSearchResults').html(cardList);
-         });           
-    });
+        });
+        
+        $(document).on('click', '#commanderSearchBtn', function(){
+            let urlRequest = "https://api.scryfall.com/cards/search?q=" + $('#commanderSearchInput').val();
+            //https://api.scryfall.com/cards/search?q=
+            let cardList = "";       
+
+            $.getJSON( urlRequest, function( json ) {
+                for(let i = 0; i < json.data.length; i++)
+                    {
+                        let card = json.data[i];
+//                        console.log("CARD", card);
+//                        console.log("CARD NAME", card.name);
+//                        console.log("COLOR IDENTITY", card.color_identity);
+                        cardList +=`<a href="#" class="list-group-item list-group-item-action
+                                        "data-json='`+JSON.stringify(card)+`'>
+                                        ` + card.name + `  
+                                    <img src="`+card.image_uris.small+`" class="rounded float-right">
+                                    </a>
+                                    `;
+                    }
+                    //console.log(cardList);
+                    $('#commanderSearchResults').html(cardList);
+             });           
+        });
+    }); 
     
     function playerSettingsModal(player){
+        currentPlayer = players[player];
         let nameInputHtml = `<div class="input-group mb-3">
                               <div class="input-group-prepend">
                                 <span class="input-group-text" id="inputGroup-sizing-default">Player's Name</span>
@@ -167,6 +165,15 @@
             onEscape: true,
             animate: false,
             buttons: {
+                delete:{
+                    label: 'Remove Player',
+                    className: 'btn-danger mr-auto',
+                    callback: function(){
+                        delete players[player];
+                        $('#' + player + "_Card").remove();
+                        addPlayerDamage();
+                    }
+                },
                 ok: {
                     label: 'Ok',
                     className: 'btn-primary',
@@ -177,7 +184,7 @@
 
                         addPlayerDamage();
                         
-                        if(Object.keys(selectedCommander).length > 0) 
+                        if(Object.keys(currentPlayer.selectedCommander).length > 0) 
                         {
                             addCommanderNameAndColors(player);
                         }
@@ -186,33 +193,33 @@
                 },
                 cancel: {
                     label: 'Cancel',
-                    className: 'btn-danger',
+                    className: 'btn-secondary',
                     callback: function(){
 
                     }
                 }
+
             }
         });
     }
     
     function addCommanderNameAndColors(player){
-        let colors = selectedCommander.colors.split(",");
+        playerObj = players[player];
+        
+        let colors = playerObj.selectedCommander.colors;
         let colorsHtml = "";
        
-        $('#' + player + '_CommanderName').html(selectedCommander.name);
+        $('#' + player + '_CommanderName').html(playerObj.selectedCommander.name);
                 
         for(let i = 0; i < colors.length; i++)
         {
           colorsHtml += manaSymbol(colors[i]);                  
         }
-        $('#' + player + '_CommanderColors').html(colorsHtml);    
         
-        $('#' + player + '_CommanderInfo').show();
+        $('#' + player + '_CommanderColors').html(colorsHtml);          
+        $('#' + player + '_CommanderInfo').show();     
+        $('#' + player + '_CommanderArt').attr('src', playerObj.selectedCommander.art);
         
-        $('#' + player + '_CommanderArt').attr('src', selectedCommander.art);
-        
-
-        selectedCommander = {};
     }
         
     function addPlayerDamage(){        
@@ -255,7 +262,7 @@
         
         return `
                 <!--                PLAYER CARD-->
-                                <div class="card text-white bg-dark col mt-1 mx-auto pl-1 col-6">
+                                <div class="card card-custom text-white bg-dark col mt-1 mx-auto pl-1 col-6" id="`+playerID+`_Card">
                                   <img class="card-img-top img-css" height="100%" width="100%" id="`+playerID+`_CommanderArt" src="images/placeholder_background.png">
 
                                   <div class="card-header text-center" style="font-size: 1.1em" id="`+playerID+`">`+players[playerID].name+`</div>
