@@ -57,6 +57,16 @@
     .card-header{
         z-index: 10;
     }
+    
+    .btn-circle {
+        width: 30px;
+        height: 30px;
+        padding: 6px 0px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.42857;
+    }
 </style>
 <html>
     <body>
@@ -79,6 +89,9 @@
     let players = {};
     let currentPlayer;
     let commanderDamageAllowed = true;
+    let searchedCardList = {};
+    let mydata;
+    
     
     $(document).ready(function(){
         
@@ -101,41 +114,37 @@
         });
 
         $(document).on('click', '.list-group-item', function(){
-            let card = $(this).data("json");
+            let card = searchedCardList[$(this).data('json')]; 
             
             $(".list-group-item").removeClass("active");
             $(this).addClass("active");
-            
-            console.log("CARD: ", card.color_identity);
+            console.log("CARD",card);
             currentPlayer.selectedCommander = 
                 {
                     name: card.name,
-                    colors: card.color_identity,
+                    colors: card.mana_cost,
                     art: card.image_uris.art_crop
                 }
         });
         
         $(document).on('click', '#commanderSearchBtn', function(){
-            let urlRequest = "https://api.scryfall.com/cards/search?q=" + $('#commanderSearchInput').val();
-            //https://api.scryfall.com/cards/search?q=
-            let cardList = "";       
+            searchedCardList = {};
+            let cardListHTML = "";
+            let urlRequest = "https://api.scryfall.com/cards/search?q=is%3Acommander+" + $('#commanderSearchInput').val();  
+            //https://scryfall.com/docs/api
 
             $.getJSON( urlRequest, function( json ) {
+                searchedCardList = json;
                 for(let i = 0; i < json.data.length; i++)
                     {
                         let card = json.data[i];
-//                        console.log("CARD", card);
-//                        console.log("CARD NAME", card.name);
-//                        console.log("COLOR IDENTITY", card.color_identity);
-                        cardList +=`<a href="#" class="list-group-item list-group-item-action
-                                        "data-json='`+JSON.stringify(card)+`'>
-                                        ` + card.name + `  
-                                    <img src="`+card.image_uris.small+`" class="rounded float-right">
-                                    </a>
-                                    `;
+                        
+                        searchedCardList[card.id] = card;
+                        
+                        cardListHTML +=`<a href="#" class="list-group-item list-group-item-action "data-json='`+card.id+`'>` + card.name + `<img src="`+card.image_uris.small+`" class="rounded float-right"></a>`;
                     }
-                    //console.log(cardList);
-                    $('#commanderSearchResults').html(cardList);
+                    //console.log("SEARCHED LIST",searchedCardList);
+                    $('#commanderSearchResults').html(cardListHTML);
              });           
         });
     }); 
@@ -184,7 +193,7 @@
 
                         addPlayerDamage();
                         
-                        if(Object.keys(currentPlayer.selectedCommander).length > 0) 
+                        if(currentPlayer.selectedCommander) 
                         {
                             addCommanderNameAndColors(player);
                         }
@@ -206,7 +215,12 @@
     function addCommanderNameAndColors(player){
         playerObj = players[player];
         
-        let colors = playerObj.selectedCommander.colors;
+        let colors = playerObj.selectedCommander.colors.split('}{');
+        for(let i = 0; i < colors.length; i++)
+            {
+                colors[i] = colors[i].replace(/{/g, "");
+                colors[i] = colors[i].replace(/}/g, "");
+            }
         let colorsHtml = "";
        
         $('#' + player + '_CommanderName').html(playerObj.selectedCommander.name);
@@ -284,7 +298,13 @@
                                                     <i class="fas fa-heart" style="color:#d3202a"></i>&nbsp;Life Total
                                                 </span>
                                               </div>
-                                                <input type="number" id="`+playerID+`_Life" value="40" class="form-control text-center">
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
+                                                </div>
+                                              <input type="number" id="`+playerID+`_Life" value="40" class="form-control text-center">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary spinner-add" type="button"><i class="fas fa-plus"></i></button>
+                                                </div>
                                             </div>
 
                 <!--                            POISON-->
@@ -308,6 +328,64 @@
                                 </div>
                 <!--                PLAYER CARD END-->
                 `
+    }
+    $(document).on('click', '.spinner-minus', function(){
+        console.log(this);
+        console.log($(this).next('input').val());
+    });
+    function spinner(inputDirection, operator)
+    {
+        //inputDirection will be 'next' or 'prev'
+        //operator will be subtract or add
+        let current; 
+        if(inputDirection == "prev")
+        { 
+            current = $(this).prev('input').attr('id').val();
+        }
+        else
+        {          
+            current = $(this).next('input').val(); 
+        } 
+        
+        if(operator == subtract)
+        {
+            $(this).prev('input').attr('id').val(current - 1);
+        }
+        else
+        {
+            $(this).next('input').attr('id').val(current - 1);
+        }
+        
+    }
+    
+    //TODO: convert some of the needless jank above to classes
+    class Player {
+        constructor(name){
+            this.name = name;
+            this.life = 40;
+            this.poison = 0;
+        }
+        
+        takeDamage(amount){
+            this.life = parseInt(this.life) - parseInt(amount);
+            return this.life;
+        }
+        
+        takePoisonDamage(amount){
+            this.poison = parseInt(this.poison) + parseInt(amount);
+            return this.poison;
+        }
+        
+        takeCommanderDamage(amount, type, player){
+            if(type == "poison") 
+            {
+                this.takePoisonDamage(amount);
+            }
+            if(type == "damage") 
+            {
+                this.takeDamage(amount);
+            }
+        }
     }
     
     function manaSymbol(colorPassed)
@@ -357,7 +435,10 @@
                 back = "#c4d3ca";
                 break;
             default:
-                console.log("ERROR:: WTF IS THIS???", colorPassed, colorPassed.length);
+                color = colorPassed;
+                front = "#150b00";
+                back = "#a69f9d";
+                break;
         }
         
         if(color.length > 0)
