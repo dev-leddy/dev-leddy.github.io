@@ -71,6 +71,7 @@
           <a class="navbar-brand">Life Commander</a>
          <a id="test"></a>
           <div class="ml-auto">
+            <button class="btn btn-outline-light my-2 my-sm-0 ml-auto" id="resetBtn">Reset Life Totals</button>
             <button class="btn btn-outline-light my-2 my-sm-0 ml-auto" id="addPlayerBtn">Add Player</button>
           </div>  
         </nav>
@@ -95,6 +96,19 @@
         $('#addPlayerBtn').on('click', function(){
             $('#playerCards').append(addPlayer(Object.keys(players).length));
             addPlayerDamage();
+        });
+        
+        $('#resetBtn').on('click', function(){
+            bootbox.alert({
+                    size: "medium",
+                    title: "Reset Life",
+                    message: "This will reset all players life totals, are you sure?",
+                    centerVertical: true,
+                    callback: function(){ 
+                        resetLifeTotals(); 
+                    }
+                })
+           
         });
 
         $(document).on('dblclick', '.card-header', function(){
@@ -193,15 +207,15 @@
             animate: false,
             centerVertical: true,
             buttons: {
-                delete:{
-                    label: 'Remove Player',
-                    className: 'btn-danger mr-auto',
-                    callback: function(){
-                        delete players[player];
-                        $('#' + player + "_Card").remove();
-                        addPlayerDamage();
-                    }
-                },
+//                delete:{
+//                    label: 'Remove Player',
+//                    className: 'btn-danger mr-auto',
+//                    callback: function(){
+//                        delete players[player];
+//                        $('#' + player + "_Card").remove();
+//                        addPlayerDamage();
+//                    }
+//                },
                 ok: {
                     label: 'Ok',
                     className: 'btn-primary',
@@ -277,7 +291,7 @@
                                                 <div class="input-group-prepend">
                                                     <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
                                                 </div>
-                                                        <input type="text" value="0" class="form-control text-center">
+                                                        <input type="text" value="0" class="form-control text-center commander-damage">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
                                                 </div>
@@ -318,7 +332,7 @@
                                                 <button type="number" id="`+playerID+`_CommanderColors" class="form-control text-center">-</button>
                                             </div>
                 <!--                            LIFE TOTAL-->
-                                            <div class="input-group mb-1">
+                                            <div class="input-group mb-1 life-total-group">
                                               <div class="input-group-prepend">
                                                 <span class="input-group-text">
                                                     <i class="fas fa-heart" style="color:#d3202a"></i>&nbsp;Life Total
@@ -327,7 +341,7 @@
                                                 <div class="input-group-prepend">
                                                     <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
                                                 </div>
-                                              <input type="text life-total" id="`+playerID+`_Life" value="40" class="form-control text-center">
+                                              <input class="form-control text-center life-total" type="text" id="`+playerID+`_Life" value="40">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
                                                 </div>
@@ -344,7 +358,7 @@
                                                 <div class="input-group-prepend">
                                                     <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
                                                 </div>
-                                                <input type="text" id="`+playerID+`_Poison"value="0" class="form-control text-center">
+                                                <input type="text" id="`+playerID+`_Poison"value="0" class="form-control text-center poison-total">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
                                                 </div>
@@ -362,24 +376,54 @@
                 `
     }
     
-    $(document).on('click', '.spinner-minus', function(){    
-        var value = $(this).closest(".input-group").find("input").val();
+    $(document).on('click', '.spinner-minus', function(){
+        var spinnersParent = $(this).closest('.input-group').find('input');
+        var value = spinnersParent.val();
               
-        value = parseInt(value) - parseInt(1);
-        $(this).closest(".input-group").find("input").val(value);
+        value = parseInt(value) - parseInt(1);       
+        $(this).closest('.input-group').find('input').val(value);
+        
+        //If it's not life total damage, or poison damage
+        if(!spinnersParent.hasClass('life-total') && !spinnersParent.hasClass('poison-total'))
+            {
+                //Set this players TOTAL life
+                var lifeValue = $(this).closest('.card').find('.life-total').val();
+                console.log(lifeValue);
+
+                lifeValue = parseInt(lifeValue) + parseInt(1);
+                $(this).closest('.card').find('.life-total').val(lifeValue);
+            }
 
     });
     
-    $(document).on('click', '.spinner-plus', function(){    
-        var value = $(this).closest(".input-group").find("input").val();
-        var lifeValue = $(this).closest(".row").find("input").val();
-                 
-        value = parseInt(value) + parseInt(1);
-        $(this).closest(".input-group").find("input").val(value);
+    $(document).on('click', '.spinner-plus', function(){
+        var spinnersParent = $(this).closest('.input-group').find('input');
+        //console.log(spinnersParent.hasClass('life-total'));
         
-        lifeValue = parseInt(lifeValue) + parseInt(1);
-        $(this).closest(".row").find("input").val(lifeValue);
+        //Find the value of this spinner's value, and increment it
+        var value = spinnersParent.val();
+        value = parseInt(value) + parseInt(1);       
+        $(this).closest('.input-group').find('input').val(value);
+             
+        //If it's not life total damage, or poison damage
+        if(!spinnersParent.hasClass('life-total') && !spinnersParent.hasClass('poison-total'))
+            {
+                //Set this players TOTAL life
+                var lifeValue = $(this).closest('.card').find('.life-total').val();
+                console.log(lifeValue);
+
+                lifeValue = parseInt(lifeValue) - parseInt(1);
+                $(this).closest('.card').find('.life-total').val(lifeValue);
+            }
+       
     });
+    
+    function resetLifeTotals()
+    {
+        $('.poison-total').val("0");
+        $('.life-total').val("40");
+        $('.commander-damage').val("0");
+    }
    
     
     //TODO: convert some of the needless jank above to classes.
