@@ -6,6 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 <script src="scripts/bootstrap-input-spinner.js"></script>
 
+
 <head>
     <link href="css/mana.css" rel="stylesheet" type="text/css" />
 </head>
@@ -58,14 +59,10 @@
         z-index: 10;
     }
     
-    .btn-circle {
-        width: 30px;
-        height: 30px;
-        padding: 6px 0px;
-        border-radius: 15px;
-        text-align: center;
-        font-size: 12px;
-        line-height: 1.42857;
+    .bootbox-body
+    {
+        max-height: 60vh; /* or rems or ems, if you prefer */
+        overflow-y: auto;
     }
 </style>
 <html>
@@ -141,10 +138,31 @@
                         
                         searchedCardList[card.id] = card;
                         
-                        cardListHTML +=`<a href="#" class="list-group-item list-group-item-action "data-json='`+card.id+`'>` + card.name + `<img src="`+card.image_uris.small+`" class="rounded float-right"></a>`;
+                        let cardImageSmall;
+                        let cardID = card.id;
+                        let cardName = card.name;
+ 
+                        if(typeof card.image_uris == "undefined"){
+                            console.log("CANT FIND IMAGE DIGGING DEEPER");
+                            cardImageSmall = card.card_faces[0].image_uris.small;
+
+                        }
+                        else{
+                            cardImageSmall = card.image_uris.small;
+                        }
+                        
+                        cardListHTML +=`<a href="#" class="list-group-item list-group-item-action "data-json='`+cardID+`'>` + cardName + `<img src="`+cardImageSmall+`" class="rounded float-right"></a>`;
                     }
                     //console.log("SEARCHED LIST",searchedCardList);
                     $('#commanderSearchResults').html(cardListHTML);
+             }).fail(function(json) {              
+                bootbox.alert({
+                    size: "medium",
+                    title: "Error",
+                    message: urlify(json.responseJSON.details),
+                    centerVertical: true,
+                    callback: function(){ /* your callback code */ }
+                })
              });           
         });
     }); 
@@ -173,6 +191,7 @@
             size: 'medium',
             onEscape: true,
             animate: false,
+            centerVertical: true,
             buttons: {
                 delete:{
                     label: 'Remove Player',
@@ -255,7 +274,13 @@
                                                             <i class="fas fa-fist-raised"></i>&nbsp;`+players[j].name+`
                                                         </span>
                                                       </div>
-                                                        <input type="number" value="0" class="form-control text-center">
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
+                                                </div>
+                                                        <input type="text" value="0" class="form-control text-center">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
+                                                </div>
                                                     </div>`;
                             }                      
                     }
@@ -289,6 +314,7 @@
                                                     Commander
                                                 </span>
                                               </div>
+                                                <!--<button type="number" id="`+playerID+`_CommanderColors" class="form-control text-center">-</button>-->
                                                 <button type="number" id="`+playerID+`_CommanderColors" class="form-control text-center">-</button>
                                             </div>
                 <!--                            LIFE TOTAL-->
@@ -301,21 +327,27 @@
                                                 <div class="input-group-prepend">
                                                     <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
                                                 </div>
-                                              <input type="number" id="`+playerID+`_Life" value="40" class="form-control text-center">
+                                              <input type="text life-total" id="`+playerID+`_Life" value="40" class="form-control text-center">
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary spinner-add" type="button"><i class="fas fa-plus"></i></button>
+                                                    <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
                                                 </div>
                                             </div>
 
                 <!--                            POISON-->
                                             <div class="input-group mb-1">
-                                              <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <!--<i class="fas fa-skull-crossbones" style="color:#89ab92"></i>&nbsp;Poison Damage-->
-                                                    <i class="ms ms-p" style="color:#89ab92"></i>&nbsp;Poison Damage
-                                                </span>
-                                              </div>           
-                                                <input type="number" id="`+playerID+`_Poison"value="0" class="form-control text-center">
+                                                <div class="input-group-prepend">
+                                                  <span class="input-group-text">
+                                                      <!--<i class="fas fa-skull-crossbones" style="color:#89ab92"></i>&nbsp;Poison Damage-->
+                                                      <i class="ms ms-p" style="color:#89ab92"></i>&nbsp;Poison Damage
+                                                  </span>
+                                                </div>
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
+                                                </div>
+                                                <input type="text" id="`+playerID+`_Poison"value="0" class="form-control text-center">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
+                                                </div>
                                             </div>
 
                 <!--                            COMMANDER DAMAGE-->                                           
@@ -326,37 +358,29 @@
                                   </div>
 
                                 </div>
-                <!--                PLAYER CARD ENDd-->
+                <!--                PLAYER CARD END-->
                 `
     }
-    $(document).on('click', '.spinner-minus', function(){
-        console.log(this);
-        console.log($(this).next('input').val());
+    
+    $(document).on('click', '.spinner-minus', function(){    
+        var value = $(this).closest(".input-group").find("input").val();
+              
+        value = parseInt(value) - parseInt(1);
+        $(this).closest(".input-group").find("input").val(value);
+
     });
-    function spinner(inputDirection, operator)
-    {
-        //inputDirection will be 'next' or 'prev'
-        //operator will be subtract or add
-        let current; 
-        if(inputDirection == "prev")
-        { 
-            current = $(this).prev('input').attr('id').val();
-        }
-        else
-        {          
-            current = $(this).next('input').val(); 
-        } 
+    
+    $(document).on('click', '.spinner-plus', function(){    
+        var value = $(this).closest(".input-group").find("input").val();
+        var lifeValue = $(this).closest(".row").find("input").val();
+                 
+        value = parseInt(value) + parseInt(1);
+        $(this).closest(".input-group").find("input").val(value);
         
-        if(operator == subtract)
-        {
-            $(this).prev('input').attr('id').val(current - 1);
-        }
-        else
-        {
-            $(this).next('input').attr('id').val(current - 1);
-        }
-        
-    }
+        lifeValue = parseInt(lifeValue) + parseInt(1);
+        $(this).closest(".row").find("input").val(lifeValue);
+    });
+   
     
     //TODO: convert some of the needless jank above to classes.
     class Player {
@@ -364,6 +388,9 @@
             this.name = name;
             this.life = 40;
             this.poison = 0;
+            this.opponents = {};
+            playerList[this.name] = 1;
+            this.addOpponents(this.name);
         }
         
         takeDamage(amount){
@@ -385,8 +412,28 @@
             {
                 this.takeDamage(amount);
             }
+            
         }
+        
+        delete(){
+            delete playerList[this.name];
+        }
+        
+        addOpponents(currentPlayer){    
+            for(let i = 0; i < Object.keys(playerList).length; i++)
+                {         
+                    var potentialOpponent = Object.keys(playerList)[i];
+                    //if the player isn't me, and they arent in the list yet, add them
+                    if(this.name != potentialOpponent && typeof currentPlayer.opponents == "undefined" || typeof currentPlayer.opponents[this.name] == "undefined")
+                        {
+                            this.opponents[potentialOpponent] = 0;
+                        }
+                }
+        }     
+    
     }
+    
+    let playerList = {};
     
     function manaSymbol(colorPassed)
     {
@@ -451,4 +498,12 @@
         return;
     }
     
+    function urlify(text) {
+        var urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, function(url) {
+            return '<a href="' + url + '">' + url + '</a>';
+        })
+        // or alternatively
+        // return text.replace(urlRegex, '<a href="$1">$1</a>')
+    }
 </script>
