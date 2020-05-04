@@ -291,11 +291,9 @@
                                                 <div class="input-group-prepend">
                                                     <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
                                                 </div>
-<<<<<<< HEAD
-                                                        <input type="text" value="0" class="form-control text-center">
-=======
+
                                                         <input type="text" value="0" class="form-control text-center commander-damage">
->>>>>>> e273f8a0d6eceeb11911ceec2178afa678c304af
+
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
                                                 </div>
@@ -345,11 +343,9 @@
                                                 <div class="input-group-prepend">
                                                     <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
                                                 </div>
-<<<<<<< HEAD
-                                              <input type="text life-total" id="`+playerID+`_Life" value="40" class="form-control text-center">
-=======
+
                                               <input class="form-control text-center life-total" type="text" id="`+playerID+`_Life" value="40">
->>>>>>> e273f8a0d6eceeb11911ceec2178afa678c304af
+
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
                                                 </div>
@@ -366,11 +362,9 @@
                                                 <div class="input-group-prepend">
                                                     <button class="btn btn-outline-secondary spinner-minus" type="button"><i class="fas fa-minus"></i></button>
                                                 </div>
-<<<<<<< HEAD
-                                                <input type="text" id="`+playerID+`_Poison"value="0" class="form-control text-center">
-=======
+
                                                 <input type="text" id="`+playerID+`_Poison"value="0" class="form-control text-center poison-total">
->>>>>>> e273f8a0d6eceeb11911ceec2178afa678c304af
+
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary spinner-plus" type="button"><i class="fas fa-plus"></i></button>
                                                 </div>
@@ -388,26 +382,7 @@
                 `
     }
     
-<<<<<<< HEAD
-    $(document).on('click', '.spinner-minus', function(){    
-        var value = $(this).closest(".input-group").find("input").val();
-              
-        value = parseInt(value) - parseInt(1);
-        $(this).closest(".input-group").find("input").val(value);
 
-    });
-    
-    $(document).on('click', '.spinner-plus', function(){    
-        var value = $(this).closest(".input-group").find("input").val();
-        var lifeValue = $(this).closest(".row").find("input").val();
-                 
-        value = parseInt(value) + parseInt(1);
-        $(this).closest(".input-group").find("input").val(value);
-        
-        lifeValue = parseInt(lifeValue) + parseInt(1);
-        $(this).closest(".row").find("input").val(lifeValue);
-    });
-=======
     $(document).on('click', '.spinner-minus', function(){
         var spinnersParent = $(this).closest('.input-group').find('input');
         var value = spinnersParent.val();
@@ -425,7 +400,6 @@
                 lifeValue = parseInt(lifeValue) + parseInt(1);
                 $(this).closest('.card').find('.life-total').val(lifeValue);
             }
-
     });
     
     $(document).on('click', '.spinner-plus', function(){
@@ -455,19 +429,18 @@
         $('.poison-total').val("0");
         $('.life-total').val("40");
         $('.commander-damage').val("0");
-    }
->>>>>>> e273f8a0d6eceeb11911ceec2178afa678c304af
-   
+    }   
     
     //TODO: convert some of the needless jank above to classes.
     class Player {
+        static count = 0;
+        
         constructor(name){
+            this.id = Player.count++;
             this.name = name;
             this.life = 40;
             this.poison = 0;
-            this.opponents = {};
-            playerList[this.name] = 1;
-            this.addOpponents(this.name);
+            this.opponents = [];
         }
         
         takeDamage(amount){
@@ -488,29 +461,57 @@
             if(type == "damage") 
             {
                 this.takeDamage(amount);
-            }
-            
+            }     
         }
         
-        delete(){
-            delete playerList[this.name];
+        addOpponents(opponent){
+            this.opponents.push({damage: 0, player: opponent});
         }
         
-        addOpponents(currentPlayer){    
-            for(let i = 0; i < Object.keys(playerList).length; i++)
-                {         
-                    var potentialOpponent = Object.keys(playerList)[i];
-                    //if the player isn't me, and they arent in the list yet, add them
-                    if(this.name != potentialOpponent && typeof currentPlayer.opponents == "undefined" || typeof currentPlayer.opponents[this.name] == "undefined")
-                        {
-                            this.opponents[potentialOpponent] = 0;
-                        }
+        deleteOpponent(playerID){
+            for(let i = 0; i < this.opponents.length; i++)
+                {                
+                    if(this.opponents[i].player.id == playerID)
+                    {                  
+                        return console.log(this.opponents.splice(i, 1));
+                    }    
                 }
-        }     
-    
+        }
     }
     
-    let playerList = {};
+    let playerlist = [];
+    
+    function AddNewPlayer()
+    {
+        let name = "Player " + playerlist.length;
+        let player = new Player(name);
+        
+        for(let i = 0; i < playerlist.length; i++)
+            {
+               player.addOpponents(playerlist[i]);
+               playerlist[i].addOpponents(player);
+            }
+        
+        playerlist.push(player);
+    }
+    
+    function DeletePlayer(playerID){
+        var playerToDeleteIndex;
+        
+        for(let i = 0; i < playerlist.length; i++)
+            {
+                if(playerlist[i].id == playerID)
+                {
+                    playerToDeleteIndex = i;
+                }
+                else
+                {
+                    playerlist[i].deleteOpponent(playerID);   
+                }
+            }
+        
+        playerlist.splice(playerToDeleteIndex, 1);
+    }
     
     function manaSymbol(colorPassed)
     {
