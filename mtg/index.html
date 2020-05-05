@@ -63,7 +63,7 @@
     {
         max-height: 60vh; /* or rems or ems, if you prefer */
         overflow-y: auto;
-    }
+    }    
 </style>
 <html>
     <body>
@@ -125,16 +125,30 @@
         });
 
         $(document).on('click', '.list-group-item', function(){
-            let card = searchedCardList[$(this).data('json')]; 
+            let card = searchedCardList[$(this).data('json')];
+            let art;
+            
+            //console.log("CARD",card.card_faces[0].image_uris.art_crop);
+            
+            if(typeof card.image_uris == "undefined"){
+                art = card.card_faces[0].image_uris.art_crop;
+                colors = card.card_faces[0].mana_cost;
+                name = card.card_faces[0].name;
+            }
+            else{
+                art = card.image_uris.art_crop;
+                colors = card.mana_cost;
+                name = card.name;
+            }
             
             $(".list-group-item").removeClass("active");
             $(this).addClass("active");
-            console.log("CARD",card);
+            //console.log("CARD",card);
             currentPlayer.selectedCommander = 
                 {
-                    name: card.name,
-                    colors: card.mana_cost,
-                    art: card.image_uris.art_crop
+                    name: name,
+                    colors: colors,
+                    art: art
                 }
         });
         
@@ -317,13 +331,17 @@
         
         return `
                 <!--                PLAYER CARD-->
-                                <div class="card card-custom text-white bg-dark col mt-1 mx-auto pl-1 col-6" id="`+playerID+`_Card">
+                                <div class="card card-custom text-white bg-dark mx-auto pl-1 col-6 w-100" id="`+playerID+`_Card">
                                   <img class="card-img-top img-css" height="100%" width="100%" id="`+playerID+`_CommanderArt" src="images/placeholder_background.png">
-
-                                  <div class="card-header text-center" style="font-size: 1.1em" id="`+playerID+`">`+players[playerID].name+`</div>
+                                  <div class="card-header d-flex justify-content-between">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-times"></i></button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-sliders-h"></i></button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-crown"></i></button>
+                                  </div>
                                   <div class="card-body">                                                                      
                                     <div class="card-text">
                                         <div class="row">
+                                            <div class="mb-1 text-center" id="`+playerID+`">`+players[playerID].name+`</div>
                                             <div class="input-group mb-1" id="`+playerID+`_CommanderInfo">
                                               <div class="input-group-prepend">
                                                 <span class="input-group-text" id="`+playerID+`_CommanderName">
