@@ -1,1 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
+  <body>
+    <div class="container">
+      <div class="row"> 
+        <div class="col-12">
+          <h4>EQ Important Links and Stuff</h4>
+          <table class="table table-striped thead-dark">
+            <thead>
+              <tr>
+                <th scope="col">Link</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="http://tlpauctions.com/"/>http://tlpauctions.com/</td>
+                <td>TLP Auctions (EC Tunnel Stuff)</td>
+              </tr>
+              <tr>
+                <td><a href="http://www.eqstats.net/Spells.aspx">http://www.eqstats.net/Spells</a></td>
+                <td>EQ Stats Spells</td>
+              </tr>
+              <tr>
+                <td><a href="http://eqitems.com/">http://eqitems.com/</a></td>
+                <td>EQ Items, Spells and Gear</td>
+              </tr>
+              <tr>
+                <td><a href="http://www.eqmaps.info/eq-map-files/">http://www.eqmaps.info/eq-map-files/</a></td>
+                <td>Brewall Maps (REQUIRED)</td>
+              </tr>
+              <tr>
+                <td><a href="LeddyUI.zip"></a></td>
+                <td>Dark Velious Style UI</td>
+              </tr>
+              <tr>
+                  <td><b>Level Checker</b></td>
+                <td>
+                  <input type="text" id="numInput" placeholder="Enter level" autocomplete="off">
+                  <div id="highest">Highest: </div>
+                  <div id="lowest">Lowest: </div>   
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
 
+<script>
+  $('#numInput').keyup(checkRange);
+
+function checkRange() {
+  let userInput = parseFloat($('#numInput').val());
+  let high, low;
+  
+  if(userInput <= 10){
+    high = userInput + 5;
+    low = userInput - 5;
+    if(low < 1) low = 1;
+  }
+  else{
+    high = Math.round(userInput * parseFloat(1.5) + 1);
+    low = Math.round(userInput * parseFloat(0.67));
+  }
+  
+  if(Number.isNaN(high)) high = ' ';
+  if(Number.isNaN(low)) low = ' ';
+  
+  $('#highest').text("Highest: " + high);
+  $('#lowest').text("Lowest: " + low);
+}
+</script>
