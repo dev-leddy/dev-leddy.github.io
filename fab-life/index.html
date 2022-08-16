@@ -47,12 +47,12 @@
             <b-card>
                 <div class="d-flex">
                     <b-button-group class="mx-auto">
-                        <b-button variant="outline-dark" style="width:90px" @click="setCC()" :pressed="format == 'CC'">CC</b-button>
-                        <b-button variant="outline-dark" style="width:90px" @click="setBlitz()" :pressed="format == 'Blitz'">Blitz</b-button>
+                        <b-button variant="outline-dark" @click="setCC()" :pressed="format == 'CC'">CC</b-button>
+                        <b-button variant="outline-dark" @click="setBlitz()" :pressed="format == 'Blitz'">Blitz</b-button>
                     </b-button-group>
                     <b-button-group class="mx-auto">
-                        <b-button variant="outline-dark" style="width:90px" class="ml-auto" @click="webcamMode = true" :pressed="webcamMode == true"><i data-feather="camera"></i> Webcam</b-button>
-                        <b-button variant="outline-dark" style="width:90px" @click="webcamMode = false" :pressed="webcamMode == false"><i data-feather="camera"></i> IRL</b-button>
+                        <b-button variant="outline-dark" class="ml-auto" @click="webcamMode = true" :pressed="webcamMode == true"><i data-feather="camera"></i> Webcam</b-button>
+                        <b-button variant="outline-dark" @click="webcamMode = false" :pressed="webcamMode == false"><i data-feather="camera"></i> IRL</b-button>
                     </b-button-group>
                 </div>
             </b-card>
