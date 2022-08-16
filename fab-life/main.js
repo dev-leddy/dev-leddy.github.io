@@ -15,6 +15,8 @@ var LifeTotalApp = new Vue({
         p2Hero: "Default",
         editPlayer: "",
         webcamMode: false,
+        diceValue1: -1,
+        diceValue2: -1,
         heroes: {
             Valda: {cc: null, blitz: 21},
             Iyslander: {cc: 36, blitz: 18},
@@ -51,11 +53,24 @@ var LifeTotalApp = new Vue({
             else{
                 this[player] = this.heroes[heroName].blitz;
             }
+        },
+        getDiceValue(){
+            const delay = async (ms = 1000) =>
+            new Promise(resolve => setTimeout(resolve, ms));
+
+            async function diceLoop() {
+                for (let i = 0; i < 5; i += 1) {
+                    LifeTotalApp.diceValue1 = rollDice(1,6);
+                    LifeTotalApp.diceValue2 = rollDice(1,6);
+                    await delay(100)
+                }
+            }
+
+            diceLoop();
         }
-    },
-    mounted: function () {
     }
 });
 
-//Required to init icons
-feather.replace();
+function rollDice(min, max) {
+    return min + Math.floor(Math.random() * (max - min + 1))
+}
