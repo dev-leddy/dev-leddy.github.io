@@ -80,10 +80,6 @@ body {
     background-color: rgb(195, 228, 195);
 }
 
-.hero-box:active {
-    background-color: lightgreen;
-}
-
 .hero-text {
     margin-left:auto;
     margin-right:auto;

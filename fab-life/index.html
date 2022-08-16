@@ -53,14 +53,14 @@
             </div>
             <div class="d-flex">
                 <div class="d-flex flex-column mx-auto">
-                    <h5 class="mx-auto">Player 1</h5>
+                    <h5 class="mx-auto">Top Player</h5>
                     <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p1Hero}" @click="setPlayerHero('p1', heroName)">
                         <h5 class="hero-text">{{heroName}}</h5>
                         <!-- {{heroData.cc}}, {{heroData.blitz}} -->
                     </div>
                 </div>
                 <div class="d-flex flex-column mx-auto">
-                    <h5 class="mx-auto">Player 2</h5>
+                    <h5 class="mx-auto">Bottom Player</h5>
                     <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p2Hero}" @click="setPlayerHero('p2', heroName)">
                         <h5 class="hero-text">{{heroName}}</h5>
                         <!-- {{heroData.cc}}, {{heroData.blitz}} -->
