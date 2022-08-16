@@ -24,12 +24,10 @@
                 <div class="life-change-box heal" @click="p1++"></div>
             </div>
         </div>
-        <div class="toolbar">
-            <div>              
-                <b-button class="mx-5" size="sm" v-b-modal.user-settings><span class="material-icons">settings</span></b-button>
-                <b-button class="mx-5" size="sm" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>     
-                <b-button class="mx-5" size="sm" v-b-modal.dice-modal @click="getDiceValue()"><span class="material-icons">casino</span></b-button> 
-            </div>
+        <div class="toolbar">                      
+            <b-button size="sm" v-b-modal.user-settings><span class="material-icons">settings</span></b-button>
+            <b-button size="sm" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>     
+            <b-button size="sm" v-b-modal.dice-modal @click="getDiceValue()"><span class="material-icons">casino</span></b-button>          
         </div>
         <div class="life-box-main">
             <h1 class="my-auto mx-auto life-text-normal">

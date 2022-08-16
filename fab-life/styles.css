@@ -19,10 +19,11 @@ body {
 
 .toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     margin-left: auto;
     margin-right: auto;
     font-size: .8em; 
+    width: calc(100% - 15px);
     max-width: 725px;
 }
 
