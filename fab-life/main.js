@@ -1,8 +1,9 @@
 //Disabled Right click
 document.addEventListener('contextmenu', event => event.preventDefault());
 //Prevent selection
-document.addEventListener("selectstart",event=> event.preventDefault());
-document.addEventListener("mousedown",event=> event.preventDefault());
+document.addEventListener("selectstart", event=> event.preventDefault());
+document.addEventListener("mousedown", event=> event.preventDefault());
+document.addEventListener("touchstart", event=> event.preventDefault());
 
 var LifeTotalApp = new Vue({
     el: '#app',
