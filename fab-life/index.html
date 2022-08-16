@@ -16,26 +16,32 @@
                 {{ p1 }}
             </h1>
             <div v-if="webcamMode == false" class="overlay">
-                <div class="life-change-box heal" @click="p1++"></div>
-                <div class="life-change-box damage" @click="p1--"></div>
+                <div class="life-change-box heal" @click="lifeChange('p1', +1)"></div>
+                <div class="life-change-box damage" @click="lifeChange('p1', -1)"></div>
             </div>
             <div v-else class="overlay">
-                <div class="life-change-box damage" @click="p1--"></div>
-                <div class="life-change-box heal" @click="p1++"></div>
+                <div class="life-change-box damage" @click="lifeChange('p1', -1)"></div>
+                <div class="life-change-box heal" @click="lifeChange('p1', +1)"></div>
             </div>
         </div>
         <div class="toolbar">                      
-            <b-button size="sm" v-b-modal.user-settings><span class="material-icons">settings</span></b-button>
-            <b-button size="sm" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>     
-            <b-button size="sm" v-b-modal.dice-modal @click="getDiceValue()"><span class="material-icons">casino</span></b-button>          
+            <b-button size="sm" variant="outline-secondary" v-b-modal.user-settings><span class="material-icons">settings</span></b-button>               
+            <b-button size="sm" variant="outline-secondary" v-b-modal.dice-modal @click="getDiceValue()"><span class="material-icons">casino</span></b-button> 
+            <b-button size="sm" variant="outline-secondary" class="mx-auto" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>  
+            <b-button-group class="ml-auto">
+                <b-button size="sm" variant="outline-warning" :pressed="damageType == 'Physical'" @click="damageType = 'Physical'">physical</b-button>   
+                <b-button size="sm" variant="outline-purple" :pressed="damageType == 'Arcane'" @click="damageType = 'Arcane'">arcane</b-button>                
+                <b-button size="sm" variant="outline-danger" :pressed="damageType == 'Other'" @click="damageType = 'Other'">other</b-button> 
+            </b-button-group>                      
+            <b-button size="sm" variant="outline-secondary" class="ml-5" v-b-modal.log-modal><span class="material-icons">history_edu</span></b-button>   
         </div>
         <div class="life-box-main">
             <h1 class="my-auto mx-auto life-text-normal">
                 {{ p2 }}
             </h1>
             <div class="overlay">
-                <div class="life-change-box damage" @click="p2--"></div>
-                <div class="life-change-box heal" @click="p2++"></div>
+                <div class="life-change-box damage" @click="lifeChange('p2', -1)"></div>
+                <div class="life-change-box heal" @click="lifeChange('p2', +1)"></div>
             </div>
         </div>
     </div>
@@ -49,11 +55,14 @@
                         <b-button variant="outline-dark" @click="setBlitz()" :pressed="format == 'Blitz'">Blitz</b-button>
                     </b-button-group>
                     <b-button-group class="mx-auto">
-                        <b-button variant="outline-dark" class="ml-auto" @click="webcamMode = true" :pressed="webcamMode == true"><i data-feather="camera"></i> Webcam</b-button>
-                        <b-button variant="outline-dark" @click="webcamMode = false" :pressed="webcamMode == false"><i data-feather="camera"></i> IRL</b-button>
-                    </b-button-group>
+                        <b-button variant="outline-dark" class="ml-auto" @click="webcamMode = true" :pressed="webcamMode == true">Webcam</b-button>
+                        <b-button variant="outline-dark" @click="webcamMode = false" :pressed="webcamMode == false">IRL</b-button>
+                    </b-button-group>                   
                 </div>
             </b-card>
+            <!-- <b-card>
+                <b-form-input type="color"></b-form-input>
+            </b-card> -->
             <b-card class="mt-2">
                 <div class="d-flex">
                     <div class="d-flex flex-column mx-auto">
@@ -96,8 +105,23 @@
                 </b-card>
             </div>
             <div class="mx-auto mt-1">Total: {{diceValue1 + diceValue2}}</div>
-
             <b-button class="mx-auto mt-3" variant="outline-dark" @click="getDiceValue()">Roll Again</b-button>
+        </div>
+    </b-modal>
+
+    <b-modal id="log-modal" size="large" centered hide-footer title="History">
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-column">
+                <div>Hero: {{p1Hero}} (top)</div>
+                <b-table ref="p1LogTable" striped hover :items="p1Log"></b-table>
+                <!-- <div v-for="damage in p1Log">
+                    {{p1 - damage.Amount}} ({{damage.Amount}}) - {{damage.Type}}
+                </div> -->
+            </div>
+            <div class="d-flex flex-column">
+                <div>{{p2Hero}} (bottom)</div>
+                <b-table ref="p2LogTable" striped hover :items="p2Log"></b-table>
+            </div>
         </div>
     </b-modal>
 </div>

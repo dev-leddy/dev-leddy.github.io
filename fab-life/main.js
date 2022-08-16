@@ -1,19 +1,21 @@
-//Disabled Right click
+// Disabled Right click
 document.addEventListener('contextmenu', event => event.preventDefault());
-//Prevent selection
-document.addEventListener("selectstart", event=> event.preventDefault());
-document.addEventListener("mousedown", event=> event.preventDefault());
-document.addEventListener("touchstart", event=> event.preventDefault());
+// //Prevent selection
+// document.addEventListener("selectstart", event=> event.preventDefault());
+// document.addEventListener("mousedown", event=> event.preventDefault());
+// document.addEventListener("touchstart", event=> event.preventDefault());
 
 var LifeTotalApp = new Vue({
     el: '#app',
     data: {
         format: "CC",
+        damageType: "Physical",
         p1: 40,
         p2: 40,
         p1Hero: "Default",
         p2Hero: "Default",
-        editPlayer: "",
+        p1Log: [], //{Amount: +/- int, Type: Physical, Arcane, Other}
+        p2Log: [],
         webcamMode: false,
         diceValue1: -1,
         diceValue2: -1,
@@ -36,6 +38,22 @@ var LifeTotalApp = new Vue({
             this.p2 = this.heroes[this.p2Hero].blitz;
             this.format = "Blitz";
         },
+        lifeChange: function(Player, Amount){            
+            this[Player] += Amount;
+            let type = this.damageType;
+            
+            //heal/correction
+            if(Amount > 0) {
+                Amount = "+" + Amount;
+                type = "Life Gain";
+            }
+
+            this.$set(
+                this[Player + 'Log'], 
+                this[Player + 'Log'].length, 
+                {'Life': this[Player], '#': Amount, 'Type': type}
+            );
+        },
         reset: function(){
             if(this.format == "CC"){
                 this.setCC();
@@ -43,6 +61,9 @@ var LifeTotalApp = new Vue({
             else{
                 this.setBlitz();
             }
+
+            this.p1Log.splice(0);
+            this.p2Log.splice(0);
         },
         setPlayerHero: function(player, heroName){
             this[player + "Hero"] = heroName;

@@ -94,3 +94,14 @@ body {
 .green {
     background-color: lightgreen;
 }
+
+.btn-outline-purple {
+    color:  #9d53c3 !important;
+    border-color: #9d53c3 !important;
+}
+
+.btn-outline-purple:hover, .btn-outline-purple.active {
+    color: #fff !important;
+    background-color: #9d53c3 !important;
+    border-color: #9d53c3 !important;
+}
