@@ -73,6 +73,7 @@ body {
     border-radius: 5px; 
     display: flex;
     margin: 5px;
+    cursor: pointer;
 }
 
 .hero-box:hover {
@@ -87,6 +88,7 @@ body {
     margin-bottom:auto;
     padding-left: 5px;
     padding-right: 5px;
+    cursor: pointer;
 }
 
 .green {

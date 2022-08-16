@@ -28,7 +28,7 @@
         <div class="toolbar">
             <div>
                 <b-button class="mx-5" size="sm" v-b-modal.user-settings><i data-feather="settings"></i></b-button>
-                <b-button class="mx-5" size="sm" v-b-modal.resetConfirm><i data-feather="repeat"></i></b-button>       
+                <b-button class="mx-5" size="sm" v-b-modal.confirm-modal><i data-feather="repeat"></i></b-button>     
                 <!-- @click="reset()"        -->
             </div>
         </div>
@@ -43,35 +43,45 @@
         </div>
     </div>
 
-    <b-modal id="user-settings" size="large" centered title="Settings" >
+    <b-modal id="user-settings" size="large" centered scrollable title="Settings">
         <div class="d-flex flex-column">
-            <div class="mx-auto">
-                <b-button @click="setCC()"><i data-feather="shield"></i> CC</b-button>
-                <b-button @click="setBlitz()"><i data-feather="zap"></i> Blitz</b-button>
-                <b-button class="ml-5" @click="webcamMode = true"><i data-feather="camera"></i> Webcam</b-button>
-                <b-button @click="webcamMode = false"><i data-feather="camera"></i> IRL</b-button>
-            </div>
-            <div class="d-flex">
-                <div class="d-flex flex-column mx-auto">
-                    <h5 class="mx-auto">Top Player</h5>
-                    <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p1Hero}" @click="setPlayerHero('p1', heroName)">
-                        <h5 class="hero-text">{{heroName}}</h5>
-                        <!-- {{heroData.cc}}, {{heroData.blitz}} -->
+            <b-card>
+                <div class="d-flex">
+                    <b-button-group class="mx-auto">
+                        <b-button variant="outline-dark" @click="setCC()" :pressed="format == 'CC'"><i data-feather="shield"></i> CC</b-button>
+                        <b-button variant="outline-dark" @click="setBlitz()" :pressed="format == 'Blitz'"><i data-feather="zap"></i> Blitz</b-button>
+                    </b-button-group>
+                    <b-button-group class="mx-auto">
+                        <b-button variant="outline-dark" class="ml-auto" @click="webcamMode = true" :pressed="webcamMode == true"><i data-feather="camera"></i> Webcam</b-button>
+                        <b-button variant="outline-dark" @click="webcamMode = false" :pressed="webcamMode == false"><i data-feather="camera"></i> IRL</b-button>
+                    </b-button-group>
+                </div>
+            </b-card>
+            <b-card class="mt-2">
+                <div class="d-flex">
+                    <div class="d-flex flex-column mx-auto">
+                        <h5 class="mx-auto mb-1">Top Player</h5>
+                        <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p1Hero}" @click="setPlayerHero('p1', heroName)">
+                            <h5 class="hero-text">{{heroName}}</h5>
+                            <!-- {{heroData.cc}}, {{heroData.blitz}} -->
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column mx-auto">
+                        <h5 class="mx-auto mb-1">Bottom Player</h5>
+                        <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p2Hero}" @click="setPlayerHero('p2', heroName)">
+                            <h5 class="hero-text">{{heroName}}</h5>
+                            <!-- {{heroData.cc}}, {{heroData.blitz}} -->
+                        </div>
                     </div>
                 </div>
-                <div class="d-flex flex-column mx-auto">
-                    <h5 class="mx-auto">Bottom Player</h5>
-                    <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p2Hero}" @click="setPlayerHero('p2', heroName)">
-                        <h5 class="hero-text">{{heroName}}</h5>
-                        <!-- {{heroData.cc}}, {{heroData.blitz}} -->
-                    </div>
-                </div>
-            </div>
+            </b-card>
         </div>
     </b-modal>
 
-    <b-modal id="resetConfirm" title="BootstrapVue">
-        <p class="my-4">Hello from modal!</p>
+    <b-modal id="confirm-modal" size="sm" centered title="Confirm" @ok="reset">
+        <div class="d-flex">
+            <div class="my-auto mx-auto pt-3">Reset life totals?</p>
+        </div>
     </b-modal>
 </div>
 
