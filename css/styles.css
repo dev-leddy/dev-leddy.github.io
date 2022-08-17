@@ -22,25 +22,25 @@ body {
 .life-box-main .indicator-left{
     position: absolute;
     right: 93%;
-    bottom: 1%
+    bottom: 1%;
 }
 
 .life-box-main .indicator-right{
     position: absolute;
     left: 93%;
-    bottom: 1%
+    bottom: 1%;
 }
 
 .life-box-main .indicator-left-bottom{
     position: absolute;
     right: 93%;
-    top: 1%
+    top: 1%;
 }
 
 .life-box-main .indicator-right-bottom{
     position: absolute;
     left: 93%;
-    top: 1%
+    top: 1%;
 }
 
 .life-box-main img{
@@ -60,7 +60,6 @@ body {
 
 .toolbar {
     display: flex;
-    justify-content: space-around;
     margin-left: auto;
     margin-right: auto;
     font-size: .8em; 
@@ -104,10 +103,6 @@ body {
     width: 100%;
 }
 
-/* .life-change-box:hover {
-    background: lightsteelblue;
-} */
-
 .life-change-box.damage:active {
     background:red;
 }
@@ -119,8 +114,6 @@ body {
 .hero-box {
     height: 30px; 
     width: 100%;
-    /* border-top: 1px solid black;
-    border-bottom: 1px solid black; */
     display: flex;
     margin-top: 1px;
     margin-bottom: 1px;
@@ -128,7 +121,7 @@ body {
 }
 
 .hero-box:hover {
-    background-color: #00bc8c;
+    background-color: #006b50;
 }
 
 .hero-text {
