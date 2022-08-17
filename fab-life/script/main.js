@@ -22,6 +22,7 @@ var LifeTotalApp = new Vue({
         diceValue2: -1,
         tempLife: 0,
         heroes: {
+            Default: {cc: 40, blitz: 20, image: "./images/default.PNG"},
             Azalea: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/azalea_nocopy.height-650.jpg"},
             Benji: {cc: null, blitz: 17, image: "https://storage.googleapis.com/fabmaster/media/images/CRU_NINJA_HERO_Benji_the_Piercing_Wind_Sam_Ya.height-650.jpg"},
             Boltyn: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/bol_main_hero_image_001.height-650.jpg"}, 
@@ -43,8 +44,7 @@ var LifeTotalApp = new Vue({
             Prism: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/ismpr_main_roeh_image_001.height-650.jpg"},
             Rhinar: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/101_Rhinar_Reckless_Rampage_Wisnu_Tan.height-650.jpg"},
             Valda: {cc: null, blitz: 21, image: "https://storage.googleapis.com/fabmaster/media/images/hero_uOyFL37z033ISMmboAoC.height-650.jpg"},
-            Viserai: {cc: 40, blitz: "BAN", image:"https://storage.googleapis.com/fabmaster/media/images/malthus_nocopy.height-650.jpg"},
-            Default: {cc: 40, blitz: 20}
+            Viserai: {cc: 40, blitz: "BAN", image:"https://storage.googleapis.com/fabmaster/media/images/malthus_nocopy.height-650.jpg"}           
         }
     },
     methods: {

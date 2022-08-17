@@ -69,21 +69,19 @@
                     <div class="mx-auto my-1">
                         <div>Format:</div>
                         <b-button-group>
-                            <b-button variant="outline-info" @click="setCC()" :pressed="format == 'CC'">CC</b-button>
-                            <b-button variant="outline-info" @click="setBlitz()" :pressed="format == 'Blitz'">Blitz</b-button>
+                            <b-button variant="outline-light" @click="setCC()" :pressed="format == 'CC'">CC</b-button>
+                            <b-button variant="outline-light" @click="setBlitz()" :pressed="format == 'Blitz'">Blitz</b-button>
                         </b-button-group>
                     </div>
-                    <div class="mx-auto my-1">
+                    <div class="mx-auto my-1 d-flex flex-column">
+                        <div>Toggles:</div>
                         <b-form-checkbox v-model="webcamMode" name="check-button" switch>
                             &nbsp;Webcam Mode
                         </b-form-checkbox>
-                    </div>
-                    <div class="mx-auto my-1">  
                         <b-form-checkbox v-model="damageTypeEnabled" name="check-button" switch>
-                            &nbsp;Damage Type
+                            &nbsp;Damage Type Enabled
                         </b-form-checkbox>
-                    </div>                      
-            
+                    </div>                             
                 </div>
             </b-card>
             <!-- <b-card>
@@ -91,15 +89,15 @@
             </b-card> -->
             <b-card class="mt-2">
                 <div class="d-flex">
-                    <div class="d-flex flex-column mx-auto">
-                        <h5 class="mx-auto mb-1">Top Player</h5>
+                    <div class="d-flex flex-column mx-auto w-100">
+                        <h5 class="mx-auto mb-1" style="border-bottom: 2px solid black">Top Player</h5>
                         <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p1Hero}" @click="setPlayerHero('p1', heroName)">
                             <h5 class="hero-text">{{heroName}}</h5>
                             <!-- {{heroData.cc}}, {{heroData.blitz}} -->
                         </div>
                     </div>
-                    <div class="d-flex flex-column mx-auto">
-                        <h5 class="mx-auto mb-1">Bottom Player</h5>
+                    <div class="d-flex flex-column mx-auto w-100">
+                        <h5 class="mx-auto mb-1" style="border-bottom: 2px solid black">Bottom Player</h5>
                         <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p2Hero}" @click="setPlayerHero('p2', heroName)">
                             <h5 class="hero-text">{{heroName}}</h5>
                             <!-- {{heroData.cc}}, {{heroData.blitz}} -->
