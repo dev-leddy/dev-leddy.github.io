@@ -11,6 +11,7 @@ var LifeTotalApp = new Vue({
         format: "CC",
         damageType: "Physical",
         damageTypeEnabled: false,
+        typeDefaultDisabled: false,
         p1: 40,
         p2: 40,
         p1Hero: "Default",
@@ -26,7 +27,7 @@ var LifeTotalApp = new Vue({
             Azalea: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/azalea_nocopy.height-650.jpg"},
             Benji: {cc: null, blitz: 17, image: "https://storage.googleapis.com/fabmaster/media/images/CRU_NINJA_HERO_Benji_the_Piercing_Wind_Sam_Ya.height-650.jpg"},
             Boltyn: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/bol_main_hero_image_001.height-650.jpg"}, 
-            Bravo: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/101_Bravo_Showstopper_Alexander_Mokhov.height-650.jpg"},    
+            Bravo: {cc: 40, blitz: 20, image: "https://cdna.artstation.com/p/assets/images/images/021/004/498/large/alexander-mokhov-casanova-1700x1219-cr.jpg"},    
             Briar: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/briar_adult_art_cover_img123010325677.height-650.jpg"},
             Chane: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/chane_main_hero_image_001.height-650.jpg"},
             Dash: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/dash_nocopy.height-650.jpg"},
@@ -64,7 +65,10 @@ var LifeTotalApp = new Vue({
             this.tempLife += Amount;
             this[Player] += Amount;
             lifeDebounce(Player, this.tempLife, Type);
-            resetToPhysicalDebounce();
+
+            if(this.typeDefaultDisabled == false){
+                resetToPhysicalDebounce();
+            }          
         },
         lifeChangeCommit: function(Player, Amount, Type){
             //this[Player] += Amount;
@@ -125,6 +129,17 @@ var LifeTotalApp = new Vue({
             }
 
             diceLoop();
+        }
+    },
+    watch: {
+        // damageTypeEnabled: false,
+        // typeDefaultDisabled: false,
+        // webcamMode
+        damageTypeEnabled: function(newValue, oldValue){
+            Cookies.set('damageTypeEnabled', newValue, 9999);
+        },
+        typeDefaultDisabled: function(newValue, oldValue){
+            Cookies.set('typeDefaultDisabled', newValue, 9999);
         }
     },
     created: function(){

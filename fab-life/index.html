@@ -7,10 +7,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
 
-
-
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!--test-->
+
 <div id="app">
     <div id="main" class="d-flex flex-column" style="height: 100vh;">
         <div class="life-box-main" :class="{'flipped': webcamMode == false}">
@@ -33,16 +31,24 @@
                 <div class="life-change-box heal" @click="lifeChange('p1', +1, damageType)"></div>
             </div>
         </div>
-        <div class="toolbar">                      
-            <b-button size="sm" variant="secondary" v-b-modal.user-settings><span class="material-icons">settings</span></b-button>               
-            <b-button size="sm" variant="secondary" v-b-modal.dice-modal @click="getDiceValue()"><span class="material-icons">casino</span></b-button> 
-            <b-button size="sm" variant="secondary" class="mx-auto" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>  
-            <b-button-group v-if="damageTypeEnabled" class="ml-auto">
-                <b-button size="sm" variant="outline-warning" :pressed="damageType == 'Physical'" @click="damageType = 'Physical'">P</b-button>   
-                <b-button size="sm" variant="outline-purple" :pressed="damageType == 'Arcane'" @click="damageType = 'Arcane'">A</b-button>                
-                <b-button size="sm" variant="outline-danger" :pressed="damageType == 'Other'" @click="damageType = 'Other'">O</b-button> 
-            </b-button-group>                      
-            <b-button size="sm" variant="secondary" class="ml-5" v-b-modal.log-modal><span class="material-icons">history_edu</span></b-button>   
+        <div class="toolbar">     
+            <div class="flex-grow-1">
+                <b-button size="sm" variant="secondary" v-b-modal.user-settings><span class="material-icons">settings</span></b-button>               
+                <b-button size="sm" variant="secondary" v-b-modal.dice-modal @click="getDiceValue()"><span class="material-icons">casino</span></b-button> 
+            </div>                 
+            <div>
+                <b-button-group v-if="damageTypeEnabled" class="ml-auto">
+                    <b-button size="sm" variant="outline-warning" :pressed="damageType == 'Physical'" @click="damageType = 'Physical'">P</b-button>   
+                    <b-button size="sm" variant="outline-purple" :pressed="damageType == 'Arcane'" @click="damageType = 'Arcane'">A</b-button>                
+                    <b-button size="sm" variant="outline-danger" :pressed="damageType == 'Other'" @click="damageType = 'Other'">O</b-button> 
+                </b-button-group>  
+            </div>
+            <div>
+                <b-button size="sm" variant="secondary" class="mx-auto" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>  
+                    
+                <b-button size="sm" variant="secondary" class="ml-5" v-b-modal.log-modal><span class="material-icons">history_edu</span></b-button>   
+            </div>
+
         </div>
         <div class="life-box-main">
             <img v-if="p2Hero != 'Default'" :src="heroes[p2Hero].image"/>
@@ -81,6 +87,9 @@
                         <b-form-checkbox v-model="damageTypeEnabled" name="check-button" switch>
                             &nbsp;Damage Type Enabled
                         </b-form-checkbox>
+                        <b-form-checkbox v-model="typeDefaultDisabled" name="check-button" switch>
+                            &nbsp;Disable Type Default (if type enabled)
+                        </b-form-checkbox>
                     </div>                             
                 </div>
             </b-card>
@@ -108,9 +117,9 @@
         </div>
     </b-modal>
 
-    <b-modal id="confirm-modal" size="sm" centered title="Confirm" @ok="reset">
+    <b-modal id="confirm-modal" size="sm" centered @ok="reset">
         <div class="d-flex">
-            <h5 class="my-auto mx-auto pt-3">Reset life totals?</h5>
+            <h4 class="my-auto mx-auto pt-3">Reset life totals?</h4>
         </div>
     </b-modal>
 
