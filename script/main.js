@@ -8,11 +8,11 @@ document.addEventListener("touchstart", event=> event.preventDefault());
 var LifeTotalApp = new Vue({
     el: '#app',
     data: {
-        format: Cookies.get('format') != undefined ? Cookies.get('format') : "CC",
+        format: "CC",
         damageType: "Physical",
-        damageTypeEnabled: true,
-        p1: this.format = "CC" ? 40 : 20,
-        p2: this.format = "CC" ? 40 : 20,
+        damageTypeEnabled: false,
+        p1: 40,
+        p2: 40,
         p1Hero: "Default",
         p2Hero: "Default",
         p1Log: [], //{Amount: +/- int, Type: Physical, Arcane, Other}
@@ -128,7 +128,13 @@ var LifeTotalApp = new Vue({
         }
     },
     created: function(){
+        //grab cookies
+        this.format = Cookies.get('format') != undefined ? Cookies.get('format') : "CC";
 
+        this.p1 = this.format == "CC" ? 40 : 20;
+        this.p2 = this.format == "CC" ? 40 : 20;
+
+        this.damageTypeEnabled = Cookies.get('damageTypeEnabled') != undefined ? Cookies.get('damageTypeEnabled') : false;
     }
 });
 
