@@ -1,5 +1,6 @@
 body {
     background-color: black !important;
+    overscroll-behavior: none;
 }
 
 .life-box-main {
@@ -56,6 +57,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%) rotate(-180deg);
+    object-position: 0% 50%;
 }
 
 .toolbar {
