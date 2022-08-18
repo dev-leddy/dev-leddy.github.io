@@ -64,9 +64,15 @@ body {
     display: flex;
     margin-left: auto;
     margin-right: auto;
+    padding-left: 2px;
+    padding-right: 2px;
     font-size: .8em; 
     width: calc(100% - 15px);
     max-width: 725px;
+}
+
+.icon-img{
+    object-fit: contain;
 }
 
 .life-text-normal {
@@ -153,4 +159,7 @@ body {
 
 .opacity-50{
     opacity: .5;
+}
+.btn:hover {
+    background-color: inherit;
 }

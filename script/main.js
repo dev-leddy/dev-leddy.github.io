@@ -45,7 +45,7 @@ var LifeTotalApp = new Vue({
             Prism: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/ismpr_main_roeh_image_001.height-650.jpg"},
             Rhinar: {cc: 40, blitz: 20, image: "https://storage.googleapis.com/fabmaster/media/images/101_Rhinar_Reckless_Rampage_Wisnu_Tan.height-650.jpg"},
             Valda: {cc: null, blitz: 21, image: "https://storage.googleapis.com/fabmaster/media/images/hero_uOyFL37z033ISMmboAoC.height-650.jpg"},
-            Viserai: {cc: 40, blitz: "BAN", image:"https://storage.googleapis.com/fabmaster/media/images/malthus_nocopy.height-650.jpg"}           
+            Viserai: {cc: 40, blitz: 20, image:"https://storage.googleapis.com/fabmaster/media/images/malthus_nocopy.height-650.jpg"}           
         }
     },
     methods: {
