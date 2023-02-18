@@ -25,6 +25,7 @@ var LifeTotalApp = new Vue({
         diceValue2: -1,
         heroes: {
             Default: {cc: 40, blitz: 20},
+			Arakni: {cc: 40, blitz: 20}, 
             Azalea: {cc: 40, blitz: 20},
             Benji: {cc: null, blitz: 17},
             Boltyn: {cc: 40, blitz: 20}, 
@@ -34,6 +35,7 @@ var LifeTotalApp = new Vue({
             Dash: {cc: 40, blitz: 20},
             DataDoll: {cc: 40, blitz: 20},
             Dorinthea: {cc: 40, blitz: 20},
+			Emperor: {cc: null, blitz: 15},
             Dromai: {cc: 40, blitz: 20},
             Fai: {cc: 40, blitz: 20},
             Genis: {cc: null, blitz: 20},
@@ -41,6 +43,7 @@ var LifeTotalApp = new Vue({
             Ira: {cc: null, blitz: 20},
             Kano: {cc: 30, blitz: 15},
             Kassai: {cc: null, blitz: 20},
+			Katsu: {cc: 40, blitz: 20},
             Kavdaen: {cc: null, blitz: 20},
             Kayo: {cc: null, blitz: 20},
             Lexi: {cc: 40, blitz: 20},
@@ -51,7 +54,8 @@ var LifeTotalApp = new Vue({
             Shiyana: {cc: 40, blitz: 20},
             Starvo: {cc: 40, blitz: 20},
             Valda: {cc: null, blitz: 21},
-            Viserai: {cc: 40, blitz: 20}           
+            Viserai: {cc: 40, blitz: 20},
+			Yoji: {cc: null, blitz: 20}           
         }
     },
     methods: {
@@ -117,6 +121,9 @@ var LifeTotalApp = new Vue({
             this.p1Log.splice(0);
             this.p2Log.splice(0);
         },
+		resetClick: function(){
+
+		},
         setPlayerHero: function(player, heroName){
             this[player + "Hero"] = heroName;
 
@@ -134,14 +141,14 @@ var LifeTotalApp = new Vue({
             this.p1Log.splice(0);
             this.p2Log.splice(0);
         },
-        getDiceValue(){
+        getDiceValue(maxDiceValue){
             const delay = async (ms = 1000) =>
             new Promise(resolve => setTimeout(resolve, ms));
 
             async function diceLoop() {
                 for (let i = 0; i < 5; i += 1) {
-                    LifeTotalApp.diceValue1 = rollDice(1,6);
-                    LifeTotalApp.diceValue2 = rollDice(1,6);
+                    LifeTotalApp.diceValue1 = rollDice(1,maxDiceValue);
+                    LifeTotalApp.diceValue2 = rollDice(1,maxDiceValue);
                     await delay(100)
                 }
             }

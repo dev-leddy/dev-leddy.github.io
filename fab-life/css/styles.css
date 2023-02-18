@@ -64,13 +64,14 @@ body {
     opacity: 35%;   
     overflow: hidden;
     object-fit: cover;
+	object-position: 0% 15%;
 }
 
 .life-box-main.flipped img {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%) rotate(-180deg);
-    object-position: 0% 50%;
+    object-position: 0% 15%;
 }
 
 .toolbar {
