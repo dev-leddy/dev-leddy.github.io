@@ -24,6 +24,8 @@ var LifeTotalApp = new Vue({
         diceValue1: -1,
         diceValue2: -1,
 		diceRolled: " ",
+		userHoldingLifeChange: false,
+		resetConfirm: false,
         heroes: {
             Default: {cc: 40, blitz: 20},
 			Arakni: {cc: 40, blitz: 20}, 
@@ -51,9 +53,11 @@ var LifeTotalApp = new Vue({
             Levia: {cc: 40, blitz: 20},
             Oldhim: {cc: 40, blitz: 20},
             Prism: {cc: 40, blitz: 20},
+			Riptide: {cc: 38, blitz: 19},
             Rhinar: {cc: 40, blitz: 20},
             Shiyana: {cc: null, blitz: 20},
             Starvo: {cc: null, blitz: 20},
+			Uzuri: {cc: 40, blitz: 20},
             Valda: {cc: null, blitz: 21},
             Viserai: {cc: 40, blitz: 20},
 			Yoji: {cc: null, blitz: 20}           
@@ -178,7 +182,12 @@ var LifeTotalApp = new Vue({
         },
         typeDefaultDisabled: function(newValue, oldValue){
             Cookies.set('typeDefaultDisabled', newValue, 9999);
-        }
+        },
+		resetConfirm: function(){
+			setTimeout(() => {
+				this.resetConfirm = false;
+			}, 3000);
+		}
     },
     created: function(){
         //grab cookies
