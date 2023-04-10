@@ -24,9 +24,12 @@ var LifeTotalApp = new Vue({
         diceValue1: -1,
         diceValue2: -1,
 		diceRolled: " ",
+		userHoldingLifeChange: false,
+		resetConfirm: false,
         heroes: {
             Default: {cc: 40, blitz: 20},
 			Arakni: {cc: 40, blitz: 20}, 
+			Arakni_Solitary: {cc: null, blitz: 19},
             Azalea: {cc: 40, blitz: 20},
             Benji: {cc: null, blitz: 17},
             Boltyn: {cc: 40, blitz: 20}, 
@@ -34,7 +37,7 @@ var LifeTotalApp = new Vue({
             Briar: {cc: 40, blitz: 20},
             Chane: {cc: 40, blitz: 20},
             Dash: {cc: 40, blitz: 20},
-            DataDoll: {cc: null, blitz: 20},
+            Data_Doll: {cc: null, blitz: 20},
             Dorinthea: {cc: 40, blitz: 20},
 			Emperor: {cc: null, blitz: 15},
             Dromai: {cc: 40, blitz: 20},
@@ -51,9 +54,11 @@ var LifeTotalApp = new Vue({
             Levia: {cc: 40, blitz: 20},
             Oldhim: {cc: 40, blitz: 20},
             Prism: {cc: 40, blitz: 20},
+			Riptide: {cc: 38, blitz: 19},
             Rhinar: {cc: 40, blitz: 20},
             Shiyana: {cc: null, blitz: 20},
             Starvo: {cc: null, blitz: 20},
+			Uzuri: {cc: 40, blitz: 20},
             Valda: {cc: null, blitz: 21},
             Viserai: {cc: 40, blitz: 20},
 			Yoji: {cc: null, blitz: 20}           
@@ -121,10 +126,9 @@ var LifeTotalApp = new Vue({
 
             this.p1Log.splice(0);
             this.p2Log.splice(0);
-        },
-		resetClick: function(){
 
-		},
+			this.resetConfirm = false;
+        },
         setPlayerHero: function(player, heroName){
             this[player + "Hero"] = heroName;
 
@@ -178,7 +182,10 @@ var LifeTotalApp = new Vue({
         },
         typeDefaultDisabled: function(newValue, oldValue){
             Cookies.set('typeDefaultDisabled', newValue, 9999);
-        }
+        },
+		resetConfirm: function(){
+			resetConfirmTimeout();
+		}
     },
     created: function(){
         //grab cookies
@@ -218,3 +225,15 @@ function debounce(func, wait, immediate) {
 		if (callNow) func.apply(context, args);
 	};
 };
+
+var resetConfirmRunning = false;
+
+function resetConfirmTimeout(){
+	if(resetConfirmRunning == true) return;
+	resetConfirmRunning = true;
+
+	setTimeout(() => {
+		LifeTotalApp.resetConfirm = false;
+		resetConfirmRunning = false;
+	}, 2000);
+}
