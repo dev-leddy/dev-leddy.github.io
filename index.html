@@ -10,8 +10,8 @@
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
 <meta name = "viewport" content = "width=device-width, minimum-scale=1.0, maximum-scale = 1.0, user-scalable = no">
 
-<div id="app">
-    <div id="main" class="d-flex flex-column" style="height: 100vh;">
+<div id="app" style="width: 100vw">
+    <div id="main" class="d-flex flex-column" style="margin: auto; height: 100vh;">
         <div class="life-box-main" :class="{'flipped': webcamMode == false}">
             <img v-if="p1Hero != 'Default'" :src="getImage(p1Hero)"/>
             <div :class="{'indicator-left': webcamMode == false, 'indicator-right': webcamMode == true}">
@@ -27,9 +27,10 @@
                 {{ p1 }}
             </h1>
             <div v-if="webcamMode == false" class="overlay">
-                <div class="life-change-box heal" @click="lifeChange('p1', +1, damageType)"></div>
-
-                <div class="life-change-box damage" @click="lifeChange('p1', -1, damageType)"></div>
+                <!-- <div class="life-change-box heal" @pointerdown="userHoldingP1LifeChange = true" @pointerup="userHoldingLifeChange = true"></div>
+                <div class="life-change-box damage" @click="lifeChange('p1', -1, damageType)"></div>-->
+		<div class="life-change-box heal" @click="lifeChange('p1', +1, damageType)"></div>
+                <div class="life-change-box damage" @click="lifeChange('p1', -1, damageType)"></div> 
             </div>
             <div v-else class="overlay">
                 <div class="life-change-box damage" @click="lifeChange('p1', -1, damageType)"></div>
@@ -49,7 +50,13 @@
                 </b-button-group>        
             </div>
             <div class="d-flex ml-auto"> 
-                <b-button size="sm" variant="secondary" class="mx-1" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>  
+                <!-- <b-button size="sm" variant="secondary" class="mx-1" v-b-modal.confirm-modal><span class="material-icons">restart_alt</span></b-button>   -->
+				<b-button v-if="resetConfirm == false" size="sm" variant="secondary" class="mx-1" @click="resetConfirm = !resetConfirm">
+					<span class="material-icons">restart_alt</span>
+				</b-button>  
+				<b-button v-if="resetConfirm == true" size="sm" variant="secondary" class="mx1" @click="reset">
+					<span class="material-icons">done</span>
+				</b-button>
                 <b-button size="sm" variant="secondary" class="mx-1" v-b-modal.log-modal><span class="material-icons">history_edu</span></b-button>   
             </div>
         </div>
@@ -106,13 +113,13 @@
                     <div class="d-flex flex-column mx-1 w-100">
                         <h5 class="mx-auto mb-1 w-100" style="border-bottom: 2px solid #222; text-align: center;">Top Player</h5>
                         <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p1Hero}" @click="setPlayerHero('p1', heroName)">
-                            <h5 class="hero-text">{{heroName}}</h5>
+                            <h5 class="hero-text">{{heroName.replace(/_/g, ' ')}}</h5>
                         </div>
                     </div>
                     <div class="d-flex flex-column mx-1 w-100">
                         <h5 class="mx-auto mb-1 w-100" style="border-bottom: 2px solid #222 ; text-align: center">Bottom Player</h5>
                         <div v-for="(heroData, heroName) in heroes" v-if="format == 'CC' && heroData.cc != null || format == 'Blitz'" class="hero-box" :class="{'green': heroName == p2Hero}" @click="setPlayerHero('p2', heroName)">
-                            <h5 class="hero-text">{{heroName}}</h5>
+                            <h5 class="hero-text">{{heroName.replace(/_/g, ' ')}}</h5>
                         </div>
                     </div>
                 </div>
