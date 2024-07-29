@@ -56,7 +56,8 @@
 
 <h1>Legion Keywords</h1>
 <div>
-Updated 7/29/2024
+Major work in progress, all keywords starting with the letter A are accurate. Everything else may not be correct.
+</ br>Updated 7/29/2024
 </div>
 
 <div id="alphabetFilter">
@@ -95,19 +96,18 @@ Updated 7/29/2024
 
 <script>
 const skills = {
-  "Advanced Targeting": "Unit type X: Gain X Aim tokens when attacking unit type. Can’t split fire.",
-  "Agile X": "Gain X Dodge Tokens after any standard move or move from a free action.",
-  "AI: Action": "If outside range 3 of friendly leader and has no Order, unit must perform AI: action.",
-  "Aid": "Affiliation: This unit can take 1 suppression to give an affiliation unit their Aim, Dodge, or Surge if they are Range 2 and in LOS.",
-  "Allies of Convenience": "Can give orders to friendly mercenary, can add 1 additional merc.",
-  "Area Weapon": "Yellow range icon does separate attack on all units in LOS and range.",
-  "Arm X": "Charge Token Type: Place X charge tokens in Range 1 and LOS of leader.",
-  "Armor": "Cancel all hits during Modify Attack Dice step.",
-  "Armor X": "Cancel up to X regular hits.",
-  "Arsenal X": "Choose up to X weapons to use in attack pool.",
-  "Associate": "Unit Name: Unit does not count toward rank limit for list building if the named unit is included in the same army.",
-  "Ataru Mastery": "Up to 2 attack actions. After attacks gain 1 Dodge, after Defends gain 1 Aim.",
-  "Attack Run": "May increase or decrease max speed by 1 until end of that activation.",
+  "Advanced Targeting": "When a unit with the Advanced Targeting X keyword performs an attack against an enemy unit with the unit type listed, during the Form Attack Pool step, it may gain X aim tokens. A unit that uses the Advanced Targeting X keyword may only form one attack pool and skips the Declare Additional Defender step of the attack sequence",
+  "Agile X": "The Agile X keyword allows a unit to gain a number of dodge tokens equal to X each time it performs a standard move as part of an action or free action.",
+  "AI: Action": "At the start of a unit with the AI keyword’s Perform Actions step, if it is on the battlefield, does not have a faceup order token, and is not at (RANGE 3) of a friendly COMMANDER unit, it must perform one of the specified actions as its first action that activation. Free actions do not satisfy the requirements of the AI keyword. If a unit cannot perform any of its listed actions as its first action, it is free to perform other actions as normal.",
+  "Aid: Affiliation": "When a unit with the Aid keyword would gain an aim, dodge, or surge token, another friendly unit of the affiliation or type listed at (RANGE 2) and in line of sight may gain that token instead. If it does, the unit with the Aid keyword gains one suppression token.",
+  "Allies of Convenience": "Units with the Allies of Convenience keyword may issue orders to friendly Mercenary units regardless of affiliation. Additionally, when building an army, players may include one extra Mercenary unit in their army regardless of rank if there is at least one unit with the Allies of Convenience keyword, though they cannot take more units of a particular rank than normally allowed.", 
+  "Armor": "During the Modify Attack Dice step of the attack sequence, if the defending unit has the Armor keyword, the defending player may cancel all hit results in the attack roll, removing those dice from the attack pool.",
+  "Armor X": "During the Modify Attack Dice step of the attack sequence, if the defending unit has the Armor X keyword, the defending player may cancel up to X hit results, removing those dice from the attack pool.",
+  "Arsenal X": "When choosing weapons during the Form Attack Pool step, each miniature in the unit that has the Arsenal X keyword can contribute X weapons to attack pools. Each weapon or combination of weapons may form a new attack pool, but each weapon may only be added to one attack pool.",
+  "Associate: Unit Name": "During Army Building, a unit with the Associate keyword does not count its rank towards the maximum rank requirements for that rank if a unit with the specified unit name is included in the same army.",
+  "Ataru Mastery": "A unit with the Ataru Mastery keyword can perform up to two attack actions during its activation. When it attacks, it gains one dodge token after the attack is resolved. When it defends, it gains one aim token after the attack is resolved.
+  "Attack Run": "At the start of its activation, a unit with the Attack Run keyword may increase or decrease its maximum speed by 1 until the end of that activation.",
+  
   "Barrage": "May make 2 attack actions, as long as Arsenal is not used this turn.",
   "Beam X": "Attack up to X additional units only with the Beam weapon; must be in range 1, a new target, and in Line of Sight.",
   "Blast": "Ignore Cover.",
