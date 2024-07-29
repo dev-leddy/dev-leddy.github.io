@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legion Keywords</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"], .alphabet-button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="text"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .alphabet-button {
+            cursor: pointer;
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            background-color: white;
+            margin: 2px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .alphabet-button.active,
+        .alphabet-button:hover {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        li b {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Legion Keywords</h1>
+<div>
+Updated 7/29/2024
+</div>
+
+<div id="alphabetFilter">
+    <button class="alphabet-button" onclick="filterByAlphabet('')">All</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('A')">A</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('B')">B</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('C')">C</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('D')">D</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('E')">E</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('F')">F</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('G')">G</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('H')">H</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('I')">I</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('J')">J</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('K')">K</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('L')">L</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('M')">M</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('N')">N</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('O')">O</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('P')">P</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('Q')">Q</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('R')">R</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('S')">S</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('T')">T</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('U')">U</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('V')">V</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('W')">W</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('X')">X</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('Y')">Y</button>
+    <button class="alphabet-button" onclick="filterByAlphabet('Z')">Z</button>
+</div>
+
+<input type="text" id="searchInput" onkeyup="filterList()" placeholder="Search for keywords...">
+
+<ul id="keywordList"></ul>
+
+<script>
+const skills = {
+  "Advanced Targeting": "Unit type X: Gain X Aim tokens when attacking unit type. Can’t split fire.",
+  "Agile X": "Gain X Dodge Tokens after any standard move or move from a free action.",
+  "AI: Action": "If outside range 3 of friendly leader and has no Order, unit must perform AI: action.",
+  "Aid": "Affiliation: This unit can take 1 suppression to give an affiliation unit their Aim, Dodge, or Surge if they are Range 2 and in LOS.",
+  "Allies of Convenience": "Can give orders to friendly mercenary, can add 1 additional merc.",
+  "Area Weapon": "Yellow range icon does separate attack on all units in LOS and range.",
+  "Arm X": "Charge Token Type: Place X charge tokens in Range 1 and LOS of leader.",
+  "Armor": "Cancel all hits during Modify Attack Dice step.",
+  "Armor X": "Cancel up to X regular hits.",
+  "Arsenal X": "Choose up to X weapons to use in attack pool.",
+  "Associate": "Unit Name: Unit does not count toward rank limit for list building if the named unit is included in the same army.",
+  "Ataru Mastery": "Up to 2 attack actions. After attacks gain 1 Dodge, after Defends gain 1 Aim.",
+  "Attack Run": "May increase or decrease max speed by 1 until end of that activation.",
+  "Barrage": "May make 2 attack actions, as long as Arsenal is not used this turn.",
+  "Beam X": "Attack up to X additional units only with the Beam weapon; must be in range 1, a new target, and in Line of Sight.",
+  "Blast": "Ignore Cover.",
+  "Block": "If player spends Dodge Token, unit gains Defensive Surge to Block.",
+  "Bolster X": "Up to X Units at Range 2 gain 1 Surge.",
+  "Bounty": "Place Victory Token on enemy Commander or operative. Eliminate target with Bounty unit to score 1 VP.",
+  "Cache": "During setup, place the listed tokens on the Upgrade card to spend later by that unit.",
+  "Calculate Odds": "Pick a unit at Range 2 to gain 1 Aim Token, 1 Dodge Token, and 1 Suppression Token.",
+  "Charge": "Can move into Melee contact + attack.",
+  "Climbing Vehicle": "Treated as trooper for Climbing.",
+  "Complete the Mission": "During Setup, place token in contested territory. While at Range 1, that unit gets Surge to Block. Also gains Critical 2 on attacks.",
+  "Compel": "A unit at range 1-2 of a unit with Compel can gain 1 suppression for a free move action if they are suppressed but not panicked.",
+  "Contingencies X": "Set X Command Cards Aside following Command Hand rules, can discard revealed card for Contingency card. Limits apply.",
+  "Coordinate": "Unit may issue an order to 1 of any specified friendly units at Range 1.",
+  "Counterpart": "Unit Name: Must be fielded with the other part, never on its own (rules page 47).",
+  "Cover X": "Improve cover by X.",
+  "Covert Ops": "Can switch rank to Operative for rest of the game to gain Infiltrate. Cannot use if there is no other Commander in the army.",
+  "Critical X": "Convert X Surges to Critical results.",
+  "Cumbersome": "Cannot move before an attack in same activation, but can Pivot.",
+  "Cunning": "Treat Command Cards as if they have one fewer pip.",
+  "Cycle": "Ready exhausted upgrade if item was not used this activation.",
+  "Danger Sense X": "Remove up to X suppression. While defending, roll up to X additional dice for each suppression.",
+  "Dauntless": "If suppressed but not panicked, gain 1 suppression to perform free move action. Can not be affected by the Compel keyword.",
+  "Death from Above": "Defending unit cannot use Cover to cancel hits if the Attacking unit is a higher elevation.",
+  "Defend X": "When issued an order, gain X Dodge tokens.",
+  "Deflect": "When defending or using Guardian from a ranged attack, gain surge to block. Attacker suffers wound for each surge. No affect if weapon has High Velocity keyword.",
+  "Demoralize X": "After Rally step, add X suppression to enemies at Range 1-2.",
+  "Detachment": "Detachment unit doesn’t count against rank limits. Only available if matching unit is also in army. Gains Infiltrate or Prepared Position with matching unit.",
+  "Detonate X": "Charge Type: After action, detonate X charges as a free action. Hits all units in range and LOS. Cannot use Aims or unit abilities.",
+  "Direct": "Issue Order to named unit at range 1-2.",
+  "Disciplined X": "When ordered, may remove up to X Suppression tokens.",
+  "Disengage": "When engaged with a single unit, you can still move as normal.",
+  "Distract": "Force a unit at range 1-2 to attack this unit, if able.",
+  "Divine Influence": "While at Range 1 of C-3PO, Ewok Trooper gains Guardian 2: C-3PO. Can cancel Crits like they were hit results.",
+  "Divulge": "Revealed Command Card based on card text, resolve and then returned to hand.",
+  "Djem So Mastery": "On any Blank result during Melee attack roll, attacker takes 1 wound.",
+  "Duelist": "In Melee, spend Aim to also gain Pierce 1 or spend Dodge to also gain Immune: Pierce, and still gain benefit of the token spent.",
+  "Enrage X": "While at X number of wounds, courage is “-“ and unit gains Charge.",
+  "Entourage": "Unit Name: 1 named unit doesn’t count for Rank restrictions. Free order to named unit at range 2 and provides Backup to linked unit even if not a Corps unit.",
+  "Equip": "The named upgrades are required.",
+  "Exemplar": "Friendly units of same faction or affiliation can spend 1 of this unit’s Aim, Dodge, Surge Tokens at Range 1-2.",
+  "Expert Climber": "When climbing, move height 2.",
+  "Field Commander": "Field Commander can issue orders with a generic command card this turn or can be the Commander during Army Building. Provides courage value 2 to units within range 3.",
+  "Fire Support": "When ordered, gain a Standby token.",
+  "Fixed": "Defender must be in specified weapon arc.",
+  "Flawed": "Give Flaw card to Opponent. Played when Flaw card explains, follows card effects.",
+  "Flexible Response X": "Unit must equip X Heavy Weapon Upgrades.",
+  "Full Pivot": "Pivot up to 360°.",
+  "Generator X": "Flip up to X Shield Tokens.",
+  "Guardian X": "Cancel up to X hits for trooper in range 1 and in LOS; roll defense die for each hit and take wound for each blank. Cannot be used on other Guardian units or if they have suppression >= Courage value. Also cannot benefit from backup and can provide backup even if not a Corps unit.",
+  "Guidance": "Unit of specified type at range 1-2 gets free non-attack action.",
+  "Gunslinger": "After ranged attack, may attack a different target.",
+  "Heavy Weapon Team": "Must equip Heavy Weapon Upgrade, who becomes Leader.",
+  "High Velocity": "If the only weapon, defender can’t spend Dodge Tokens.",
+  "Hover": "Ground/Air X: Can do Standby, Reverse. Hover: Ground blocks LOS like ground units but still Repulsor and ignore or land on terrain X or lower. Strafe: Hover Ground/Air use side notch. Reduce speed by 1 to minimum of 1.",
+  "Hunted": "During setup, if opponent has Bounty keyword, Hunted keyword gains bounty token.",
+  "Immobilize X": "One or more wound, gain X Immobilize Tokens. Reduce Speed by 1 for each token. Remove all tokens after activation.",
+  "Immune [Keyword]": "Keyword effect does not apply.",
+  "Impact X": "Change up to X hits to crits if defending unit has Armor keyword.",
+  "Impervious": "Roll extra defense die equal to Pierce X value, unless Immune to Pierce.",
+  "Incognito": "Cannot be attacked from beyond Range 1, cannot contest objectives, cannot provide Backup until the unit attacks, is attacked by an enemy unit, or choses to lose effect at the start of activation.",
+  "Inconspicuous": "With 1 or more suppression, units must attack another target, if able.",
+  "Independent: Token X/Action": "If this unit does not have Order, gain X listed Token or perform listed Action as free action.",
+  "Indomitable": "Roll Red dice for the Rally Step.",
+  "Infiltrate": "Deploy anywhere in friendly territory.",
+  "Inspire X": "At the end of Activation, remove up to X suppression from units in range 1-2.",
+  "Interrogate": "If a Command Card is used for a unit at Range 1 of this unit, if there would be a tie, treat their card as having +1 pip.",
+  "Ion X": "One or more wounds, unit gains Ion X tokens. Each token removes 1 Activation. Cannot use any upgrade with Reconfigure keyword.",
+  "Jedi Hunter": "When attacking or defending against a Force user, gain surge to hit or surge to block.",
+  "Jump X": "Jump up to range band X. Cannot displace units.",
+  "Lethal X": "Spend 1 Aim Token to gain X Pierce.",
+  "Light Transport X": "Can transport X specified type unit(s).",
+  "Leader": "Must equip named Commander Upgrade and be fielded with named unit. Doesn’t count against rank limits.",
+  "Leverage": "May take one wound to gain dodge or aim token. Can only do once per turn.",
+  "Long Shot X": "Spend up to X Aim Tokens to increase max range by 1 per token spent.",
+  "Lure": "Enemy units at range 1-2 can gain 1 suppression token and perform a speed-1 move towards this unit.",
+  "Makashi Mastery": "Enemy units can’t use Immune: Pierce or gain Impact from Surges.",
+  "Marksman": "Change one result on attack dice pool per Aim Token spent.",
+  "Master of the Force X": "Ready X exhausted Force Upgrade Cards.",
+  "Melee Wound": "Resolve only on Melee attacks. Defender must be in Melee.",
+  "Mercenary": "Cannot be taken if the specified unit is in the army.",
+  "Melee": "Attack can only be performed while in base contact.",
+  "Nimble": "If spends Dodge Token, gain 1 new Dodge Token.",
+  "Nightsister Mastery": "Spend Force to give units 1 Poison Token for each wound given. If removed from Poison Token, units take 1 wound.",
+  "Observe X": "Target enemy unit at range X, must be in LOS, and may reroll that number of dice while attacking them.",
+  "Outmaneuver": "Spend Dodge Token to cancel Crit results.",
+  "Overwatch": "Gain Standby Tokens at Range 3.",
+  "Partner": "Unit Name: Doesn’t count for rank limit, unless the other is in the army, must be fielded together.",
+  "Pierce X": "Cancel X blocks.",
+  "Plague Mastery": "When unit with a Poison Token activates, it takes 1 wound, then removes the token.",
+  "Precise X": "Reroll X more attack dice with an Aim Token.",
+  "Preservation Protocol": "Remove one Suppression Token from this unit after defending from a ranged attack.",
+  "Ready X": "Gain X listed tokens after move action.",
+  "Reconfigure": "Can change weapons during activation.",
+  "Relentless": "Can attack after move action.",
+  "Reliable X": "Gain X Surge Tokens at the start of activation.",
+  "Repair X": "Heal up to X wounds from vehicles, droids, or emplacement troopers. Can remove up to X ion tokens.",
+  "Reposition": "Can pivot before or after standard move.",
+  "Retinue: Unit Name": "At the start of activation, if this unit is in range 1-2 of the unit name, gain 1 aim or dodge token.",
+  "Reverse": "After pivoting, may move backward at speed 1.",
+  "Sabotage Communications": "When revealing a Command Card, the opponent must discard 1 Command Card that would have had 1 or 2 pips. The opponent must instead play a Command Card with 3 or 4 pips or the Standing Orders card, whichever is available.",
+  "Scale": "When climbing or clambering, do not roll dice or apply wound for each blank. Gain one free climb action for every regular move action.",
+  "Scatter": "Defender must move the defender leader unit.",
+  "Scout X": "When deployed, gain a free move action up to speed X.",
+  "Secret Mission": "Designate 1 miniature with this keyword as an Objective Unit. This unit gains 1 Victory Point if it enters a contested territory and then returns to friendly territory with a Secret Mission token.",
+  "Sentinel": "Increase range of Standby Tokens by 1.",
+  "Sharpshooter X": "Reduce cover of defending unit by X.",
+  "Shove": "After a successful Melee attack, move the unit leader 1 range band away from your unit leader.",
+  "Sidearm: Melee": "While using a specified weapon, this unit can perform ranged or melee attacks.",
+  "Smoke X": "During the Perform Action step, perform the throw smoke grenade action. Smoke tokens provide cover equal to the value of the X keyword for units in line of sight through the token. Smoke tokens are removed during the end phase.",
+  "Speeder X": "Moves through obstacles and terrain lower than height X, counts as cover X.",
+  "Spin": "Turn 180°.",
+  "Spotter X": "Choose X units at range 2. Gain 1 Aim token.",
+  "Spur": "If suppressed but not panicked, gain 1 suppression to perform free move action. Does not apply while unit has Immune: Suppression.",
+  "Stable Platform": "Doesn’t increase the difficulty of any attacks after Standard Moves.",
+  "Standby": "Gain a Standby token after receiving an Order.",
+  "Steady": "After a Standard move, gain a free attack action.",
+  "Strategize": "Friendly units at Range 1-2 gain one Aim and one Dodge token.",
+  "Strict Orders": "When given an Order, may remove 1 Suppression token instead of rolling to Rally.",
+  "Structure": "Cannot gain Aim, Dodge, Standby tokens, or Suppression. Immune to Panic.",
+  "Stun": "After a wound, unit gains 1 Suppression token.",
+  "Suppressive": "After a wound, defender gains 1 Suppression token.",
+  "Surge": "Change the result to a Hit or Block, whichever applies.",
+  "Synchronized": "This unit and named unit can share Aim, Dodge, and Surge Tokens if they are within Range 1 of each other.",
+  "Teamwork": "Unit Name: This unit and the named unit gain the same number of Aim or Dodge tokens if they are within Range 1 of each other.",
+  "Tactical X": "After any Standard Move, gain X Aim Tokens.",
+  "Take Cover X": "Friendly units at Range 1 gain X Dodge Tokens.",
+  "Tamper Proof": "This unit cannot be designated an Objective Unit.",
+  "Tenacity": "While wounded, gain +1 Red Attack Die for Melee.",
+  "Tow Cable": "When unit does a move action, must tow the named unit, if able.",
+  "Transport X": "Transport X type(s) units.",
+  "Unhindered": "Ignore Terrain during move.",
+  "Unstoppable": "If this unit would take one or more suppression tokens, roll a white defense die. On a block or surge result, ignore the effect and do not take the suppression tokens.",
+  "Versatile": "Can make ranged attacks even when in Melee.",
+  "Vigilance": "At the end of the Activation Phase, choose up to 2 friendly units at range 1-2. Chosen units gain 1 Surge Token.",
+  "Weak Point X": "Add X crits if enemy unit is in specified arc.",
+  "Weapon Emplacement": "Can’t use standby. Can’t move, except pivot.",
+  "Whipcord Launcher": "A unit hit with this weapon suffers 1 immobilize token and gains 1 suppression token.",
+  "Wings": "Treat as a Repulsor vehicle; remove the unit from the battlefield, then place it at any point on the battlefield within 1-2. If the miniatures cannot all be placed, those that cannot are defeated. Can only be used by a unit with a Wings upgrade.",
+  "Wound": "Remove 1 miniature from the defending unit.",
+  "Wounded": "Unit with 1 or more wounds cannot gain or spend Surge Tokens, except with an Upgrade.",
+  "X Condition": "Unit with X Condition can apply condition effect to an enemy unit that is within Range 1 and in Line of Sight. If the effect is applied, the enemy unit gains the condition token with a specified value or effect."
+};
+
+
+    window.onload = function() {
+        loadSkills();
+    };
+
+    function loadSkills() {
+        const keywordList = document.getElementById('keywordList');
+        keywordList.innerHTML = '';
+
+        for (const skill in skills) {
+            const li = document.createElement('li');
+            li.innerHTML = `<b>${skill}:</b> ${skills[skill]}`;
+            keywordList.appendChild(li);
+        }
+    }
+
+    function filterList() {
+        var input, filter, ul, li, txtValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        ul = document.getElementById('keywordList');
+        li = ul.getElementsByTagName('li');
+
+        // Deactivate all alphabet buttons
+        deactivateAlphabetButtons();
+
+        for (var i = 0; i < li.length; i++) {
+            txtValue = li[i].textContent || li[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+    function filterByAlphabet(letter) {
+        var ul, li, txtValue, buttons;
+        ul = document.getElementById('keywordList');
+        li = ul.getElementsByTagName('li');
+
+        // Deactivate all alphabet buttons
+        deactivateAlphabetButtons();
+
+        for (var i = 0; i < li.length; i++) {
+            txtValue = li[i].textContent || li[i].innerText;
+            if (letter === "" || txtValue.toUpperCase().startsWith(letter)) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+
+        // Add 'active' class to the clicked button
+        event.target.classList.add('active');
+    }
+
+    function deactivateAlphabetButtons() {
+        var buttons = document.getElementsByClassName('alphabet-button');
+        for (var j = 0; j < buttons.length; j++) {
+            buttons[j].classList.remove('active');
+        }
+    }
+</script>
+
+</body>
+</html>
