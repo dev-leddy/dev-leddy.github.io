@@ -1,0 +1,148 @@
+{
+  "faction": "Crusader",
+  "units": [
+    {
+      "name": "Rhyfler",
+      "sk": 12,
+      "mt": "1d6+2",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Bogen",
+      "specialAbilities": "",
+      "points": 25,
+      "limit": null
+    },
+    {
+      "name": "Rhyfler (Ryshi)",
+      "sk": 12,
+      "mt": "2d6-1",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Ryshi",
+      "specialAbilities": "",
+      "points": 28,
+      "limit": null
+    },
+    {
+      "name": "LMG Rhyfler",
+      "sk": 12,
+      "mt": "1d6+2",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "H-11a",
+      "specialAbilities": "",
+      "points": 35,
+      "limit": 1
+    },
+    {
+      "name": "Sharpshooter",
+      "sk": 13,
+      "mt": "1d6+2",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Bogen",
+      "specialAbilities": "Dead-eye (2)",
+      "points": 35,
+      "limit": 2
+    },
+    {
+      "name": "Milwer",
+      "sk": 12,
+      "mt": "1d6+2",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Bogen",
+      "specialAbilities": "Leader (2/3)",
+      "points": 28,
+      "limit": 1
+    },
+    {
+      "name": "Yawdryl",
+      "sk": 13,
+      "mt": "1d6+2",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Bogen",
+      "specialAbilities": "Leader (3/4)",
+      "points": 30,
+      "limit": 1
+    },
+    {
+      "name": "is-Caerten",
+      "sk": 12,
+      "mt": "1d6+2",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Grifkis",
+      "specialAbilities": "Leader (2/5)",
+      "points": 30,
+      "limit": 1
+    },
+    {
+      "name": "Trench Raider",
+      "sk": 13,
+      "mt": "2d6+1",
+      "ma": 6,
+      "toughness": 4,
+      "equipment": "Sio-Cly, Mace",
+      "specialAbilities": "Wallop, Infiltrate",
+      "points": 42,
+      "limit": 3
+    },
+    {
+      "name": "Trench Raider Yawdryl",
+      "sk": 13,
+      "mt": "2d6+1",
+      "ma": 6,
+      "toughness": 4,
+      "equipment": "Sio-Cly, Mace",
+      "specialAbilities": "Infiltrate, Leader (3/4)",
+      "points": 50,
+      "limit": 1
+    },
+    {
+      "name": "Torpedo Rhyfler",
+      "sk": 12,
+      "mt": "1d6+1",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Splagen Torpedo",
+      "specialAbilities": "",
+      "points": 39,
+      "limit": 2
+    },
+    {
+      "name": "Standard Bearer",
+      "sk": 12,
+      "mt": "1d6+2",
+      "ma": 5,
+      "toughness": 4,
+      "equipment": "Bogen",
+      "specialAbilities": "Standard",
+      "points": 30,
+      "limit": 1
+    },
+    {
+      "name": "Squirrel Handler",
+      "sk": 12,
+      "mt": "1d6+2",
+      "ma": 4,
+      "toughness": 4,
+      "equipment": "Bogen",
+      "specialAbilities": "PykPyk(3)",
+      "points": 30,
+      "limit": 1
+    },
+    {
+      "name": "PykPyks",
+      "sk": "-",
+      "mt": "-",
+      "ma": "-",
+      "toughness": "-",
+      "equipment": "-",
+      "specialAbilities": "PykPyk(3)",
+      "points": 5,
+      "limit": null
+    }
+  ]
+}

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Army Builder</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .navbar {
+            position: relative;
+            background: transparent; /* Remove default background */
+        }
+        .navbar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('quar.jpg') no-repeat center center; /* Replace with your image path */
+            background-size: cover;
+            opacity: 0.5; /* Adjust opacity as needed */
+            z-index: -1; /* Ensure background is behind content */
+        }
+        .navbar .container {
+            position: relative;
+            z-index: 1; /* Ensure content is above background */
+        }
+
+        body {
+            padding-top: 20px;
+        }
+
+        .unit-selection, .selected-units {
+            overflow-y: auto;
+        }
+        .unit-selection {
+            width: 250px;
+        }
+        .unit-card {
+            position: relative;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+
+			background-color: #f8f9fa;
+        }
+        .points-box {
+            position: absolute;
+			top: -15px;
+			left: -15px;
+			background-color: #dadfe4;
+            border: 1px solid #dee2e6;
+            padding: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            height: 33px;
+			widthL: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+		.unit-name-box{
+			position: absolute;
+			top: -15px;
+			left: 14px;
+			background-color: #dadfe4;
+			border: 1px solid #dee2e6;
+			padding: 5px;
+			border-radius: 5px;
+			font-weight: bold;
+			font-size: 16px;
+			height: 33px;
+			width: 202px;
+			display: flex;
+			align-items: center;
+		}
+		.add-btn {
+			position: absolute;
+			top: -11px;
+			right: -12px;
+			background-color: #e9ecef;
+			color: #fff;
+			border: none;
+			border-radius: 50%;
+			width: 25px;
+			height: 25px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 14px;
+			cursor: pointer;
+		}
+		
+		.add-btn:focus {
+		  outline: none;
+		}
+		
+		.add-btn:hover {
+			background-color: #28a745;
+		}
+		
+        .remove-btn {
+            cursor: pointer;
+			background-color: #e9ecef;
+			color: white;
+			border: none;
+			border-radius: 50%;
+			width: 15px;
+			height: 15px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 10px;
+			font-weight: bold;
+			margin-top: auto;
+			margin-bottom: auto;
+        }
+		
+		.remove-btn:hover{
+			background-color: #ff4d4d;
+		}
+		
+        .selected-units {
+            max-height: 600px;
+        }
+        .card-title {
+            font-size: 1rem;
+        }
+        .unit-stats {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 14px;
+            margin-top: 25px;
+        }
+        .unit-stats > div {
+            margin-right: 10px;
+        }
+        .unit-stats .label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .unit-stats .value {
+            font-weight: normal;
+        }
+        .equipment {
+            text-decoration: underline dotted;
+            cursor: help;
+        }
+        .tooltip-inner {
+            white-space: pre-wrap; /* Preserve whitespace */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="app">
+		<nav class="navbar navbar-light bg-light">
+			<div class="container d-flex justify-content-between align-items-center">
+				<!-- Left Element: Faction Select -->
+				<div class="nav-item">
+					<label for="faction-select" class="mr-2">Select Faction:</label>
+					<select id="faction-select" class="form-control" v-model="selectedFaction" @change="clearSelectedUnits">
+						<option value="Crusader">Crusader</option>
+						<option value="Coftyran">Coftyran</option>
+					</select>
+				</div>
+				
+				<!-- Center Element: Page Name -->
+				<div class="nav-item mx-3">
+					<h4 class="mb-0">Quar: Rhyfle Army Builder</h4>
+				</div>
+				
+				<!-- Right Element: Points Slider -->
+				<div class="nav-item">
+					<label for="points-slider" class="mr-2">Points:</label>
+					<input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="50">
+					<span>{{ selectedPoints }} points</span>
+				</div>
+			</div>
+		</nav>
+
+        <div class="container mt-3" style="height: calc(100vh - 140px);">
+            <div class="row" style="height: 100%">
+                <div class="col-md-3 unit-selection" style="overflow:auto; height: 100%">
+                    <h2>Available Units</h2>
+                    <div v-for="(unit, index) in filteredUnits" :key="index" class="card mb-2 unit-card">
+                        <div class="card-body p-2">
+                            <div class="position-relative">
+                                <div class="points-box">{{ unit.points }}</div>
+								<div class="unit-name-box">{{ unit.name }}</div>
+                                <div class="add-btn" @click="addToArmy(unit)">+</div>
+                            </div>
+                            <div class="unit-stats">
+                                <div><span class="label">Sk:</span><span class="value">{{ unit.sk }}</span></div>
+                                <div><span class="label">Mt:</span><span class="value">{{ unit.mt }}</span></div>
+                                <div><span class="label">Ma:</span><span class="value">{{ unit.ma }}</span></div>
+                                <div><span class="label">Tgh:</span><span class="value">{{ unit.toughness }}</span></div>
+                                <div><span class="label">Points:</span><span class="value">{{ unit.points }}</span></div>
+                            </div>
+                            <div v-if="unit.equipment" class="unit-stats">
+                                <div>
+                                    <span class="label">Equip:</span>
+                                    <span v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip" :title="getEquipmentTooltip(equip)">
+										<span v-if="idx > 0">,</span>
+										<span class="equipment">{{ equip }}</span>
+										
+									</span>
+                                </div>
+                            </div>
+                            <div v-if="unit.specialAbilities" class="unit-stats">
+                                <div><span class="label">Sp Abil:</span><span class="value">{{ unit.specialAbilities }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 selected-units">
+                    <h2>Selected Units</h2>
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Sk</th>
+                                <th>Mt</th>
+                                <th>Ma</th>
+                                <th>Toughness</th>
+                                <th>Equipment</th>
+                                <th>Special Abilities</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(unit, index) in selectedArmy" :key="index">
+                                <td>
+									<div class="d-flex">
+										<span class="remove-btn" @click="removeFromArmy(index)">X</span> 
+										<span class="ml-1">{{ unit.name }}</span>
+									</div>
+								</td>
+                                <td>{{ unit.sk }}</td>
+                                <td>{{ unit.mt }}</td>
+                                <td>{{ unit.ma }}</td>
+                                <td>{{ unit.toughness }}</td>
+                                <td>
+                                    <span v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip" :title="getEquipmentTooltip(equip)">{{ equip }}</span>
+                                </td>
+                                <td>{{ unit.specialAbilities }}</td>
+                                <td>{{ unit.points }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>Total Points: {{ totalPoints }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip(); // Initialize tooltips
+        });
+
+        new Vue({
+            el: '#app',
+            data: {
+                selectedFaction: 'Crusader',
+                selectedPoints: 100,
+                availableUnits: {
+					"Crusader": [
+						{ "name": "Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "", "points": 25 },
+						{ "name": "Rhyfler", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": "Ryshi", "specialAbilities": "", "points": 28 },
+						{ "name": "LMG Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "H-11a", "specialAbilities": "", "points": 35 },
+						{ "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Dead-eye", "points": 35 },
+						{ "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (2/3)", "points": 28 },
+						{ "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (3/4)", "points": 30 },
+						{ "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Grifkis Shotgun", "specialAbilities": "Leader (2/5)", "points": 30 },
+						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly, Mace", "specialAbilities": "Wallop, Infiltrate", "points": 42 },
+						{ "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly Derringer, Mace", "specialAbilities": "Infiltrate, Leader (3/4)", "points": 50 },
+						{ "name": "Torpedo Rhyfler", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": "Splagen Torpedo", "specialAbilities": "", "points": 39 },
+						{ "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Standard", "points": 30 },
+						{ "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": "Bogen", "specialAbilities": "PykPyk", "points": 30 },
+						{ "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": "-", "specialAbilities": "PykPyk", "points": 5 }
+					],
+					"Coftyran": [
+						{ "name": "Rhyfler", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "", "points": 25 },
+						{ "name": "Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Cryfen", "specialAbilities": "", "points": 32 },
+						{ "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "Dead-eye", "points": 35 },
+						{ "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "Leader (2/3)", "points": 28 },
+						{ "name": "Yawdryl", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Doru", "specialAbilities": "Leader (3/4)", "points": 33 },
+						{ "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": "Pistol, Sword", "specialAbilities": "Leader (2/5)", "points": 28 },
+						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Doru, Sword", "specialAbilities": "Killing Strike, Infiltrate", "points": 42 },
+						{ "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Doru, Sword", "specialAbilities": "Infiltrate, Leader (3/4)", "points": 50 },
+						{ "name": "Gunner", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": "RCO m60", "specialAbilities": "", "points": 70 },
+						{ "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Doru", "specialAbilities": "Standard", "points": 35 },
+						{ "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": "Harlech", "specialAbilities": "PykPyk", "points": 30 },
+						{ "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": "-", "specialAbilities": "PykPyk", "points": 5 }
+					]
+                },
+                equipmentData: {
+                    "Harlech": { R: 8, Sn: -3, Abilities: '', Mt: 'n' },
+                    "Cryfen": { R: 8, Sn: -3, Abilities: 'Automatic, Loader', Mt: '-' },
+                    "Doru": { R: 4, Sn: -1, Abilities: 'Automatic', Mt: '-' },
+                    "Pistol": { R: 4, Sn: -1, Abilities: '-', Mt: '-' },
+                    "RCO m60": { R: 12, Sn: -4, Abilities: 'Blast(2), Slow Reload, Crew(2), Gunshield, Heavy', Mt: '2d6' },
+                    "Bogen": { R: 6, Sn: -2, Abilities: '-', Mt: '-' },
+                    "Ryshi": { R: 8, Sn: -3, Abilities: '-', Mt: '-' },
+                    "H-11a": { R: 10, Sn: -3, Abilities: 'Automatic, Loader', Mt: '-' },
+                    "Grifkis Shotgun": { R: 4, Sn: -1, Abilities: 'Shotgun', Mt: '-' },
+                    "Sio-Cly Derringer": { R: 4, Sn: -1, Abilities: 'Shotgun', Mt: '-' },
+                    "Splagen Torpedo": { R: 6, Sn: -4, Abilities: 'Blast(1)', Mt: '2d6-1' }
+                },
+                selectedArmy: []
+            },
+            computed: {
+				filteredUnits() {
+					return this.availableUnits[this.selectedFaction];
+				},
+                totalPoints() {
+                    return this.selectedArmy.reduce(function(acc, unit) {
+                        return acc + unit.points;
+                    }, 0);
+                }
+            },
+            methods: {
+                addToArmy(unit) {
+                    var self = this;
+                    if (self.totalPoints + unit.points <= self.selectedPoints) {
+                        self.selectedArmy.push(unit);
+                    } else {
+                        alert("Adding this unit exceeds the current point limit!");
+                    }
+                },
+                removeFromArmy(index) {
+                    this.selectedArmy.splice(index, 1);
+                },
+                clearSelectedUnits() {
+                    this.selectedArmy = [];
+                },
+                getEquipmentTooltip(equipment) {
+                    const equipmentInfo = this.equipmentData[equipment];
+                    if (equipmentInfo) {
+                        return `Range: ${equipmentInfo.R}\nSnapshot: ${equipmentInfo.Sn}\nAbilities: ${equipmentInfo.Abilities}\nMight: ${equipmentInfo.Mt}`;
+                    }
+                    return "See unit stats";
+                },
+                splitEquipment(equipment) {
+                    return equipment.split(',').map(equip => equip.trim());
+                }
+            }
+        });
+    </script>
+</body>
+</html>
