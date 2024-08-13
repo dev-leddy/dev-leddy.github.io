@@ -206,10 +206,24 @@
                             <div v-if="unit.equipment" class="unit-stats">
                                 <div>
                                     <span class="label">Equip:</span>
-                                    <span v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip" :title="getEquipmentTooltip(equip)">
-										<span v-if="idx > 0">,</span>
-										<span class="equipment">{{ equip }}</span>
-										
+                                    <span v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip" :title="getEquipmentTooltip(equip)">										
+										<div class="equipment">{{ equip }}</div>
+										<table class="table table-bordered table-sm">
+											<thead>
+												<tr>
+													<th>Range</th>
+													<th>Snapshot</th>
+													<th>Ability</th>
+													<th>Might</th>
+												</tr>
+											</thead>
+											<tbody>
+												<td>{{equipmentData[equip]?.R}}</td>
+												<td>{{equipmentData[equip]?.Sn}}</td>
+												<td>{{equipmentData[equip]?.Abilities}}</td> 
+												<td>{{equipmentData[equip]?.Mt}}</td> 
+											</tbody>
+										</table>										
 									</span>
                                 </div>
                             </div>
@@ -268,7 +282,7 @@
             $('[data-toggle="tooltip"]').tooltip(); // Initialize tooltips
         });
 
-        new Vue({
+        var ay = new Vue({
             el: '#app',
             data: {
                 selectedFaction: 'Crusader',
@@ -282,7 +296,7 @@
 						{ "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (2/3)", "points": 28 },
 						{ "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (3/4)", "points": 30 },
 						{ "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Grifkis Shotgun", "specialAbilities": "Leader (2/5)", "points": 30 },
-						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly, Mace", "specialAbilities": "Wallop, Infiltrate", "points": 42 },
+						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly Derringer, Mace", "specialAbilities": "Wallop, Infiltrate", "points": 42 },
 						{ "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly Derringer, Mace", "specialAbilities": "Infiltrate, Leader (3/4)", "points": 50 },
 						{ "name": "Torpedo Rhyfler", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": "Splagen Torpedo", "specialAbilities": "", "points": 39 },
 						{ "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Standard", "points": 30 },
@@ -305,7 +319,7 @@
 					]
                 },
                 equipmentData: {
-                    "Harlech": { R: 8, Sn: -3, Abilities: '', Mt: 'n' },
+                    "Harlech": { R: 8, Sn: -3, Abilities: '', Mt: '-' },
                     "Cryfen": { R: 8, Sn: -3, Abilities: 'Automatic, Loader', Mt: '-' },
                     "Doru": { R: 4, Sn: -1, Abilities: 'Automatic', Mt: '-' },
                     "Pistol": { R: 4, Sn: -1, Abilities: '-', Mt: '-' },
