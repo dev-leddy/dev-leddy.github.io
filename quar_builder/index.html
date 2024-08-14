@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Army Builder</title>
+    <title>Quar Battleforce Builder</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .navbar {
@@ -133,7 +133,7 @@
             display: flex;
             flex-wrap: wrap;
             font-size: 14px;
-            margin-top: 25px;
+            width: 230px;
         }
         .unit-stats > div {
             margin-right: 10px;
@@ -173,7 +173,7 @@
 				
 				<!-- Center Element: Page Name -->
 				<div class="nav-item mx-3">
-					<h4 class="mb-0">Quar: Rhyfle Army Builder</h4>
+					<h4 class="mb-0">Quar Battleforce Builder</h4>
 				</div>
 				
 				<!-- Right Element: Points Slider -->
@@ -188,53 +188,74 @@
         <div class="container mt-3" style="height: calc(100vh - 140px);">
             <div class="row" style="height: 100%">
                 <div class="col-md-3 unit-selection" style="overflow:auto; height: 100%">
-                    <h2>Available Units</h2>
                     <div v-for="(unit, index) in filteredUnits" :key="index" class="card mb-2 unit-card">
                         <div class="card-body p-2">
                             <div class="position-relative">
                                 <div class="points-box">{{ unit.points }}</div>
-								<div class="unit-name-box">{{ unit.name }}</div>
+								<div class="unit-name-box">
+                                    <span v-if="unit.allowed">({{unit.allowed}})&nbsp;</span>
+                                    {{ unit.name }}
+                                </div>
                                 <div class="add-btn" @click="addToArmy(unit)">+</div>
                             </div>
-                            <div class="unit-stats">
-                                <div><span class="label">Sk:</span><span class="value">{{ unit.sk }}</span></div>
-                                <div><span class="label">Mt:</span><span class="value">{{ unit.mt }}</span></div>
-                                <div><span class="label">Ma:</span><span class="value">{{ unit.ma }}</span></div>
-                                <div><span class="label">Tgh:</span><span class="value">{{ unit.toughness }}</span></div>
-                                <div><span class="label">Points:</span><span class="value">{{ unit.points }}</span></div>
-                            </div>
-                            <div v-if="unit.equipment" class="unit-stats">
-                                <div>
-                                    <span class="label">Equip:</span>
-                                    <span v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip" :title="getEquipmentTooltip(equip)">										
-										<div class="equipment">{{ equip }}</div>
-										<table class="table table-bordered table-sm">
-											<thead>
-												<tr>
-													<th>Range</th>
-													<th>Snapshot</th>
-													<th>Ability</th>
-													<th>Might</th>
-												</tr>
-											</thead>
-											<tbody>
-												<td>{{equipmentData[equip]?.R}}</td>
-												<td>{{equipmentData[equip]?.Sn}}</td>
-												<td>{{equipmentData[equip]?.Abilities}}</td> 
-												<td>{{equipmentData[equip]?.Mt}}</td> 
-											</tbody>
-										</table>										
-									</span>
+                            <div class="unit-stats" style="margin-top: 25px;">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Skill: </div>
+                                    <div>{{ unit.sk }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Mt: </div>
+                                    <div>{{ unit.mt }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Ma: </div>
+                                    <div>{{ unit.ma }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Tgh: </div>
+                                    <div>{{ unit.toughness }}</div>
                                 </div>
                             </div>
-                            <div v-if="unit.specialAbilities" class="unit-stats">
-                                <div><span class="label">Sp Abil:</span><span class="value">{{ unit.specialAbilities }}</span></div>
+                            <div v-if="unit.specialAbilities" class="unit-stats mt-2">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Special Abilities: </div>
+                                    <div>{{ unit.specialAbilities }}</div>
+                                </div>
+                            </div>
+                            <div v-if="unit.equipment" class="unit-stats mt-2">
+                                <div class="w-100">
+                                    <span class="label">Equipment:</span>
+                                    <div v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip" :title="getEquipmentTooltip(equip)">										
+										<div style="background-color:#dadfe4;border: none;border-radius: 5px; padding: 2px; margin-bottom: 2px;" >
+                                            <div class="equipment">{{ equip }}</div>
+                                            <div v-if="equipmentData[equip]" class="d-flex justify-content-center w-100">
+                                                <div class="d-flex flex-column flex-grow-1">
+                                                    <div class="font-weight-bold">R: </div>
+                                                    <div>{{equipmentData[equip]?.R}}</div>
+                                                </div>
+                                                <div class="d-flex flex-column flex-grow-1">
+                                                    <div class="font-weight-bold">Sn: </div>
+                                                    <div>{{equipmentData[equip]?.Sn}}</div>
+                                                </div>
+                                                <div class="d-flex flex-column flex-grow-1">
+                                                    <div class="font-weight-bold">Mt: </div>
+                                                    <div>{{equipmentData[equip]?.Mt}}</div>
+                                                </div>
+                                                <div class="d-flex flex-column flex-grow-1">
+                                                    <div class="font-weight-bold">Abilities: </div>
+                                                    <div>{{equipmentData[equip]?.Abilities}}</div>
+                                                </div>	
+                                            </div>
+                                        </div>
+
+								
+									</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-9 selected-units">
-                    <h2>Selected Units</h2>
                     <table class="table table-bordered table-sm">
                         <thead>
                             <tr>
@@ -289,32 +310,32 @@
                 selectedPoints: 100,
                 availableUnits: {
 					"Crusader": [
-						{ "name": "Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "", "points": 25 },
-						{ "name": "Rhyfler", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": "Ryshi", "specialAbilities": "", "points": 28 },
-						{ "name": "LMG Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "H-11a", "specialAbilities": "", "points": 35 },
-						{ "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Dead-eye", "points": 35 },
-						{ "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (2/3)", "points": 28 },
-						{ "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (3/4)", "points": 30 },
-						{ "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Grifkis Shotgun", "specialAbilities": "Leader (2/5)", "points": 30 },
-						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly Derringer, Mace", "specialAbilities": "Wallop, Infiltrate", "points": 42 },
-						{ "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly Derringer, Mace", "specialAbilities": "Infiltrate, Leader (3/4)", "points": 50 },
-						{ "name": "Torpedo Rhyfler", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": "Splagen Torpedo", "specialAbilities": "", "points": 39 },
-						{ "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Standard", "points": 30 },
-						{ "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": "Bogen", "specialAbilities": "PykPyk", "points": 30 },
+						{ "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "", "points": 25 },
+						{ "name": "Rhyfler (Rhyshi)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": "Ryshi", "specialAbilities": "", "points": 28 },
+						{ "name": "LMG Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "H-11a", "specialAbilities": "", "points": 35, "allowed": 1 },
+						{ "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Dead-eye", "points": 35, "allowed": 2 },
+						{ "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (2/3)", "points": 28, "allowed": 1 },
+						{ "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Leader (3/4)", "points": 30, "allowed": 1 },
+						{ "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Grifkis Shotgun", "specialAbilities": "Leader (2/5)", "points": 30, "allowed": 1 },
+						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly Derringer, Mace", "specialAbilities": "Wallop, Infiltrate", "points": 42, "allowed": 3 },
+						{ "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Sio-Cly Derringer, Mace", "specialAbilities": "Infiltrate, Leader (3/4)", "points": 50, "allowed": 1 },
+						{ "name": "Torpedo Rhyfler", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": "Splagen Torpedo", "specialAbilities": "", "points": 39, "allowed": 2 },
+						{ "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Bogen", "specialAbilities": "Standard", "points": 30, "allowed": 1 },
+						{ "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": "Bogen", "specialAbilities": "PykPyk", "points": 30, "allowed": 1 },
 						{ "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": "-", "specialAbilities": "PykPyk", "points": 5 }
 					],
 					"Coftyran": [
-						{ "name": "Rhyfler", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "", "points": 25 },
-						{ "name": "Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Cryfen", "specialAbilities": "", "points": 32 },
-						{ "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "Dead-eye", "points": 35 },
-						{ "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "Leader (2/3)", "points": 28 },
-						{ "name": "Yawdryl", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Doru", "specialAbilities": "Leader (3/4)", "points": 33 },
-						{ "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": "Pistol, Sword", "specialAbilities": "Leader (2/5)", "points": 28 },
-						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Doru, Sword", "specialAbilities": "Killing Strike, Infiltrate", "points": 42 },
-						{ "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Doru, Sword", "specialAbilities": "Infiltrate, Leader (3/4)", "points": 50 },
-						{ "name": "Gunner", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": "RCO m60", "specialAbilities": "", "points": 70 },
-						{ "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Doru", "specialAbilities": "Standard", "points": 35 },
-						{ "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": "Harlech", "specialAbilities": "PykPyk", "points": 30 },
+						{ "name": "Rhyfler (Harlech)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "", "points": 25 },
+						{ "name": "Rhyfler (Cryfen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Cryfen", "specialAbilities": "", "points": 32, "allowed": 1 },
+						{ "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "Dead-eye", "points": 35, "allowed": 2 },
+						{ "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Harlech", "specialAbilities": "Leader (2/3)", "points": 28, "allowed": 1 },
+						{ "name": "Yawdryl", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Doru", "specialAbilities": "Leader (3/4)", "points": 33, "allowed": 1 },
+						{ "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": "Pistol, Sword", "specialAbilities": "Leader (2/5)", "points": 28, "allowed": 1 },
+						{ "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Doru, Sword", "specialAbilities": "Killing Strike, Infiltrate", "points": 42, "allowed": 3 },
+						{ "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": "Doru, Sword", "specialAbilities": "Infiltrate, Leader (3/4)", "points": 50, "allowed": 1 },
+						{ "name": "Gunner", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": "RCO m60", "specialAbilities": "", "points": 70, "allowed": 1 },
+						{ "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": "Doru", "specialAbilities": "Standard", "points": 35, "allowed": 1 },
+						{ "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": "Harlech", "specialAbilities": "PykPyk", "points": 30, "allowed": 1 },
 						{ "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": "-", "specialAbilities": "PykPyk", "points": 5 }
 					]
                 },
