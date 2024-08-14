@@ -305,7 +305,7 @@
                                 <td>{{ unit.ma }}</td>
                                 <td>{{ unit.toughness }}</td>
                                 <td>
-                                    <span v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip" :title="getEquipmentTooltip(equip)">
+                                    <span v-for="(equip, idx) in splitEquipment(unit.equipment)" :key="idx" class="value" data-toggle="tooltip">
 									<span v-if="idx > 0">,</span>
 									{{ equip }}
 									</span>
