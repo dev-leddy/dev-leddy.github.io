@@ -380,6 +380,13 @@
             },
             methods: {
                 addToArmy: function(unit) {
+                    const potentialTotalPoints = this.totalPoints + unit.points;
+                    if (potentialTotalPoints > this.selectedPoints) {
+                        alert('Adding this unit will exceed the total points available.');
+                        return;
+                    }
+
+
                     // Check if the unit has an 'allowed' property
                     if (unit.allowed) {
                         // Count how many units of this type are already in the army
@@ -395,6 +402,7 @@
                         // If the unit doesn't have an 'allowed' property, just add it
                         this.selectedArmy.push(unit);
                     }
+                    
                 },
                 removeFromArmy: function(index) {
                     this.selectedArmy.splice(index, 1);
