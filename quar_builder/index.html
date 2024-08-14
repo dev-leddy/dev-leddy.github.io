@@ -6,177 +6,8 @@
     <title>Quar Battleforce Builder</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.css" rel="stylesheet">
-    <style>
-        .navbar {
-            position: relative;
-            background: transparent; /* Remove default background */
-        }
-        .navbar::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('quar.jpg') no-repeat center center;
-            background-size: cover;
-            opacity: 0.5;
-            z-index: -1; /* Ensure background is behind content */
-        }
-        .navbar .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        body {
-            padding-top: 20px;
-        }
-
-        .unit-selection, .selected-units {
-            overflow-y: auto;
-        }
-        .unit-selection {
-            width: 270px;
-        }
-        .unit-card {
-            position: relative;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-			background-color: #f8f9fa;
-			width: 250px;
-        }
-        .points-box {
-            position: absolute;
-			top: -15px;
-			left: -15px;
-			background-color: #dadfe4;
-            border: 1px solid #dee2e6;
-            padding: 5px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 14px;
-            height: 33px;
-			min-width: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-		.unit-name-box{
-			position: absolute;
-			top: -15px;
-			left: 16px;
-			background-color: #dadfe4;
-			border: 1px solid #dee2e6;
-			padding: 5px;
-			border-radius: 5px;
-			font-weight: bold;
-			font-size: 16px;
-			height: 33px;
-			width: 212px;
-			display: flex;
-			align-items: center;
-		}
-		.add-btn {
-			position: absolute;
-			top: -11px;
-			right: -14px;
-			background-color: #e9ecef;
-			color: #fff;
-			border: none;
-			border-radius: 50%;
-			width: 25px;
-			height: 25px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 14px;
-			cursor: pointer;
-		}
-		
-		.add-btn:focus {
-		  outline: none;
-		}
-		
-		.add-btn:hover {
-			background-color: #28a745;
-		}
-		
-        .remove-btn {
-            cursor: pointer;
-			background-color: #e9ecef;
-			color: white;
-			border: none;
-			border-radius: 50%;
-			width: 15px;
-			height: 15px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 10px;
-			font-weight: bold;
-			margin-top: auto;
-			margin-bottom: auto;
-        }
-		
-		.remove-btn:hover{
-			background-color: #ff4d4d;
-		}
-		
-        .selected-units {
-            max-height: 600px;
-        }
-        .card-title {
-            font-size: 1rem;
-        }
-        .unit-stats {
-            display: flex;
-            flex-wrap: wrap;
-            font-size: 14px;
-            width: 230px;
-        }
-        .unit-stats > div {
-            margin-right: 10px;
-        }
-        .unit-stats .label {
-            font-weight: bold;
-            margin-right: 5px;
-        }
-        .unit-stats .value {
-            font-weight: normal;
-        }
-        .equipment {
-            text-decoration: underline dotted;
-            /* cursor: help; */
-        }
-        .ability {
-            text-decoration: underline dotted;
-            cursor: help; 
-        }
-        .tooltip-inner {
-            white-space: pre-wrap; /* Preserve whitespace */
-        }
-        .back-img{
-            content: ' ';
-            display: block;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.05;
-            background-image: url('quar.jpg');
-            background-repeat: no-repeat;
-            background-position: 50% 0;
-            background-size: cover;
-        }
-
-        .tooltip .tooltip-inner{
-            max-width: 800px !important;
-            width: 500px !important;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
@@ -185,11 +16,9 @@
 </head>
     <div class="back-img"></div>
     <div id="app">
-		<nav class="navbar navbar-light bg-light">
+		<nav class="navbar navbar-light bg-light no-print">
 			<div class="container d-flex justify-content-between align-items-center">
 				<div class="nav-item">
-                    <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="50">
-					<span>{{ selectedPoints }} points</span>
                     <select id="faction-select" class="form-control" v-model="selectedFaction" @change="clearSelectedUnits">
 						<option value="Crusader">Crusader</option>
 						<option value="Coftyran">Coftyran</option>
@@ -209,7 +38,7 @@
 
         <div class="container mt-3" style="height: calc(100vh - 140px);">
             <div class="row" style="height: 100%">
-                <div class="col-md-3 unit-selection" style="overflow:auto; height: 100%">
+                <div class="col-md-3 unit-selection no-print" style="overflow:auto; height: 100%">
                     <div v-for="(unit, index) in filteredUnits" :key="index" class="card mb-2 unit-card">
                         <div class="card-body p-2">
                             <div class="position-relative">
@@ -218,7 +47,7 @@
                                     <span v-if="unit.allowed">({{unit.allowed}})&nbsp;</span>
                                     {{ unit.name }}
                                 </div>
-                                <div class="add-btn" @click="addToArmy(unit)">+</div>
+                                <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
                             </div>
                             <div class="unit-stats" style="margin-top: 25px;">
                                 <div class="d-flex flex-column flex-grow-1">
@@ -250,7 +79,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div v-if="unit.equipment" class="unit-stats mt-2">
+                            <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-2">
                                 <div class="w-100">
                                     <span class="label">Equipment:</span>
                                     <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip">										
@@ -284,9 +113,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-9 selected-units" id="selected-units-table">
-                    <table class="table table-bordered table-sm">
-                        <thead>
+
+                <div class="col-md-9 selected-units" id="selected-units-container">
+                    <div class="w-25 no-print">
+                        <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                        <span>{{ selectedPoints }} points</span>
+                    </div>
+                    <h3 class="onlyPrint">{{selectedFaction}}</h3>
+                    <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
+                    <table id="selected-units-table" class="table table-bordered table-sm">
                             <tr>
                                 <th>Unit</th>
                                 <th>Skill</th>
@@ -299,12 +134,10 @@
                                 <th>Snapshot</th>
                                 <th>Wpn Abilities</th>
                             </tr>
-                        </thead>
-                        <tbody>
                             <tr v-for="(unit, index) in selectedArmy" :key="index">
                                 <td>
 									<div class="d-flex">
-										<span class="remove-btn" @click="removeFromArmy(index)">X</span> 
+										<span class="remove-btn no-print" @click="removeFromArmy(index)">X</span> 
 										<span class="ml-1">({{ unit.points }}) {{ unit.name }}</span>
 									</div>
 								</td>
@@ -329,15 +162,19 @@
                                 <td>{{ equipmentData[unit.equipment[0]]?.R }}</td>
                                 <td>{{ equipmentData[unit.equipment[0]]?.Sn }}</td>
                                 <td>
-                                    <span class="ability" v-for="(ability, idx) in equipmentData[unit.equipment[0]]?.Abilities" :key="idx" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'top', interactive: false, trigger: 'hover', boundary: 'window'}">
+                                    <span v-for="(ability, idx) in equipmentData[unit.equipment[0]]?.Abilities" :key="idx" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'top', interactive: false, trigger: 'hover', boundary: 'window'}">
                                         <span v-if="idx > 0"><br></span>
                                         {{ability}}
                                     </span>
                                 </td>
                             </tr>
-                        </tbody>
                     </table>
-                    <p>Total Points: {{ totalPoints }}</p>
+                    <div>
+                        <div v-for="(def, key) in getKeywords" :key="key">
+                            <div class="font-weight-bold">{{key}}:</div> 
+                            <div class="font-weight-light">{{def}}</div>
+                        </div>
+                    </div>                 
                 </div>
             </div>
         </div>
@@ -348,7 +185,7 @@
             el: '#app',
             data: {
                 selectedFaction: 'Crusader',
-                selectedPoints: 100,
+                selectedPoints: 200,
                 availableUnits: {                   
                     "Crusader": [
                         { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": [], "points": 25 },
@@ -426,6 +263,8 @@
                 },
                 selectedArmy: []
             },
+            watch:{
+            },
             computed: {
 				filteredUnits() {
 					return this.availableUnits[this.selectedFaction];
@@ -434,14 +273,53 @@
                     return this.selectedArmy.reduce(function(acc, unit) {
                         return acc + unit.points;
                     }, 0);
+                },
+                getKeywords(){
+                    var obj = {};
+                    for(var unit of this.selectedArmy){
+                        for(var i in unit.specialAbilities){
+                            var def = this.formatAbilityTooltip(unit.specialAbilities[i]).split(":");
+                            obj[def[0]] = def[1];
+                        }
+
+                        var equipmentData = this.equipmentData[unit.equipment[0]].Abilities;
+
+                        for (var j in equipmentData){
+                            var def = this.formatAbilityTooltip(equipmentData[j]).split(":");
+                            obj[def[0]] = def[1];
+                        }
+                    }
+
+                    // Sorting the object by keys
+                    var sortedObj = {};
+                    var keys = Object.keys(obj).sort();
+                    for (var key of keys) {
+                        sortedObj[key] = obj[key];
+                    }
+
+                    return sortedObj;
                 }
             },
             methods: {
-                showTooltip(event) {
-                    $(event.target).tooltip('show');
-                },
-                hideTooltip(event) {
-                    $(event.target).tooltip('hide');
+                sortTable: function() {
+                    var table = document.getElementById("selected-units-table");
+                    var switching = true;
+
+                    while (switching) {
+                        switching = false;
+                        var rows = table.rows;
+
+                        for (var i = 1; i < rows.length - 1; i++) {
+                        var x = rows[i].getElementsByTagName("TD")[0];
+                        var y = rows[i + 1].getElementsByTagName("TD")[0];
+
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                            switching = true;
+                            break;
+                        }
+                        }
+                    }
                 },
                 addToArmy: function(unit) {
                     const potentialTotalPoints = this.totalPoints + unit.points;
@@ -463,9 +341,11 @@
                         }
                     } else {
                         // If the unit doesn't have an 'allowed' property, just add it
-                        this.selectedArmy.push(unit);
-                    }
-                    
+                        this.selectedArmy.push(unit);    
+                        this.$nextTick(function() {
+                            this.sortTable();
+                        });                  
+                    }                 
                 },
                 removeFromArmy: function(index) {
                     this.selectedArmy.splice(index, 1);
@@ -514,15 +394,9 @@
                 },
 
                 printTable: function() {
-                    const printContent = this.selectedFaction + document.getElementById("selected-units-table").outerHTML;
-                    const originalContent = document.body.innerHTML;
-
-                    document.body.innerHTML = printContent;
                     window.print();
-
-                    document.body.innerHTML = originalContent;
-                    //location.reload(); // Reload to restore the page state
                 }
+
             }
         });
     </script>
