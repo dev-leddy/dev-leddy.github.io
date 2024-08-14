@@ -38,7 +38,7 @@
 
         <div class="container mt-3" style="height: calc(100vh - 140px);">
             <div class="row" style="height: 100%">
-                <div class="col-md-3 unit-selection no-print" style="overflow:auto; height: 100%">
+                <div class="col-md-3 unit-selection no-print" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
                     <div v-for="(unit, index) in filteredUnits" :key="index" class="card mb-2 unit-card">
                         <div class="card-body p-2">
                             <div class="position-relative">
@@ -117,9 +117,17 @@
                 <div class="col-md-9 selected-units" id="selected-units-container">
                     <div class="w-25 no-print">
                         <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
-                        <span>{{ selectedPoints }} points</span>
                     </div>
-                    <h3 class="onlyPrint">{{selectedFaction}}</h3>
+                    <div>
+                        <h3>{{selectedFaction}}</h3>
+                        <span v-if="selectedFaction == 'Coftyran'">
+                            <img src="images/coftyran.png" width="126" height="80">
+                        </span>
+                        <span v-if="selectedFaction == 'Crusader'">
+                            <img src="images/crusader.png" width="126" height="80">
+                        </span>
+                        
+                    </div>
                     <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
                     <table id="selected-units-table" class="table table-bordered table-sm">
                             <tr>
