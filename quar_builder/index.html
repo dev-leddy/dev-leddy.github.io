@@ -152,13 +152,27 @@
         .tooltip-inner {
             white-space: pre-wrap; /* Preserve whitespace */
         }
+        .back-img{
+            content: ' ';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: url('quar.jpg');
+            background-repeat: no-repeat;
+            background-position: 50% 0;
+            background-size: cover;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
 </head>
-<body>
+    <div class="back-img"></div>
     <div id="app">
 		<nav class="navbar navbar-light bg-light">
 			<div class="container d-flex justify-content-between align-items-center">
@@ -365,29 +379,34 @@
                 }
             },
             methods: {
-                addToArmy(unit) {
-                    var self = this;
-                    if (self.totalPoints + unit.points <= self.selectedPoints) {
-                        self.selectedArmy.push(unit);
+                addToArmy: function(unit) {
+                    // Check if the unit has an 'allowed' property
+                    if (unit.allowed) {
+                        // Count how many units of this type are already in the army
+                        var unitCount = this.selectedArmy.filter(selectedUnit => selectedUnit.name === unit.name).length;
+
+                        // If the number of this unit type is less than the allowed amount, add the unit
+                        if (unitCount < unit.allowed) {
+                            this.selectedArmy.push(unit);
+                        } else {
+                            alert(`You can only add ${unit.allowed} of ${unit.name}.`);
+                        }
                     } else {
-                        alert("Adding this unit exceeds the current point limit!");
+                        // If the unit doesn't have an 'allowed' property, just add it
+                        this.selectedArmy.push(unit);
                     }
                 },
-                removeFromArmy(index) {
+                removeFromArmy: function(index) {
                     this.selectedArmy.splice(index, 1);
                 },
-                clearSelectedUnits() {
+                clearSelectedUnits: function() {
                     this.selectedArmy = [];
                 },
-                getEquipmentTooltip(equipment) {
-                    const equipmentInfo = this.equipmentData[equipment];
-                    if (equipmentInfo) {
-                        return `Range: ${equipmentInfo.R}\nSnapshot: ${equipmentInfo.Sn}\nAbilities: ${equipmentInfo.Abilities}\nMight: ${equipmentInfo.Mt}`;
-                    }
-                    return "See unit stats";
+                splitEquipment: function(equipment) {
+                    return equipment ? equipment.split(', ') : [];
                 },
-                splitEquipment(equipment) {
-                    return equipment.split(',').map(equip => equip.trim());
+                getEquipmentTooltip: function(equip) {
+                    return this.equipmentData[equip] || 'No details available';
                 }
             }
         });
