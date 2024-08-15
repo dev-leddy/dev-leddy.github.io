@@ -123,9 +123,6 @@
                 </div>
 
                 <div class="col-md-9 selected-units" id="selected-units-container">
-                    <div class="w-25 no-print">
-                        <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
-                    </div>
                     <div>
                         <h3>{{selectedFaction}}</h3>
                         <span v-if="selectedFaction == 'Coftyran'">
@@ -137,6 +134,10 @@
                         
                     </div>
                     <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
+                    <div class="w-25 no-print">
+                        <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                    </div>
+
                     <table id="selected-units-table" class="table table-bordered table-sm">                     
                     </table>
                                     
@@ -309,11 +310,14 @@
                         // Count how many units of this type are already in the army
                         var unitCount = this.selectedArmy.filter(selectedUnit => selectedUnit.name === unit.name).length;
 
-                        // If the number of this unit type is less than the allowed amount, add the unit
-                        if (unitCount < (unit.allowed * Math.round(this.selectedPoints/300))) {
+                        // multiplier based on selectedPoints
+                        var multiplier = this.selectedPoints <= 300 ? 1 : this.selectedPoints <= 600 ? 2 : null;
+
+                        // If the number of this unit type is less than the allowed amount times the multiplier, add the unit
+                        if (unitCount < unit.allowed * multiplier) {
                             this.selectedArmy.push(unit);
                         } else {
-                            alert(`You can only add ${unit.allowed} of ${unit.name}.`);
+                            alert(`You can only add ${unit.allowed * multiplier} of ${unit.name}.`);
                         }
                     } else {
                         // If the unit doesn't have an 'allowed' property, just add it
@@ -339,39 +343,42 @@
 
                                 for (i in data.equipment) {
                                     // Get equipment data with fallback values
-                                    const R = QuarBFB.equipmentData[data.equipment[i]]?.R ?? '-';
-                                    const Sn = QuarBFB.equipmentData[data.equipment[i]]?.Sn ?? '-';
-                                    const Mt = QuarBFB.equipmentData[data.equipment[i]]?.Mt ?? '-';
-                                    const Abilities = QuarBFB.equipmentData[data.equipment[i]]?.Abilities ?? '-';
+                                    var R = QuarBFB.equipmentData[data.equipment[i]]?.R ?? '';
+                                    var Sn = QuarBFB.equipmentData[data.equipment[i]]?.Sn ?? '';
+                                    var Mt = QuarBFB.equipmentData[data.equipment[i]]?.Mt ?? '';
+                                    var Abilities = QuarBFB.equipmentData[data.equipment[i]]?.Abilities ?? [];
 
                                     // Conditionally add 'mt-1' class if 'i' is greater than 0
-                                    const marginClass = (parseInt(i) > 0) ? 'mt-1' : '';
+                                    var marginClass = (parseInt(i) > 0) ? 'mt-1' : '';
 
                                     // Construct the HTML string with conditional class
                                     childHTML += `
-                                        <div class="d-flex w-50 mr-auto border rounded ${marginClass}" style="background-color: rgb(240, 242, 244); margin-left: 100px">
-                                            <div class="d-flex flex-column ml-1 my-auto w-25 font-italic">
+                                        <div class="d-flex w-75 ml-auto border rounded ${marginClass}" style="background-color: rgb(240, 242, 244);">
+                                            <div class="d-flex flex-column ml-1 mr-2 my-auto font-italic" style="width: 120px">
                                                 ${data.equipment[i]}
                                             </div>
-                                            <div class="d-flex flex-column w-25 border-left rounded">
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
                                                 <div class="ml-1">Range: </div>
                                                 <div class="ml-1">${R}</div>
                                             </div>
-                                            <div class="d-flex flex-column w-25 border-left rounded">
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
                                                 <div class="ml-1">Snapshot: </div>
                                                 <div class="ml-1">${Sn}</div>
                                             </div>
-                                            <div class="d-flex flex-column w-25 border-left rounded">
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
                                                 <div class="ml-1">Might: </div>
                                                 <div class="ml-1">${Mt}</div>
                                             </div>
-                                            <div class="d-flex flex-column w-25 border-left rounded">
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
                                                 <div class="ml-1">Abilities: </div>
-                                                <div class="ml-1">${Abilities}</div>
+                                                <div class="ml-1 d-flex flex-column">
+                                                    ${Abilities.map(ability => `<div>${ability}</div>`).join('')}
+                                                </div>
                                             </div>
                                         </div>
                                     `;
                                 }
+
 
                                 if(childHTML.length > 0){
                                     this.child(childHTML).show();
