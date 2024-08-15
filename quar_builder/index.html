@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 </head>
-    <div class="back-img"></div>
+    <div class="back-img no-print"></div>
     <div id="app">
 		<nav class="navbar navbar-light bg-light no-print">
 			<div class="container d-flex justify-content-between align-items-center">
@@ -290,7 +290,7 @@
                             obj[def[0]] = def[1];
                         }
 
-                        var equipmentData = this.equipmentData[unit.equipment[0]].Abilities;
+                        var equipmentData = this.equipmentData[unit.equipment[0]]?.Abilities;
 
                         for (var j in equipmentData){
                             var def = this.formatAbilityTooltip(equipmentData[j]).split(":");
@@ -330,8 +330,8 @@
                     }
                 },
                 addToArmy: function(unit) {
-                    console.log("Adding unit: ", unit);
                     var potentialTotalPoints = parseInt(this.totalPoints) + parseInt(unit.points);
+                    // check if the points of this unit would exceeed the total allowed
                     if (potentialTotalPoints > this.selectedPoints) {
                         alert('Adding this unit will exceed the total points available.');
                         return;
