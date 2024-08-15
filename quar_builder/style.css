@@ -96,6 +96,13 @@
 			justify-content: center;
 			font-size: 14px;
 			cursor: pointer;
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+             -khtml-user-select: none; /* Konqueror HTML */
+               -moz-user-select: none; /* Old versions of Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                    user-select: none; /* Non-prefixed version, currently
+                                          supported by Chrome, Edge, Opera and Firefox */
 		}
 		
 		.add-btn:focus {
@@ -104,27 +111,6 @@
 		
 		.add-btn:hover {
 			background-color: #28a745;
-		}
-		
-        .remove-btn {
-            cursor: pointer;
-			background-color: #e9ecef;
-			color: white;
-			border: none;
-			border-radius: 50%;
-			width: 15px;
-			height: 15px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 10px;
-			font-weight: bold;
-			margin-top: auto;
-			margin-bottom: auto;
-        }
-		
-		.remove-btn:hover{
-			background-color: #ff4d4d;
 		}
 		
         .card-title {
@@ -176,12 +162,20 @@
             max-width: 800px !important;
             width: 500px !important;
         }
-        td.details-control {
-            background: url('icon.png') no-repeat center center;
-            cursor: pointer;
+
+        .badge-custom {
+            cursor: pointer; 
+            background-color: #e9ecef;
+            color: white;
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+             -khtml-user-select: none; /* Konqueror HTML */
+               -moz-user-select: none; /* Old versions of Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                    user-select: none; /* Non-prefixed version, currently
+                                          supported by Chrome, Edge, Opera and Firefox */
         }
-        
-        tr.shown td.details-control {
-            background: url('icon.png') no-repeat center center;
+
+        .badge-custom:hover {
+            background-color: #dc3545;
         }
-        

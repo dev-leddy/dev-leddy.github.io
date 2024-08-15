@@ -22,8 +22,8 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 
 </head>
-    <div class="back-img no-print"></div>
     <div id="app">
+        <div class="back-img no-print"></div>
 		<nav class="navbar navbar-light bg-light no-print">
 			<div class="container d-flex justify-content-between align-items-center">
 				<div class="nav-item">
@@ -122,7 +122,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-9 selected-units" id="selected-units-container">
+                <div class="col-md-9 selected-units" id="selected-units-container" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
                     <div>
                         <h3>{{selectedFaction}}</h3>
                         <span v-if="selectedFaction == 'Coftyran'">
@@ -237,27 +237,62 @@
                 table: ''
             },
             mounted: function(){
-                this.table = $('#selected-units-table').DataTable( {
+                // Initialize DataTable
+                this.table = $('#selected-units-table').DataTable({
                     searching: false, 
                     paging: false, 
                     info: false,
                     data: this.selectedArmy,
                     columns: [
-                        {   title: 'Unit', 
+                        {   
+                            title: 'Unit', 
                             data: 'name',
+                            width: '20%',
                             render: function(data, type, row, meta) {
-                                return `<button class="remove-btn" title="Delete">X</button> ${data}`;
+                                return `
+                                <div class="d-flex">
+                                    <div class="my-auto badge badge-pill badge-light badge-custom no-print">X</div>
+                                    <div class="ml-2">${data}</div> 
+                                </div>`;
                             }
                         },
-                        { title: 'Skill', data: 'sk' },
-                        { title: 'Might', data: 'mt'},
-                        { title: 'Movement', data: 'ma' },
-                        { title: 'Toughness', data: 'toughness' },
+                        { title: 'Skill', data: 'sk', className: 'text-center' },
+                        { title: 'Might', data: 'mt', className: 'text-center'},
+                        { title: 'Movement', data: 'ma', className: 'text-center' },
+                        { title: 'Toughness', data: 'toughness', className: 'text-center' },
                         { title: 'Special Abilities', data: 'specialAbilities' },
-                        { title: 'Points', data: 'points' }
-                    ]
-                });        
-            },                       
+                        { title: 'Points', data: 'points', className: 'text-center' }
+                    ],
+                    initComplete: function() {
+                        var vueInstance = this;
+                        $('#selected-units-table').on('click', '.badge-custom', function() {
+                            var row = $(this).closest('tr');
+                            var rowIndex = vueInstance.table.row(row).index();
+
+                            // Remove the row from DataTable
+                            vueInstance.table.row(row).remove().draw();
+
+                            // Remove the corresponding item from Vue dataset
+                            vueInstance.removeFromArmy(rowIndex);
+                        });
+                    }.bind(this) // Ensure `this` is bound to the Vue instance
+                });       
+            },     
+            watch:{
+                selectedFaction: function(){
+                    var vueInstance = this; 
+                    vueInstance.table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                        // Get the current row
+                        var row = this.node();
+
+                        // Remove the row from DataTable
+                        vueInstance.table.row(row).remove().draw(false); // Use draw(false) to prevent complete redraw after each removal
+
+                        // Remove the corresponding item from Vue dataset
+                        vueInstance.removeFromArmy(rowIdx);
+                    });
+                }
+            },                  
             computed: {
 				filteredUnits() {
 					return this.availableUnits[this.selectedFaction];
@@ -328,7 +363,6 @@
                         this.table.rows.add(this.selectedArmy);
                         this.table.draw();
                         
-
                         this.table.rows().every(function () {
                             var row = this;
                             var tr = $(row.node());
@@ -354,23 +388,24 @@
                                     // Construct the HTML string with conditional class
                                     childHTML += `
                                         <div class="d-flex w-75 ml-auto border rounded ${marginClass}" style="background-color: rgb(240, 242, 244);">
-                                            <div class="d-flex flex-column ml-1 mr-2 my-auto font-italic" style="width: 120px">
-                                                ${data.equipment[i]}
+                                            <div class="d-flex flex-column ml-2 mr-2 my-auto font-italic" style="width: 120px">
+                                                <div>${data.equipment[i]}</div>
+                                                <img src="images/${data.equipment[i]}.png" style="object-fit: scale-down;width: 100px; height: 38px; margin-bottom: 5px;">                                                                                   
                                             </div>
                                             <div class="d-flex flex-column border-left rounded" style="width: 120px">
-                                                <div class="ml-1">Range: </div>
-                                                <div class="ml-1">${R}</div>
+                                                <div class="ml-1 border-bottom">Range: </div>
+                                                <div class="mx-auto my-auto">${R}</div>
                                             </div>
                                             <div class="d-flex flex-column border-left rounded" style="width: 120px">
-                                                <div class="ml-1">Snapshot: </div>
-                                                <div class="ml-1">${Sn}</div>
+                                                <div class="ml-1 border-bottom">Snapshot: </div>
+                                                <div class="mx-auto my-auto">${Sn}</div>
                                             </div>
                                             <div class="d-flex flex-column border-left rounded" style="width: 120px">
-                                                <div class="ml-1">Might: </div>
-                                                <div class="ml-1">${Mt}</div>
+                                                <div class="ml-1 border-bottom">Might: </div>
+                                                <div class="mx-auto my-auto">${Mt}</div>
                                             </div>
                                             <div class="d-flex flex-column border-left rounded" style="width: 120px">
-                                                <div class="ml-1">Abilities: </div>
+                                                <div class="ml-1 border-bottom">Abilities: </div>
                                                 <div class="ml-1 d-flex flex-column">
                                                     ${Abilities.map(ability => `<div>${ability}</div>`).join('')}
                                                 </div>
