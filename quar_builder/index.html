@@ -229,7 +229,7 @@
                     "Harlech": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
                     "Cryfen": { R: 8, Sn: -3, Abilities: ['Automatic', 'Loader'], Mt: '-' },
                     "Doru": { R: 4, Sn: -1, Abilities: ['Automatic'], Mt: '-' },
-                    "Pistol": { R: 4, Sn: -1, Abilities: '-', Mt: '-' },
+                    "Pistol": { R: 4, Sn: -1, Abilities: [], Mt: '-' },
                     "RCO m60": { R: 12, Sn: -4, Abilities: ['Blast(2)', 'Slow Reload', 'Crew(2)', 'Gun Shield', 'Heavy'], Mt: '2d6' },
                     "Bogen": { R: 6, Sn: -2, Abilities: [], Mt: '-' },
                     "Ryshi": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
@@ -330,7 +330,8 @@
                     }
                 },
                 addToArmy: function(unit) {
-                    const potentialTotalPoints = this.totalPoints + unit.points;
+                    console.log("Adding unit: ", unit);
+                    var potentialTotalPoints = parseInt(this.totalPoints) + parseInt(unit.points);
                     if (potentialTotalPoints > this.selectedPoints) {
                         alert('Adding this unit will exceed the total points available.');
                         return;
