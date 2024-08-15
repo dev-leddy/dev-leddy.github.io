@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quar Battleforce Builder</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <!-- DataTables Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <!-- DataTables Bootstrap 4 JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+
+</head>
+    <div class="back-img no-print"></div>
+    <div id="app">
+		<nav class="navbar navbar-light bg-light no-print">
+			<div class="container d-flex justify-content-between align-items-center">
+				<div class="nav-item">
+                    <select id="faction-select" class="form-control" v-model="selectedFaction" @change="clearSelectedUnits">
+						<option value="Crusader">Crusader</option>
+						<option value="Coftyran">Coftyran</option>
+					</select>
+				</div>
+				
+				<div class="nav-item mx-3">
+					<h2 class="mb-0 text-monospace">Quar Battleforce Builder</h4>
+				</div>
+				
+                <div class="mb-2">
+                    <!-- <button class="btn btn-primary" @click="exportToCSV">Export to CSV</button> -->
+                    <button class="btn btn-secondary" @click="printTable">Print</button>
+                </div>
+			</div>
+		</nav>
+
+        <div class="container mt-3" style="height: calc(100vh - 140px);">
+            <div class="row" style="height: 100%">
+                <div class="col-md-3 unit-selection no-print" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
+                    <div v-for="(unit, index) in filteredUnits" :key="index" class="card mb-2 unit-card">
+                        <div class="card-body p-2">
+                            <div class="position-relative">
+                                <div class="points-box">{{ unit.points }}</div>
+								<div class="unit-name-box">
+                                    <span v-if="unit.allowed">({{unit.allowed}})&nbsp;</span>
+                                    {{ unit.name }}
+                                </div>
+                                <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
+                            </div>
+                            <div class="unit-stats" style="margin-top: 25px;">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Skill: </div>
+                                    <div>{{ unit.sk }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Mt: </div>
+                                    <div>{{ unit.mt }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Ma: </div>
+                                    <div>{{ unit.ma }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Tgh: </div>
+                                    <div>{{ unit.toughness }}</div>
+                                </div>
+                            </div>
+                            <div v-if="unit.specialAbilities.length > 0" class="unit-stats mt-2">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Special Abilities: </div>
+                                    <span v-for="ability in unit.specialAbilities" :key="ability">
+                                        <!-- <span class="ability" :title="formatAbilityTooltip(ability)">{{ ability }}</span> -->
+                                        <span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
+                                            {{ ability }}
+                                        </span>
+                                        
+                                    </span>
+                                </div>
+                            </div>
+                            <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-2">
+                                <div class="w-100">
+                                    <span class="label">Equipment:</span>
+                                    <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip">										
+										<div style="background-color:#f0f2f4  ;border-radius: 5px; padding: 2px; margin-bottom: 2px;" >
+                                            <div class="equipment">{{ equip }}</div>
+                                            <div v-if="equipmentData[equip]" class="d-flex justify-content-center w-100 flex-wrap">
+                                                <div class="d-flex flex-column flex-grow-1">
+                                                    <div class="font-weight-bold">R: </div>
+                                                    <div>{{equipmentData[equip]?.R}}</div>
+                                                </div>
+                                                <div class="d-flex flex-column flex-grow-1">
+                                                    <div class="font-weight-bold">Sn: </div>
+                                                    <div>{{equipmentData[equip]?.Sn}}</div>
+                                                </div>
+                                                <div class="d-flex flex-column flex-grow-1">
+                                                    <div class="font-weight-bold">Mt: </div>
+                                                    <div>{{equipmentData[equip]?.Mt}}</div>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <div class="font-weight-bold">Abilities: </div>
+                                                    <div class="ability" v-for="ability in equipmentData[equip]?.Abilities" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
+                                                        {{ability}}
+                                                    </div>
+                                                </div>	
+                                            </div>
+                                            <div v-else class="font-weight-light font-italic">Use unit stats for melee.</div>
+                                        </div>							
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9 selected-units" id="selected-units-container">
+                    <div>
+                        <h3>{{selectedFaction}}</h3>
+                        <span v-if="selectedFaction == 'Coftyran'">
+                            <img src="images/coftyran.png" width="126" height="80">
+                        </span>
+                        <span v-if="selectedFaction == 'Crusader'">
+                            <img src="images/crusader.png" width="126" height="80">
+                        </span>
+                        
+                    </div>
+                    <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
+                    <div class="w-25 no-print">
+                        <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                    </div>
+
+                    <table id="selected-units-table" class="table table-bordered table-sm">                     
+                    </table>
+                                    
+                    <div>
+                        <div v-for="(def, key) in getKeywords" :key="key">
+                            <div class="font-weight-bold">{{key}}:</div> 
+                            <div class="font-weight-light">{{def}}</div>
+                        </div>
+                    </div>                 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var QuarBFB = new Vue({
+            el: '#app',
+            data: {
+                selectedFaction: 'Crusader',
+                selectedPoints: 200,
+                availableUnits: {                   
+                    "Crusader": [
+                        { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": [], "points": 25 },
+                        { "name": "Rhyfler (Rhyshi)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 28 },
+                        { "name": "LMG Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["H-11a"], "specialAbilities": [], "points": 35, "allowed": 1 },
+                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Dead-eye (2)"], "points": 35, "allowed": 2 },
+                        { "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (2/3)"], "points": 28, "allowed": 1 },
+                        { "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (3/4)"], "points": 30, "allowed": 1 },
+                        { "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Grifkis Shotgun"], "specialAbilities": ["Leader (2/5)"], "points": 30, "allowed": 1 },
+                        { "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": ["Sio-Cly Derringer", "Mace"], "specialAbilities": ["Wallop", "Infiltrate"], "points": 42, "allowed": 3 },
+                        { "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": ["Sio-Cly Derringer", "Mace"], "specialAbilities": ["Infiltrate", "Leader (3/4)"], "points": 50, "allowed": 1 },
+                        { "name": "Torpedo Rhyfler", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["Splagen Torpedo"], "specialAbilities": [], "points": 39, "allowed": 2 },
+                        { "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Standard"], "points": 30, "allowed": 1 },
+                        { "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["PykPyk(3)"], "points": 30, "allowed": 1 },
+                        { "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": [], "specialAbilities": ["PykPyk(1)"], "points": 5 }
+                    ],
+                    "Coftyran": [
+                        { "name": "Rhyfler (Harlech)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": [], "points": 25 },
+                        { "name": "Rhyfler (Cryfen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Cryfen"], "specialAbilities": [], "points": 32, "allowed": 1 },
+                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Dead-eye (2)"], "points": 35, "allowed": 2 },
+                        { "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Leader (2/3)"], "points": 28, "allowed": 1 },
+                        { "name": "Yawdryl", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Leader (3/4)"], "points": 33, "allowed": 1 },
+                        { "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Pistol", "Sword"], "specialAbilities": ["Leader (2/5)"], "points": 28, "allowed": 1 },
+                        { "name": "Trench Raider", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": ["Doru", "Sword"], "specialAbilities": ["Killing Strike", "Infiltrate"], "points": 42, "allowed": 3 },
+                        { "name": "Trench Raider Yawdryl", "sk": 13, "mt": "2d6+1", "ma": 6, "toughness": 4, "equipment": ["Doru", "Sword"], "specialAbilities": ["Infiltrate", "Leader (3/4)"], "points": 50, "allowed": 1 },
+                        { "name": "Gunner", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["RCO m60"], "specialAbilities": [], "points": 70, "allowed": 1 },
+                        { "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Standard"], "points": 35, "allowed": 1 },
+                        { "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["PykPyk(3)"], "points": 30, "allowed": 1 },
+                        { "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": [], "specialAbilities": ["PykPyk(3)"], "points": 5 }
+                    ]
+                },
+                equipmentData: {
+                    "Harlech": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
+                    "Cryfen": { R: 8, Sn: -3, Abilities: ['Automatic', 'Loader'], Mt: '-' },
+                    "Doru": { R: 4, Sn: -1, Abilities: ['Automatic'], Mt: '-' },
+                    "Pistol": { R: 4, Sn: -1, Abilities: [], Mt: '-' },
+                    "RCO m60": { R: 12, Sn: -4, Abilities: ['Blast(2)', 'Slow Reload', 'Crew(2)', 'Gun Shield', 'Heavy'], Mt: '2d6' },
+                    "Bogen": { R: 6, Sn: -2, Abilities: [], Mt: '-' },
+                    "Ryshi": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
+                    "H-11a": { R: 10, Sn: -3, Abilities: ['Automatic', 'Loader'], Mt: '-' },
+                    "Grifkis Shotgun": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
+                    "Sio-Cly Derringer": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
+                    "Splagen Torpedo": { R: 6, Sn: -4, Abilities: ['Blast(1)'], Mt: '2d6-1' }
+                },
+                specialAbilities: {
+                    "Automatic": "Apply +2 to skill if firing at a single target. Automatic weapons may perform the Area Fire action which can target figures within a 4” circle. Each extra target adds -1 to the Skill roll. Use the best cover available (light cover does not apply), and apply modifiers based on targets’ actions (Dive for Cover, return fire, or move).",
+                    "Cavalry": "May perform a combat action as part of a normal move. The attack may be performed at any point during the rhyfler’s movement. Ranged attacks performed with this ability are at an additional -2 to the Skill Check, but Melee attacks grant the attacker the Wallop ability.",
+                    "Communications": "After the opponent draws their activation card, their commander may spend a point of Pluck to reveal its value.",
+                    "Dead-eye (X)": "When performing an Aimed Shot increase skill by X.",
+                    "Hardened": "Ignore the need to go Prone when hit by ranged fire. Not Gobsmacked when he dives for cover.",
+                    "Hero": "Heroes have the Hardened and Veteran abilities. May only include one Hero for every 100 points gathered, with a maximum of four allowed.",
+                    "Infiltrate": "A rhyfler with this ability may start the Skirmish off the battlefield. When his commander chooses to bring this rhyfler on the field he designates a point anywhere on the battlefield, no closer than 4” to an enemy rhyfler. He then spends an Action, and rolls on the Infiltrate table.",
+                    "Killing Strike": "May reduce effective Skill for an attack by two, to increase his Might by two.",
+                    "Leader (X/Y)": "Leaders allow a commander to better control his troops through their abilities to activate multiple rhyflers at once. A rhyfler with this ability may perform a Leadership action with a number of rhyflers equal to his Leadership value (X) and within his Leadership range (Y), in inches.",
+                    "Leap (X)": "When jumping during a movement action, this rhyfler multiplies the distance allowed, both horizontally and vertically, by their Leap value. This allows the rhyfler to ignore certain barricades and obstacles, as well as enemy rhyflers.",
+                    "Loader": "If the firing rhyfler is in base contact with another friendly rhyfler, increase the roll needed to pass any Skill Check by +1.",
+                    "Medic (X)": "Trained to patch up minor wounds and get rhyflers back on the battlefield, Medics can do a better job of Tend Wounded by subtracting their level to their skill for the Tend Wounded roll.",
+                    "Parry": "Armed with advanced training in hand-to-hand combat, this rhyfler, when Gobsmacked by a melee attack, may attempt a Skill check to avoid the change in Status.",
+                    "Pathfinder": "This rhyfler is extremely adept at surprising his opponents. The rhyfler has the Infiltrate ability, and when rolling on the Infiltrate table, this he rolls three dice and chooses which two to apply.",
+                    "Ranged/Melee (X)": "Rhyflers receive extensive training in the weapons they are issued, allowing them to add this value to the target number when performing the listed combat action.",
+                    "Resilient": "Tougher than his companions, a Resilient rhyfler can do a Tend Wounded action on himself.",
+                    "Shotgun": "Originally hunting weapons, Shotguns have found favor in the trenches. These weapons fire a group of small projectiles that cover an area, but lose effectiveness over range. Within the first range band the shotgun affects only the target, but with +1 to Skill. In the second range band it affects the target and an additional rhyfler of the firer’s choice within 1” of the primary target. In the third range band it affects the target and an additional two rhyflers of the firer’s choice within 2” of the primary target. Shotguns may not fire beyond three range bands.",
+                    "Skirmisher": "At home in the wilderness, these rhyflers are trained to make better use of terrain. Skirmishers do not suffer movement penalties from difficult terrain, and increase modifiers from cover by 1—clear terrain grants a -1, light cover increases to -2, etc—to a maximum penalty of -3.20.",
+                    "Slow Reload": "These complex weapons require the spending of an action to reload after a ranged attack. If the commander elects not to immediately reload the weapon the rhyfler must be marked as carrying an unloaded weapon.",
+                    "Sniper Scope": "Equipped with telescopic sights, these weapons only apply range penalties up close. A weapon with a Sniper Scope suffers a -2 penalty within its first range band, and a -1 within its second. The third range band for the weapon is at no penalty, and further penalties are then calculated from that point, thus the fourth range band is at a -1.",
+                    "Standard": "Any rhyfler within 2” of his side’s standard bearer can add 1 to their Skill for all purposes. If a standard bearer is Gobsmacked he will cling to his standard whatever the situation (that’s why they were chosen, after all). If he is Killed the standard falls to the ground and may be picked up by any adjacent rhyfler who spends an action. A rhyfler who picks up his own side’s standard gains the Standard Special Ability. If an enemy rhyfler picks up the standard, the side losing the standard gives 3 Pluck (or all they have) to the side gaining the standard. If the original side regains their standard they take back 3 Pluck (or all that remains).",
+                    "Veteran": "Trained to shrug off battlefield conditions that leave other rhyflers subdued, a successful recovery does not count as one of a Veteran rhyfler’s two allowed actions.",
+                    "Wallop": "A rhyfler with this ability has trained in the art of melee weapons, or he is naturally very strong, allowing him to attack with great might. A rhyfler with the Wallop ability may perform a powerful blow attack by spending a point of Pluck instead of the second action normally required.",
+                    "Heavy": "Cannons, wounded comrades and crates of grenades are all more than one Quar can handle. Heavy objects move 1 inch per rhyfler in base-to-base contact. These rhyflers may conduct a Group Movement action as if they have a leader.",
+                    "Crew(X)": "For a crewed weapon X is the number of rhyflers required to operate the weapon. All crew must be Ready or on Overwatch and base-to-base with the weapon. If active crew drop below X the Skill of the Rhyfler operating the weapon is at -2. Firing the Crewed weapon counts as a combat action for the entire crew. Crew Move - Weapon Crew may perform a Group Movement action as if they have a leader.",
+                    "Braced": "Automatic weapons with bipods and heavy rifles sometimes require physical support to fire accurately. When these weapons fire they subtract -1 from Skill unless the firing unit is Prone or base-to-base with terrain providing cover.",
+                    "Gun Shield": "Some crewed weapons are equipped with a gun shield to protect the crew from incoming fire. A gun shield provides partial cover for up to Crew(X) of the weapon.",
+                    "Blast(X)": "This weapon affects an area instead of a single target. The firing rhyfler declares a target point, which may be either an enemy rhyfler or point on the battlefield, then makes a Ranged Attack check to hit the target. Target units may not react to Blast attacks. Any infantry model within one Blast distance (X) of the point of impact is automatically knocked Prone. Conduct a Might roll against each unit within the Blast area. Units with partial cover to the Blast center half the Might roll against them. Any units between the blast radius and twice the blast radius must make a skill check or become Prone, but are not attacked. If the check is failed, the firer rolls on the Dispersion table.",
+                    "PykPyk(X)": "Pykpyk Squirrels are treated as tokens and placed on the side of the play area. They need not be placed on the board with their handler, do not need to be activated and may not be attacked. A Pykpyk may be exchanged to reveal the current activation card, reroll any of the player’s die rolls or to perform a Tend Wounded action on an Out Of Action Rhyfler. Pykpyks are not removed if their Handler is Out Of Action. (X) is the number of Pykpyks included with the Handler. Additional Pykpyks may be purchased during the Gathering of Forces."
+                },
+                selectedArmy: [],
+                table: ''
+            },
+            mounted: function(){
+                // Initialize DataTable
+                this.table = $('#selected-units-table').DataTable({
+                    searching: false, 
+                    paging: false, 
+                    info: false,
+                    data: this.selectedArmy,
+                    columns: [
+                        {   
+                            title: 'Unit', 
+                            data: 'name',
+                            width: '20%',
+                            render: function(data, type, row, meta) {
+                                return `
+                                <div class="d-flex">
+                                    <div class="my-auto badge badge-pill badge-light badge-custom no-print">X</div>
+                                    <div class="ml-2">${data}</div> 
+                                </div>`;
+                            }
+                        },
+                        { title: 'Skill', data: 'sk' },
+                        { title: 'Might', data: 'mt'},
+                        { title: 'Movement', data: 'ma' },
+                        { title: 'Toughness', data: 'toughness' },
+                        { title: 'Special Abilities', data: 'specialAbilities' },
+                        { title: 'Points', data: 'points' }
+                    ],
+                    initComplete: function() {
+                        var vueInstance = this; // Capture Vue instance
+                        $('#selected-units-table').on('click', '.badge-custom', function() {
+                            var row = $(this).closest('tr');
+                            var rowIndex = vueInstance.table.row(row).index();
+
+                            // Remove the row from DataTable
+                            vueInstance.table.row(row).remove().draw();
+
+                            // Remove the corresponding item from Vue dataset
+                            vueInstance.removeFromArmy(rowIndex);
+                        });
+                    }.bind(this) // Ensure `this` is bound to the Vue instance
+                });
+        
+            },                       
+            computed: {
+				filteredUnits() {
+					return this.availableUnits[this.selectedFaction];
+				},
+                totalPoints() {
+                    return this.selectedArmy.reduce(function(acc, unit) {
+                        return acc + unit.points;
+                    }, 0);
+                },
+                getKeywords(){
+                    var obj = {};
+                    for(var unit of this.selectedArmy){
+                        for(var i in unit.specialAbilities){
+                            var def = this.formatAbilityTooltip(unit.specialAbilities[i]).split(":");
+                            obj[def[0]] = def[1];
+                        }
+
+                        var equipmentData = this.equipmentData[unit.equipment[0]]?.Abilities;
+
+                        for (var j in equipmentData){
+                            var def = this.formatAbilityTooltip(equipmentData[j]).split(":");
+                            obj[def[0]] = def[1];
+                        }
+                    }
+
+                    // Sorting the object by keys
+                    var sortedObj = {};
+                    var keys = Object.keys(obj).sort();
+                    for (var key of keys) {
+                        sortedObj[key] = obj[key];
+                    }
+
+                    return sortedObj;
+                }
+            },
+            methods: {
+                format: function(d) {return "<div>HELLO</div>";},
+                addToArmy: function(unit) {
+                    //TODO: verify pykpyks are allowed
+
+                    var potentialTotalPoints = parseInt(this.totalPoints) + parseInt(unit.points);
+                    // check if the points of this unit would exceeed the total allowed
+                    if (potentialTotalPoints > this.selectedPoints) {
+                        alert('Adding this unit will exceed the total points available.');
+                        return;
+                    }
+
+                    // Check if the unit has an 'allowed' property
+                    if (unit.allowed) {
+                        // Count how many units of this type are already in the army
+                        var unitCount = this.selectedArmy.filter(selectedUnit => selectedUnit.name === unit.name).length;
+
+                        // multiplier based on selectedPoints
+                        var multiplier = this.selectedPoints <= 300 ? 1 : this.selectedPoints <= 600 ? 2 : null;
+
+                        // If the number of this unit type is less than the allowed amount times the multiplier, add the unit
+                        if (unitCount < unit.allowed * multiplier) {
+                            this.selectedArmy.push(unit);
+                        } else {
+                            alert(`You can only add ${unit.allowed * multiplier} of ${unit.name}.`);
+                        }
+                    } else {
+                        // If the unit doesn't have an 'allowed' property, just add it
+                        this.selectedArmy.push(unit);                    
+                    }   
+                    this.$nextTick(function() {                   
+                        this.table.clear();
+                        this.table.rows.add(this.selectedArmy);
+                        this.table.draw();
+                        
+
+                        this.table.rows().every(function () {
+                            var row = this;
+                            var tr = $(row.node());
+
+                            // Check if the row has a child row
+                            if (!this.child.isShown()) {        
+                                var data = row.data();    
+                                
+                                var childHTML = '';
+
+                                var R, Sn, Mt, Abilities;
+
+                                for (i in data.equipment) {
+                                    // Get equipment data with fallback values
+                                    var R = QuarBFB.equipmentData[data.equipment[i]]?.R ?? '';
+                                    var Sn = QuarBFB.equipmentData[data.equipment[i]]?.Sn ?? '';
+                                    var Mt = QuarBFB.equipmentData[data.equipment[i]]?.Mt ?? '';
+                                    var Abilities = QuarBFB.equipmentData[data.equipment[i]]?.Abilities ?? [];
+
+                                    // Conditionally add 'mt-1' class if 'i' is greater than 0
+                                    var marginClass = (parseInt(i) > 0) ? 'mt-1' : '';
+
+                                    // Construct the HTML string with conditional class
+                                    childHTML += `
+                                        <div class="d-flex w-75 ml-auto border rounded ${marginClass}" style="background-color: rgb(240, 242, 244);">
+                                            <div class="d-flex flex-column ml-1 mr-2 my-auto font-italic" style="width: 120px">
+                                                ${data.equipment[i]}
+                                            </div>
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                                <div class="ml-1 border-bottom">Range: </div>
+                                                <div class="ml-1">${R}</div>
+                                            </div>
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                                <div class="ml-1 border-bottom">Snapshot: </div>
+                                                <div class="ml-1">${Sn}</div>
+                                            </div>
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                                <div class="ml-1 border-bottom">Might: </div>
+                                                <div class="ml-1">${Mt}</div>
+                                            </div>
+                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                                <div class="ml-1 border-bottom">Abilities: </div>
+                                                <div class="ml-1 d-flex flex-column">
+                                                    ${Abilities.map(ability => `<div>${ability}</div>`).join('')}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+
+
+                                if(childHTML.length > 0){
+                                    this.child(childHTML).show();
+                                }
+                                
+
+                                // Open the child row
+                                this.child.show();
+                            }
+                        });
+                    });                
+                },
+                removeFromArmy: function(index) {
+                    this.selectedArmy.splice(index, 1);
+                },
+                clearSelectedUnits: function() {
+                    this.selectedArmy = [];
+                },
+                formatAbilityTooltip: function(ability) {
+                    // Replace fractions with X/Y
+                    ability = ability.replace(/\b\d+\/\d+\b/g, 'X/Y');
+                    
+                    // Replace integers with X
+                    ability = ability.replace(/\b\d+\b/g, 'X');
+
+                    var tooltip = this.specialAbilities[ability];
+                    if (tooltip) {                        
+                        return ability + ": " + tooltip;
+                    }
+                    return '';
+                },
+                printTable: function() {
+                    window.print();
+                }
+
+            }
+        });
+    </script>
+</body>
+</html>
