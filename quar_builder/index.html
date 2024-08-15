@@ -289,12 +289,28 @@
                         $('#selected-units-table').on('click', '.badge-custom', function() {
                             var row = $(this).closest('tr');
                             var rowIndex = vueInstance.table.row(row).index();
+                            var unitName = vueInstance.selectedArmy[rowIndex].name;
+                            console.log("unitName", unitName)
 
                             // Remove the row from DataTable
                             vueInstance.table.row(row).remove().draw();
 
                             // Remove the corresponding item from Vue dataset
                             vueInstance.removeFromArmy(rowIndex);
+
+                            // If the removed unit is "Squirrel Handler", remove all "Pykpyk" units
+                            if (unitName === "Squirrel Handler") {
+                                // Find and remove all "Pykpyk" units
+                                for (var i = vueInstance.selectedArmy.length - 1; i >= 0; i--) {
+                                    if (vueInstance.selectedArmy[i].name == 'PykPyks (3)') {
+                                        // Remove from DataTable
+                                        vueInstance.table.row(i).remove().draw();
+
+                                        // Remove from Vue dataset
+                                        vueInstance.removeFromArmy(i);
+                                    }
+                                }
+                            }
                         });
                     }.bind(this) // Ensure `this` is bound to the Vue instance
                 });       
