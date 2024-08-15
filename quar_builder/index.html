@@ -134,9 +134,16 @@
                         
                     </div>
                     <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
-                    <div class="w-25 no-print">
-                        <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                    <div class="d-flex">
+                        <div class="w-25 no-print">
+                            <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                        </div>
+                        <div class="ml-auto my-auto badge badge-pill badge-light badge-custom no-print" @click="clearAll()">
+                            Clear All
+                        </div>
+                        
                     </div>
+
 
                     <table id="selected-units-table" class="table table-bordered table-sm">                     
                     </table>
@@ -280,17 +287,7 @@
             },     
             watch:{
                 selectedFaction: function(){
-                    var vueInstance = this; 
-                    vueInstance.table.rows().every(function(rowIdx, tableLoop, rowLoop) {
-                        // Get the current row
-                        var row = this.node();
-
-                        // Remove the row from DataTable
-                        vueInstance.table.row(row).remove().draw(false); // Use draw(false) to prevent complete redraw after each removal
-
-                        // Remove the corresponding item from Vue dataset
-                        vueInstance.removeFromArmy(rowIdx);
-                    });
+                    this.clearAll();
                 }
             },                  
             computed: {
@@ -329,7 +326,19 @@
                 }
             },
             methods: {
-                format: function(d) {return "<div>HELLO</div>";},
+                clearAll: function(){
+                    var vueInstance = this; 
+                    vueInstance.table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                        // Get the current row
+                        var row = this.node();
+
+                        // Remove the row from DataTable
+                        vueInstance.table.row(row).remove().draw(false); // Use draw(false) to prevent complete redraw after each removal
+
+                        // Remove the corresponding item from Vue dataset
+                        vueInstance.removeFromArmy(rowIdx);
+                    });
+                },
                 addToArmy: function(unit) {
                     //TODO: verify pykpyks are allowed
 
@@ -392,19 +401,19 @@
                                                 <div>${data.equipment[i]}</div>
                                                 <img src="images/${data.equipment[i]}.png" style="object-fit: scale-down;width: 100px; height: 38px; margin-bottom: 5px;">                                                                                   
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Range: </div>
                                                 <div class="mx-auto my-auto">${R}</div>
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Snapshot: </div>
                                                 <div class="mx-auto my-auto">${Sn}</div>
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Might: </div>
                                                 <div class="mx-auto my-auto">${Mt}</div>
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Abilities: </div>
                                                 <div class="ml-1 d-flex flex-column">
                                                     ${Abilities.map(ability => `<div>${ability}</div>`).join('')}
