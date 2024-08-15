@@ -354,10 +354,18 @@
                     });
                 },
                 addToArmy: function(unit) {
-                    //TODO: verify pykpyks are allowed
+                    // Verify if "PykPyks" can be added only if "Squirrel Handler" is already in the army
+                    if (unit.name == "PykPyks (3)") {
+                        var squirrelHandlerExists = this.selectedArmy.some(selectedUnit => selectedUnit.name === "Squirrel Handler");
+                        if (!squirrelHandlerExists) {
+                            alert('You must have a "Squirrel Handler" in your army to add "PykPyks".');
+                            return;
+                        }
+                    }
 
                     var potentialTotalPoints = parseInt(this.totalPoints) + parseInt(unit.points);
-                    // check if the points of this unit would exceeed the total allowed
+
+                    // Check if adding this unit would exceed the total points allowed
                     if (potentialTotalPoints > this.selectedPoints) {
                         alert('Adding this unit will exceed the total points available.');
                         return;
@@ -368,7 +376,7 @@
                         // Count how many units of this type are already in the army
                         var unitCount = this.selectedArmy.filter(selectedUnit => selectedUnit.name === unit.name).length;
 
-                        // multiplier based on selectedPoints
+                        // Multiplier based on selectedPoints
                         var multiplier = this.selectedPoints <= 300 ? 1 : this.selectedPoints <= 600 ? 2 : null;
 
                         // If the number of this unit type is less than the allowed amount times the multiplier, add the unit
@@ -379,13 +387,14 @@
                         }
                     } else {
                         // If the unit doesn't have an 'allowed' property, just add it
-                        this.selectedArmy.push(unit);                    
-                    }   
-                    this.$nextTick(function() {                   
+                        this.selectedArmy.push(unit);
+                    }
+
+                    this.$nextTick(function() {
                         this.table.clear();
                         this.table.rows.add(this.selectedArmy);
                         this.table.draw();
-                        
+
                         this.table.rows().every(function () {
                             var row = this;
                             var tr = $(row.node());
@@ -393,7 +402,7 @@
                             // Check if the row has a child row
                             if (!this.child.isShown()) {        
                                 var data = row.data();    
-                                
+
                                 var childHTML = '';
 
                                 var R, Sn, Mt, Abilities;
@@ -437,11 +446,9 @@
                                     `;
                                 }
 
-
                                 if(childHTML.length > 0){
                                     this.child(childHTML).show();
                                 }
-                                
 
                                 // Open the child row
                                 this.child.show();
@@ -449,6 +456,7 @@
                         });
                     });                
                 },
+
                 removeFromArmy: function(index) {
                     this.selectedArmy.splice(index, 1);
                 },
