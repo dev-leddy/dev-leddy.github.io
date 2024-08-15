@@ -123,15 +123,20 @@
                 </div>
 
                 <div class="col-md-9 selected-units" id="selected-units-container" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
-                    <div>
-                        <h3>{{selectedFaction}}</h3>
+                    <div class="d-flex">                    
                         <span v-if="selectedFaction == 'Coftyran'">
                             <img src="images/coftyran.png" width="126" height="80">
                         </span>
                         <span v-if="selectedFaction == 'Crusader'">
                             <img src="images/crusader.png" width="126" height="80">
                         </span>
-                        
+                        <h1 class="my-auto mx-auto">{{selectedFaction}}</h1>
+                        <span v-if="selectedFaction == 'Coftyran'">
+                            <img src="images/coftyran.png" width="126" height="80">
+                        </span>
+                        <span v-if="selectedFaction == 'Crusader'">
+                            <img src="images/crusader.png" width="126" height="80">
+                        </span>
                     </div>
                     <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
                     <div class="d-flex">
@@ -162,7 +167,7 @@
     <script>
       kofiWidgetOverlay.draw('thesmarf', {
         'type': 'floating-chat',
-        'floating-chat.donateButton.text': '',
+        'floating-chat.donateButton.text': 'Support Me',
         'floating-chat.donateButton.background-color': '#ffffff',
         'floating-chat.donateButton.text-color': '#323842',
         'floating-chat.display': 'none',
