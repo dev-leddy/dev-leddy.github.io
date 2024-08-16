@@ -1,8 +1,13 @@
         @media print
         {    
-            .no-print, .no-print *
+            div:has(.floatingchat-container-wrap), .no-print, .no-print *
             {
                 display: none !important;
+            }
+
+            #selected-units-container {
+                overflow-y: visible !important;
+                height: auto !important;
             }
         }
         @media screen {

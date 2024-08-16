@@ -40,6 +40,7 @@
                 <div class="mb-2">
                     <!-- <button class="btn btn-primary" @click="exportToCSV">Export to CSV</button> -->
                     <button class="btn btn-secondary" @click="printTable">Print</button>
+                    <b-form-checkbox size="sm" v-model="printTables">Include Ref Tables</b-form-checkbox>
                 </div>
 			</div>
 		</nav>
@@ -123,22 +124,33 @@
                 </div>
 
                 <div class="col-md-9 selected-units" id="selected-units-container" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
-                    <div>
-                        <h3>{{selectedFaction}}</h3>
+                    <div class="d-flex">                    
                         <span v-if="selectedFaction == 'Coftyran'">
                             <img src="images/coftyran.png" width="126" height="80">
                         </span>
                         <span v-if="selectedFaction == 'Crusader'">
                             <img src="images/crusader.png" width="126" height="80">
                         </span>
-                        
+                        <h1 class="my-auto mx-auto">{{selectedFaction}}</h1>
+                        <span v-if="selectedFaction == 'Coftyran'">
+                            <img src="images/coftyran.png" width="126" height="80">
+                        </span>
+                        <span v-if="selectedFaction == 'Crusader'">
+                            <img src="images/crusader.png" width="126" height="80">
+                        </span>
                     </div>
                     <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
-                    <div class="w-25 no-print">
-                        <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                    <div class="d-flex">
+                        <div class="w-25 no-print">
+                            <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                        </div>
+                        <div class="ml-auto my-auto badge badge-pill badge-light badge-custom no-print" @click="clearAll()">
+                            Clear All
+                        </div>
+                        
                     </div>
-
-                    <table id="selected-units-table" class="table table-bordered table-sm">                     
+                    
+                    <table id="selected-units-table" class="table table-bordered">                     
                     </table>
                                     
                     <div>
@@ -146,13 +158,116 @@
                             <div class="font-weight-bold">{{key}}:</div> 
                             <div class="font-weight-light">{{def}}</div>
                         </div>
-                    </div>                 
+                    </div>  
+                    
+                    <div id="referenceTables">
+                        <div :class="{'no-print': !printTables}" style="page-break-before: always">
+                            <div class="d-flex ml-1 font-italic">
+                                <div class="my-auto">Grenade throws require 2 actions.</div>
+                                <div class="d-flex flex-column ml-auto">
+                                    <div>10" range, roll 2D6 and check the outcome table below.</div>
+                                    <div>Blind frags roll 3D6 and the opposing commander chooses two.</div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <h3>Frag Grenade Table</h3>
+                            <div id="fragmentationGrenadeOutcomes" class="data-table-container mb-2"></div>
+                            <h3>Smoke Grenade Table</h3>
+                            <ul class="list-unstyled">
+                                <ul>A smoke marker matches the size of a rhyfler's base.</ul>
+                                <ul>Imposes a -3 Skill penalty on ranged attacks tracing LOS through it, and a -1 penalty for attacks within 1” of it.</ul>
+                                <ul>Remove smoke markers when the Activation Deck is reshuffled.</ul>
+                            </ul>
+                            <div id="smokeGrenadeOutcomes" class="data-table-container mb-2"></div>
+                            <h3 >Infiltrate Table</h3>
+                            <ul class="list-unstyled">
+                                <ul>A rhyfler with this ability can start off the battlefield. </ul>
+                                <ul>When the commander brings the rhyfler onto the field, they choose a point at least 4” away from enemy rhyflers, spend an Action, and roll on the Infiltrate table.</ul>
+                            </ul>
+                            <div id="infiltrateOutcomes" class="data-table-container"></div>
+                        </div>                        
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>
+      kofiWidgetOverlay.draw('thesmarf', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support Me!',
+        'floating-chat.donateButton.background-color': '#ffffff',
+        'floating-chat.donateButton.text-color': '#323842',
+        'floating-chat.display': 'none',
+      });
+    </script>
+    <script>
+            $(document).ready(function() {
+            function renderTable(containerId, data) {
+                const tableHtml = `
+                    <table id="${containerId}Table" class="display">
+                        <thead>
+                            <tr>
+                                <th>Roll Outcome</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.entries(data).map(([key, value]) => `
+                                <tr>
+                                    <td>${key}</td>
+                                    <td>${value}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                $(`#${containerId}`).html(tableHtml);
+                $(`#${containerId}Table`).DataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    sorting: false,
+                    columns: [
+                        { width: '20%' }, // Width for Roll Outcome column
+                        { width: '80%' }  // Width for Description column
+                    ]
+                });
+            }
+
+            const fragmentationGrenadeOutcomes = {
+                "6/6": "Target suffers a 3d6 Might attack; rhyflers within 3” suffer a 2d6 Might attack.",
+                "6/-": "Target suffers a 2d6 Might attack; rhyflers within 2” suffer a 2d6 Might attack.",
+                "6/1": "Target suffers a 2d6+1 Might attack; thrower is Gobsmacked.",
+                "-/-": "Target suffers a 1d6 Might attack.",
+                "1/-": "Grenade bounces away and is harmless.",
+                "1/1": "Thrower suffers a 2d6 Might attack."
+            };
+
+            const smokeGrenadeOutcomes = {
+                "6/6": "Place a smoke marker at the designated location, and a second smoke marker 1” away.",
+                "6/-": "Place a smoke marker at the designated location.",
+                "6/1": "Place a smoke marker at the designated location, and the opposing commander places a second smoke marker up to 2” away.",
+                "-/-": "Opposing commander places a smoke marker up to 3” away from the designated location.",
+                "1/-": "Grenade bounces and produces little smoke.",
+                "1/1": "Place a smoke marker immediately in front of the thrower."
+            };
+
+            const infiltrateOutcomes = {
+                "6/6": "Psst! Behind you! – Place the rhyfler anywhere on the battlefield, including Engaged with an enemy rhyfler. This is a free action and does not expend an Action from the current Card.",
+                "6/-": "Where did he come from?!? – Place the rhyfler anywhere within 4” of the designated point, including Engaged with an enemy rhyfler.",
+                "6/1": "Stepped on a branch! – Place the rhyfler at the designated point. This is a free action and does not expend an Action from the current Card.",
+                "-/-": "Sneaky bugger! – Place the rhyfler at the designated point.",
+                "1/-": "Wait, where am I? – Opponent places rhyfler within 4” of the designated point, including Engaged with an enemy rhyfler of his choice.",
+                "1/1": "Should have turned left at... – Opponent places the rhyfler anywhere on the battlefield, including Engaged with an enemy rhyfler of his choice."
+            };
+
+            renderTable('fragmentationGrenadeOutcomes', fragmentationGrenadeOutcomes);
+            renderTable('smokeGrenadeOutcomes', smokeGrenadeOutcomes);
+            renderTable('infiltrateOutcomes', infiltrateOutcomes);
+            $('#referenceTables').addClass('onlyPrint');
+        });
+
         var QuarBFB = new Vue({
             el: '#app',
             data: {
@@ -206,7 +321,7 @@
                     "Automatic": "Apply +2 to skill if firing at a single target. Automatic weapons may perform the Area Fire action which can target figures within a 4” circle. Each extra target adds -1 to the Skill roll. Use the best cover available (light cover does not apply), and apply modifiers based on targets’ actions (Dive for Cover, return fire, or move).",
                     "Cavalry": "May perform a combat action as part of a normal move. The attack may be performed at any point during the rhyfler’s movement. Ranged attacks performed with this ability are at an additional -2 to the Skill Check, but Melee attacks grant the attacker the Wallop ability.",
                     "Communications": "After the opponent draws their activation card, their commander may spend a point of Pluck to reveal its value.",
-                    "Dead-eye (X)": "When performing an Aimed Shot increase skill by X.",
+                    "Dead-eye (X)": "When performing an Aimed Shot increase skill by X.",                                                
                     "Hardened": "Ignore the need to go Prone when hit by ranged fire. Not Gobsmacked when he dives for cover.",
                     "Hero": "Heroes have the Hardened and Veteran abilities. May only include one Hero for every 100 points gathered, with a maximum of four allowed.",
                     "Infiltrate": "A rhyfler with this ability may start the Skirmish off the battlefield. When his commander chooses to bring this rhyfler on the field he designates a point anywhere on the battlefield, no closer than 4” to an enemy rhyfler. He then spends an Action, and rolls on the Infiltrate table.",
@@ -219,14 +334,14 @@
                     "Pathfinder": "This rhyfler is extremely adept at surprising his opponents. The rhyfler has the Infiltrate ability, and when rolling on the Infiltrate table, this he rolls three dice and chooses which two to apply.",
                     "Ranged/Melee (X)": "Rhyflers receive extensive training in the weapons they are issued, allowing them to add this value to the target number when performing the listed combat action.",
                     "Resilient": "Tougher than his companions, a Resilient rhyfler can do a Tend Wounded action on himself.",
-                    "Shotgun": "Originally hunting weapons, Shotguns have found favor in the trenches. These weapons fire a group of small projectiles that cover an area, but lose effectiveness over range. Within the first range band the shotgun affects only the target, but with +1 to Skill. In the second range band it affects the target and an additional rhyfler of the firer’s choice within 1” of the primary target. In the third range band it affects the target and an additional two rhyflers of the firer’s choice within 2” of the primary target. Shotguns may not fire beyond three range bands.",
-                    "Skirmisher": "At home in the wilderness, these rhyflers are trained to make better use of terrain. Skirmishers do not suffer movement penalties from difficult terrain, and increase modifiers from cover by 1—clear terrain grants a -1, light cover increases to -2, etc—to a maximum penalty of -3.20.",
-                    "Slow Reload": "These complex weapons require the spending of an action to reload after a ranged attack. If the commander elects not to immediately reload the weapon the rhyfler must be marked as carrying an unloaded weapon.",
+                    "Shotgun": "Shotguns fire a spread of projectiles. In the first range band, they hit the target with +1 Skill. In the second band, they hit the target and one rhyfler within 1”. In the third band, they hit the target and two rhyflers within 2”. They cannot fire beyond three range bands.",
+                    "Skirmisher": "Skirmishers do not suffer movement penalties from difficult terrain, and increase modifiers from cover by 1.",
+                    "Slow Reload": "These weapons require an action to reload after each attack. If not reloaded immediately, the rhyfler must be marked as carrying an unloaded weapon.",
                     "Sniper Scope": "Equipped with telescopic sights, these weapons only apply range penalties up close. A weapon with a Sniper Scope suffers a -2 penalty within its first range band, and a -1 within its second. The third range band for the weapon is at no penalty, and further penalties are then calculated from that point, thus the fourth range band is at a -1.",
-                    "Standard": "Any rhyfler within 2” of his side’s standard bearer can add 1 to their Skill for all purposes. If a standard bearer is Gobsmacked he will cling to his standard whatever the situation (that’s why they were chosen, after all). If he is Killed the standard falls to the ground and may be picked up by any adjacent rhyfler who spends an action. A rhyfler who picks up his own side’s standard gains the Standard Special Ability. If an enemy rhyfler picks up the standard, the side losing the standard gives 3 Pluck (or all they have) to the side gaining the standard. If the original side regains their standard they take back 3 Pluck (or all that remains).",
+                    "Standard": "Rhyflers within 2” of their side's standard bearer gain +1 Skill. If the standard bearer is Gobsmacked, he clings to the standard. If Killed, the standard falls and can be picked up by an adjacent rhyfler with an action. A rhyfler who picks up their own side’s standard gains the Standard Special Ability. If an enemy picks it up, the losing side gives 3 Pluck (or all they have) to the gaining side. The original side regains 3 Pluck (or all that remains) if they recover their standard.",
                     "Veteran": "Trained to shrug off battlefield conditions that leave other rhyflers subdued, a successful recovery does not count as one of a Veteran rhyfler’s two allowed actions.",
-                    "Wallop": "A rhyfler with this ability has trained in the art of melee weapons, or he is naturally very strong, allowing him to attack with great might. A rhyfler with the Wallop ability may perform a powerful blow attack by spending a point of Pluck instead of the second action normally required.",
-                    "Heavy": "Cannons, wounded comrades and crates of grenades are all more than one Quar can handle. Heavy objects move 1 inch per rhyfler in base-to-base contact. These rhyflers may conduct a Group Movement action as if they have a leader.",
+                    "Wallop": "A rhyfler with the Wallop ability may perform a powerful blow attack by spending a point of Pluck instead of the second action normally required.",
+                    "Heavy": "Heavy objects move 1 inch per rhyfler in base-to-base contact. These rhyflers may conduct a Group Movement action as if they have a leader.",
                     "Crew(X)": "For a crewed weapon X is the number of rhyflers required to operate the weapon. All crew must be Ready or on Overwatch and base-to-base with the weapon. If active crew drop below X the Skill of the Rhyfler operating the weapon is at -2. Firing the Crewed weapon counts as a combat action for the entire crew. Crew Move - Weapon Crew may perform a Group Movement action as if they have a leader.",
                     "Braced": "Automatic weapons with bipods and heavy rifles sometimes require physical support to fire accurately. When these weapons fire they subtract -1 from Skill unless the firing unit is Prone or base-to-base with terrain providing cover.",
                     "Gun Shield": "Some crewed weapons are equipped with a gun shield to protect the crew from incoming fire. A gun shield provides partial cover for up to Crew(X) of the weapon.",
@@ -234,63 +349,65 @@
                     "PykPyk(X)": "Pykpyk Squirrels are treated as tokens and placed on the side of the play area. They need not be placed on the board with their handler, do not need to be activated and may not be attacked. A Pykpyk may be exchanged to reveal the current activation card, reroll any of the player’s die rolls or to perform a Tend Wounded action on an Out Of Action Rhyfler. Pykpyks are not removed if their Handler is Out Of Action. (X) is the number of Pykpyks included with the Handler. Additional Pykpyks may be purchased during the Gathering of Forces."
                 },
                 selectedArmy: [],
-                table: ''
+                table: '',
+                printTables: false                                                                                                                                                                                                                                                     
             },
             mounted: function(){
                 // Initialize DataTable
                 this.table = $('#selected-units-table').DataTable({
-                    searching: false, 
-                    paging: false, 
-                    info: false,
-                    data: this.selectedArmy,
-                    columns: [
-                        {   
-                            title: 'Unit', 
-                            data: 'name',
-                            width: '20%',
-                            render: function(data, type, row, meta) {
-                                return `
-                                <div class="d-flex">
-                                    <div class="my-auto badge badge-pill badge-light badge-custom no-print">X</div>
-                                    <div class="ml-2">${data}</div> 
-                                </div>`;
+                searching: false,
+                paging: false,
+                info: false,
+                data: this.selectedArmy,
+                columns: [
+                    {   
+                        title: 'Unit', 
+                        data: 'name',
+                        width: '20%',
+                        render: function(data, type, row, meta) {
+                            return `
+                            <div class="d-flex">
+                                <div class="my-auto badge badge-pill badge-light badge-custom no-print">X</div>
+                                <div class="ml-2">${data}</div> 
+                            </div>`;
+                        }
+                    },
+                    { title: 'Skill', data: 'sk', className: 'text-center' },
+                    { title: 'Might', data: 'mt', className: 'text-center'},
+                    { title: 'Movement', data: 'ma', className: 'text-center' },
+                    { title: 'Toughness', data: 'toughness', className: 'text-center' },
+                    { title: 'Special Abilities', data: 'specialAbilities' },
+                    { title: 'Points', data: 'points', className: 'text-center' }
+                ],
+                initComplete: function() {
+                    var vueInstance = this;
+                    $('#selected-units-table').on('click', '.badge-custom', function() {
+                        var row = $(this).closest('tr');
+                        var rowIndex = vueInstance.table.row(row).index();
+                        var unitName = vueInstance.selectedArmy[rowIndex].name;
+
+                        // Remove the row from DataTable
+                        vueInstance.table.row(row).remove().draw();
+
+                        // Remove the corresponding item from Vue dataset
+                        vueInstance.removeFromArmy(rowIndex);
+
+                        // If the removed unit is "Squirrel Handler", remove all "Pykpyk" units
+                        if (unitName === "Squirrel Handler") {
+                            for (var i = vueInstance.selectedArmy.length - 1; i >= 0; i--) {
+                                if (vueInstance.selectedArmy[i].name == 'PykPyks (3)') {
+                                    vueInstance.table.row(i).remove().draw();
+                                    vueInstance.removeFromArmy(i);
+                                }
                             }
-                        },
-                        { title: 'Skill', data: 'sk', className: 'text-center' },
-                        { title: 'Might', data: 'mt', className: 'text-center'},
-                        { title: 'Movement', data: 'ma', className: 'text-center' },
-                        { title: 'Toughness', data: 'toughness', className: 'text-center' },
-                        { title: 'Special Abilities', data: 'specialAbilities' },
-                        { title: 'Points', data: 'points', className: 'text-center' }
-                    ],
-                    initComplete: function() {
-                        var vueInstance = this;
-                        $('#selected-units-table').on('click', '.badge-custom', function() {
-                            var row = $(this).closest('tr');
-                            var rowIndex = vueInstance.table.row(row).index();
-
-                            // Remove the row from DataTable
-                            vueInstance.table.row(row).remove().draw();
-
-                            // Remove the corresponding item from Vue dataset
-                            vueInstance.removeFromArmy(rowIndex);
-                        });
-                    }.bind(this) // Ensure `this` is bound to the Vue instance
-                });       
+                        }
+                    });
+                }.bind(this) // Ensure `this` is bound to the Vue instance
+            });
             },     
             watch:{
                 selectedFaction: function(){
-                    var vueInstance = this; 
-                    vueInstance.table.rows().every(function(rowIdx, tableLoop, rowLoop) {
-                        // Get the current row
-                        var row = this.node();
-
-                        // Remove the row from DataTable
-                        vueInstance.table.row(row).remove().draw(false); // Use draw(false) to prevent complete redraw after each removal
-
-                        // Remove the corresponding item from Vue dataset
-                        vueInstance.removeFromArmy(rowIdx);
-                    });
+                    this.clearAll();
                 }
             },                  
             computed: {
@@ -329,12 +446,33 @@
                 }
             },
             methods: {
-                format: function(d) {return "<div>HELLO</div>";},
+                clearAll: function(){
+                    var vueInstance = this; 
+                    vueInstance.table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                        // Get the current row
+                        var row = this.node();
+
+                        // Remove the row from DataTable
+                        vueInstance.table.row(row).remove().draw(false); // Use draw(false) to prevent complete redraw after each removal
+
+                        // Remove the corresponding item from Vue dataset
+                        vueInstance.removeFromArmy(rowIdx);
+                    });
+                    Vue.set(vueInstance, vueInstance.selectedArmy, []);
+                },
                 addToArmy: function(unit) {
-                    //TODO: verify pykpyks are allowed
+                    // Verify if "PykPyks" can be added only if "Squirrel Handler" is already in the army
+                    if (unit.name == "PykPyks (3)") {
+                        var squirrelHandlerExists = this.selectedArmy.some(selectedUnit => selectedUnit.name === "Squirrel Handler");
+                        if (!squirrelHandlerExists) {
+                            alert('You must have a "Squirrel Handler" in your army to add "PykPyks".');
+                            return;
+                        }
+                    }
 
                     var potentialTotalPoints = parseInt(this.totalPoints) + parseInt(unit.points);
-                    // check if the points of this unit would exceeed the total allowed
+
+                    // Check if adding this unit would exceed the total points allowed
                     if (potentialTotalPoints > this.selectedPoints) {
                         alert('Adding this unit will exceed the total points available.');
                         return;
@@ -345,7 +483,7 @@
                         // Count how many units of this type are already in the army
                         var unitCount = this.selectedArmy.filter(selectedUnit => selectedUnit.name === unit.name).length;
 
-                        // multiplier based on selectedPoints
+                        // Multiplier based on selectedPoints
                         var multiplier = this.selectedPoints <= 300 ? 1 : this.selectedPoints <= 600 ? 2 : null;
 
                         // If the number of this unit type is less than the allowed amount times the multiplier, add the unit
@@ -356,13 +494,14 @@
                         }
                     } else {
                         // If the unit doesn't have an 'allowed' property, just add it
-                        this.selectedArmy.push(unit);                    
-                    }   
-                    this.$nextTick(function() {                   
+                        this.selectedArmy.push(unit);
+                    }
+
+                    this.$nextTick(function() {
                         this.table.clear();
                         this.table.rows.add(this.selectedArmy);
                         this.table.draw();
-                        
+
                         this.table.rows().every(function () {
                             var row = this;
                             var tr = $(row.node());
@@ -370,7 +509,7 @@
                             // Check if the row has a child row
                             if (!this.child.isShown()) {        
                                 var data = row.data();    
-                                
+
                                 var childHTML = '';
 
                                 var R, Sn, Mt, Abilities;
@@ -390,21 +529,21 @@
                                         <div class="d-flex w-75 ml-auto border rounded ${marginClass}" style="background-color: rgb(240, 242, 244);">
                                             <div class="d-flex flex-column ml-2 mr-2 my-auto font-italic" style="width: 120px">
                                                 <div>${data.equipment[i]}</div>
-                                                <img src="images/${data.equipment[i]}.png" style="object-fit: scale-down;width: 100px; height: 40px;">                                                                                   
+                                                <img src="images/${data.equipment[i]}.png" style="object-fit: scale-down;width: 100px; height: 38px; margin-bottom: 5px;">                                                                                   
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Range: </div>
                                                 <div class="mx-auto my-auto">${R}</div>
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Snapshot: </div>
                                                 <div class="mx-auto my-auto">${Sn}</div>
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Might: </div>
                                                 <div class="mx-auto my-auto">${Mt}</div>
                                             </div>
-                                            <div class="d-flex flex-column border-left rounded" style="width: 120px">
+                                            <div class="d-flex flex-column border-left" style="width: 120px">
                                                 <div class="ml-1 border-bottom">Abilities: </div>
                                                 <div class="ml-1 d-flex flex-column">
                                                     ${Abilities.map(ability => `<div>${ability}</div>`).join('')}
@@ -414,11 +553,9 @@
                                     `;
                                 }
 
-
                                 if(childHTML.length > 0){
                                     this.child(childHTML).show();
                                 }
-                                
 
                                 // Open the child row
                                 this.child.show();
@@ -426,6 +563,7 @@
                         });
                     });                
                 },
+
                 removeFromArmy: function(index) {
                     this.selectedArmy.splice(index, 1);
                 },
