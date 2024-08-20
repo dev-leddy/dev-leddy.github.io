@@ -36,6 +36,7 @@
 				
 				<div class="nav-item mx-3">
 					<h2 class="mb-0 text-monospace">Quar Battleforce Builder</h4>
+                        <small>This is a major work in progress. Sorry if I break something, let me know on discord by DMing me. @smarf</small>
 				</div>
 				
                 <div class="mb-2">
@@ -46,85 +47,116 @@
 			</div>
 		</nav>
 
-        <div class="container mt-3" style="height: calc(100vh - 140px);">
-            <div class="row" style="height: 100%">
-                <div class="col-md-3 unit-selection no-print" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
-                    <div v-for="(unit, index) in filteredUnits" :key="index" class="card mb-2 unit-card">
-                        <div class="card-body p-2">
-                            <div class="position-relative">
-                                <div class="points-box">{{ unit.points }}</div>
-								<div class="unit-name-box">
-                                    <span v-if="unit.allowed">({{unit.allowed}})&nbsp;</span>
-                                    {{ unit.name }}
-                                </div>
-                                <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
+
+        <div class="d-flex" style="height: calc(100vh - 140px);">
+            <div class="unit-selection no-print mx-2" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px); min-width:275px">
+                <div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">
+                    
+                        <div>
+                            <div class="points-box">{{ unit.points }}</div>
+                            <div class="unit-name-box">
+                                <span v-if="unit.allowed">({{unit.allowed}})&nbsp;</span>
+                                {{ unit.name }}
                             </div>
-                            <div class="unit-stats" style="margin-top: 25px;">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Skill: </div>
-                                    <div>{{ unit.sk }}</div>
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Mt: </div>
-                                    <div>{{ unit.mt }}</div>
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Ma: </div>
-                                    <div>{{ unit.ma }}</div>
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Tgh: </div>
-                                    <div>{{ unit.toughness }}</div>
-                                </div>
+                            <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
+                        </div>
+                        <div class="unit-stats" style="margin-top: 35px;">
+                            <div class="d-flex flex-column flex-grow-1">
+                                <div class="font-weight-bold">Skill: </div>
+                                <div>{{ unit.sk }}</div>
                             </div>
-                            <div v-if="unit.specialAbilities.length > 0" class="unit-stats mt-2">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Special Abilities: </div>
-                                    <span v-for="ability in unit.specialAbilities" :key="ability">
-                                        <!-- <span class="ability" :title="formatAbilityTooltip(ability)">{{ ability }}</span> -->
-                                        <span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
-                                            {{ ability }}
-                                        </span>
-                                        
+                            <div class="d-flex flex-column flex-grow-1">
+                                <div class="font-weight-bold">Mt: </div>
+                                <div>{{ unit.mt }}</div>
+                            </div>
+                            <div class="d-flex flex-column flex-grow-1">
+                                <div class="font-weight-bold">Ma: </div>
+                                <div>{{ unit.ma }}</div>
+                            </div>
+                            <div class="d-flex flex-column flex-grow-1">
+                                <div class="font-weight-bold">Tgh: </div>
+                                <div>{{ unit.toughness }}</div>
+                            </div>
+                        </div>
+                        <div v-if="unit.specialAbilities.length > 0" class="unit-stats mt-2">
+                            <div class="d-flex flex-column flex-grow-1">
+                                <div class="font-weight-bold">Special Abilities: </div>
+                                <span v-for="ability in unit.specialAbilities" :key="ability">
+                                    <!-- <span class="ability" :title="formatAbilityTooltip(ability)">{{ ability }}</span> -->
+                                    <span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
+                                        {{ ability }}
                                     </span>
-                                </div>
+                                    
+                                </span>
                             </div>
-                            <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-2">
-                                <div class="w-100">
-                                    <span class="label">Equipment:</span>
-                                    <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip">										
-										<div style="background-color:#f0f2f4  ;border-radius: 5px; padding: 2px; margin-bottom: 2px;" >
-                                            <div class="equipment">{{ equip }}</div>
-                                            <div v-if="equipmentData[equip]" class="d-flex justify-content-center w-100 flex-wrap">
-                                                <div class="d-flex flex-column flex-grow-1">
-                                                    <div class="font-weight-bold">R: </div>
-                                                    <div>{{equipmentData[equip]?.R}}</div>
-                                                </div>
-                                                <div class="d-flex flex-column flex-grow-1">
-                                                    <div class="font-weight-bold">Sn: </div>
-                                                    <div>{{equipmentData[equip]?.Sn}}</div>
-                                                </div>
-                                                <div class="d-flex flex-column flex-grow-1">
-                                                    <div class="font-weight-bold">Mt: </div>
-                                                    <div>{{equipmentData[equip]?.Mt}}</div>
-                                                </div>
-                                                <div class="d-flex flex-column">
-                                                    <div class="font-weight-bold">Abilities: </div>
-                                                    <div class="ability" v-for="ability in equipmentData[equip]?.Abilities" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
-                                                        {{ability}}
-                                                    </div>
-                                                </div>	
+                        </div>
+                        <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-2">
+                            <div class="w-100">
+                                <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip">
+                                    <div class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
+                                        <div class="d-flex">
+                                            <div class="d-flex flex-column">
+                                                <div class="equipment">{{ equip }}</div>
+                                                <img :src="'images/' + equip + '.png'" style="object-fit: scale-down; width: 100px; height: 28px; margin-bottom: 5px;">
                                             </div>
-                                            <div v-else class="font-weight-light font-italic">Use unit stats for melee.</div>
-                                        </div>							
-									</div>
+                                            <div v-if="equipmentData[equip]?.Abilities.length" class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
+                                                <div class="font-weight-bold font-italic">Abilities: </div>
+                                                <div class="d-flex flex-column ml-2">
+                                                    <div class="ability" v-for="ability in equipmentData[equip]?.Abilities">
+                                                        <span v-b-tooltip.html="{ title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window' }">
+                                                            {{ ability }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                    
+                                        <div v-if="equipmentData[equip]" class="d-flex flex-column mt-2 px-3 py-1" style="color: white;background-color: #8b9192; border-radius: 5px;">
+                                            <div class="d-flex">
+                                                <div class="d-flex mr-auto">
+                                                    <div class="d-flex">
+                                                        <span class="mr-1 my-auto font-weight-bold">
+                                                            Range:
+                                                            <!-- <img style="filter: invert(1);" src="images/range.svg" width="20px" height="20px"> -->
+                                                        </span>
+                                                        <span class="my-auto">{{ equipmentData[equip]?.R }}</span>
+                                                    </div>
+                                                </div>
+                                                <div v-if="equipmentData[equip]?.Mt !== '-'" class="d-flex">
+                                                    <div>
+                                                        <span class="mr-1 font-weight-bold">
+                                                            Mt:
+                                                            <!-- <img style="filter: invert(1);" src="images/might.svg" width="20px" height="20px"> -->
+                                                        </span>
+                                                        <span class="my-auto">{{ equipmentData[equip]?.Mt }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex ml-auto">
+                                                    <div>
+                                                        <span class="mr-1 font-weight-bold">
+                                                            Snap:
+                                                            <!-- <img style="filter: invert(1);" src="images/snapshot.svg" width="20px" height="20px"> -->
+                                                        </span>
+                                                        <span class="my-auto">{{ equipmentData[equip]?.Sn }}</span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        
+                                        <div v-if="!equipmentData[equip]" class="font-weight-light font-italic mt-2">Use unit stats for melee.</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        
+                        
+                        
+                    
                 </div>
+            </div>
 
-                <div class="col-md-9 selected-units" id="selected-units-container" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
+            <div class="selected-units" id="selected-units-container" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px);">
+                <div class="mx-5">
                     <div class="d-flex">                    
                         <span v-if="selectedFaction == 'Coftyran'">
                             <img src="images/coftyran.png" width="126" height="80">
@@ -150,19 +182,19 @@
                         </div>
                         
                     </div>
-                    
-                    <table id="selected-units-table" class="table table-bordered">                     
-                    </table>
-                                    
+                    <div class="table-responsive">                
+                        <table id="selected-units-table" style="width:100%" class="table table-bordered">
+                        </table>
+                    </div>
+    
                     <div>
                         <div v-for="(def, key) in getKeywords" :key="key">
                             <div class="font-weight-bold">{{key}}:</div> 
                             <div class="font-weight-light">{{def}}</div>
                         </div>
-                    </div>  
-                    
+                    </div>
                     <div id="referenceTables">
-                        <div :class="{'no-print': !printTables}" style="page-break-before: always">
+                        <div :class="{'no-print': !printTables}" style="break-before: auto;">
                             <div class="d-flex ml-1 font-italic">
                                 <div class="my-auto">Grenade throws require 2 actions.</div>
                                 <div class="d-flex flex-column ml-auto">
@@ -187,12 +219,13 @@
                             </ul>
                             <div id="infiltrateOutcomes" class="data-table-container"></div>
                         </div>                        
-                    </div>
-                </div>
+                    </div>                
+                </div>               
             </div>
         </div>
     </div>
-    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+
+    <!-- <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>
       kofiWidgetOverlay.draw('thesmarf', {
         'type': 'floating-chat',
@@ -201,72 +234,72 @@
         'floating-chat.donateButton.text-color': '#323842',
         'floating-chat.display': 'none',
       });
-    </script>
+    </script> -->
     <script>
-            $(document).ready(function() {
-            function renderTable(containerId, data) {
-                const tableHtml = `
-                    <table id="${containerId}Table" class="display">
-                        <thead>
-                            <tr>
-                                <th>Roll Outcome</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${Object.entries(data).map(([key, value]) => `
+        $(document).ready(function() {
+                function renderTable(containerId, data) {
+                    const tableHtml = `
+                        <table id="${containerId}Table" class="display">
+                            <thead>
                                 <tr>
-                                    <td>${key}</td>
-                                    <td>${value}</td>
+                                    <th>Roll Outcome</th>
+                                    <th>Description</th>
                                 </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-                $(`#${containerId}`).html(tableHtml);
-                $(`#${containerId}Table`).DataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    sorting: false,
-                    columns: [
-                        { width: '20%' }, // Width for Roll Outcome column
-                        { width: '80%' }  // Width for Description column
-                    ]
-                });
-            }
+                            </thead>
+                            <tbody>
+                                ${Object.entries(data).map(([key, value]) => `
+                                    <tr>
+                                        <td>${key}</td>
+                                        <td>${value}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    $(`#${containerId}`).html(tableHtml);
+                    $(`#${containerId}Table`).DataTable({
+                        searching: false,
+                        paging: false,
+                        info: false,
+                        sorting: false,
+                        columns: [
+                            { width: '20%' }, // Width for Roll Outcome column
+                            { width: '80%' }  // Width for Description column
+                        ]
+                    });
+                }
 
-            const fragmentationGrenadeOutcomes = {
-                "6/6": "Target suffers a 3d6 Might attack; rhyflers within 3” suffer a 2d6 Might attack.",
-                "6/-": "Target suffers a 2d6 Might attack; rhyflers within 2” suffer a 2d6 Might attack.",
-                "6/1": "Target suffers a 2d6+1 Might attack; thrower is Gobsmacked.",
-                "-/-": "Target suffers a 1d6 Might attack.",
-                "1/-": "Grenade bounces away and is harmless.",
-                "1/1": "Thrower suffers a 2d6 Might attack."
-            };
+                const fragmentationGrenadeOutcomes = {
+                    "6/6": "Target suffers a 3d6 Might attack; rhyflers within 3” suffer a 2d6 Might attack.",
+                    "6/-": "Target suffers a 2d6 Might attack; rhyflers within 2” suffer a 2d6 Might attack.",
+                    "6/1": "Target suffers a 2d6+1 Might attack; thrower is Gobsmacked.",
+                    "-/-": "Target suffers a 1d6 Might attack.",
+                    "1/-": "Grenade bounces away and is harmless.",
+                    "1/1": "Thrower suffers a 2d6 Might attack."
+                };
 
-            const smokeGrenadeOutcomes = {
-                "6/6": "Place a smoke marker at the designated location, and a second smoke marker 1” away.",
-                "6/-": "Place a smoke marker at the designated location.",
-                "6/1": "Place a smoke marker at the designated location, and the opposing commander places a second smoke marker up to 2” away.",
-                "-/-": "Opposing commander places a smoke marker up to 3” away from the designated location.",
-                "1/-": "Grenade bounces and produces little smoke.",
-                "1/1": "Place a smoke marker immediately in front of the thrower."
-            };
+                const smokeGrenadeOutcomes = {
+                    "6/6": "Place a smoke marker at the designated location, and a second smoke marker 1” away.",
+                    "6/-": "Place a smoke marker at the designated location.",
+                    "6/1": "Place a smoke marker at the designated location, and the opposing commander places a second smoke marker up to 2” away.",
+                    "-/-": "Opposing commander places a smoke marker up to 3” away from the designated location.",
+                    "1/-": "Grenade bounces and produces little smoke.",
+                    "1/1": "Place a smoke marker immediately in front of the thrower."
+                };
 
-            const infiltrateOutcomes = {
-                "6/6": "Psst! Behind you! – Place the rhyfler anywhere on the battlefield, including Engaged with an enemy rhyfler. This is a free action and does not expend an Action from the current Card.",
-                "6/-": "Where did he come from?!? – Place the rhyfler anywhere within 4” of the designated point, including Engaged with an enemy rhyfler.",
-                "6/1": "Stepped on a branch! – Place the rhyfler at the designated point. This is a free action and does not expend an Action from the current Card.",
-                "-/-": "Sneaky bugger! – Place the rhyfler at the designated point.",
-                "1/-": "Wait, where am I? – Opponent places rhyfler within 4” of the designated point, including Engaged with an enemy rhyfler of his choice.",
-                "1/1": "Should have turned left at... – Opponent places the rhyfler anywhere on the battlefield, including Engaged with an enemy rhyfler of his choice."
-            };
+                const infiltrateOutcomes = {
+                    "6/6": "Psst! Behind you! – Place the rhyfler anywhere on the battlefield, including Engaged with an enemy rhyfler. This is a free action and does not expend an Action from the current Card.",
+                    "6/-": "Where did he come from?!? – Place the rhyfler anywhere within 4” of the designated point, including Engaged with an enemy rhyfler.",
+                    "6/1": "Stepped on a branch! – Place the rhyfler at the designated point. This is a free action and does not expend an Action from the current Card.",
+                    "-/-": "Sneaky bugger! – Place the rhyfler at the designated point.",
+                    "1/-": "Wait, where am I? – Opponent places rhyfler within 4” of the designated point, including Engaged with an enemy rhyfler of his choice.",
+                    "1/1": "Should have turned left at... – Opponent places the rhyfler anywhere on the battlefield, including Engaged with an enemy rhyfler of his choice."
+                };
 
-            renderTable('fragmentationGrenadeOutcomes', fragmentationGrenadeOutcomes);
-            renderTable('smokeGrenadeOutcomes', smokeGrenadeOutcomes);
-            renderTable('infiltrateOutcomes', infiltrateOutcomes);
-            $('#referenceTables').addClass('onlyPrint');
+                renderTable('fragmentationGrenadeOutcomes', fragmentationGrenadeOutcomes);
+                renderTable('smokeGrenadeOutcomes', smokeGrenadeOutcomes);
+                renderTable('infiltrateOutcomes', infiltrateOutcomes);
+                $('#referenceTables').addClass('onlyPrint');
         });
 
         var QuarBFB = new Vue({
@@ -367,55 +400,64 @@
             mounted: function(){
                 // Initialize DataTable
                 this.table = $('#selected-units-table').DataTable({
-                searching: false,
-                paging: false,
-                info: false,
-                data: this.selectedArmy,
-                columns: [
-                    {   
-                        title: 'Unit', 
-                        data: 'name',
-                        width: '20%',
-                        render: function(data, type, row, meta) {
-                            return `
-                            <div class="d-flex">
-                                <div class="my-auto badge badge-pill badge-light badge-custom no-print">X</div>
-                                <div class="ml-2">${data}</div> 
-                            </div>`;
-                        }
-                    },
-                    { title: 'Skill', data: 'sk', className: 'text-center' },
-                    { title: 'Might', data: 'mt', className: 'text-center'},
-                    { title: 'Movement', data: 'ma', className: 'text-center' },
-                    { title: 'Toughness', data: 'toughness', className: 'text-center' },
-                    { title: 'Special Abilities', data: 'specialAbilities' },
-                    { title: 'Points', data: 'points', className: 'text-center' }
-                ],
-                initComplete: function() {
-                    var vueInstance = this;
-                    $('#selected-units-table').on('click', '.badge-custom', function() {
-                        var row = $(this).closest('tr');
-                        var rowIndex = vueInstance.table.row(row).index();
-                        var unitName = vueInstance.selectedArmy[rowIndex].name;
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    data: this.selectedArmy,
+                    autoWidth: true,
+                    responsive: true,
+                    columns: [
+                        {   
+                            title: 'Unit', 
+                            data: 'name',
+                            width: '20%',
+                            render: function(data, type, row, meta) {
+                                return `
+                                <div class="d-flex">
+                                    <div class="my-auto badge badge-pill badge-light badge-custom no-print">X</div>
+                                    <div class="ml-2">${data}</div> 
+                                </div>`;
+                            }
+                        },
+                        { title: 'Skill', data: 'sk', className: 'text-center' },
+                        { title: 'Might', data: 'mt', className: 'text-center'},
+                        { title: 'Movement', data: 'ma', className: 'text-center' },
+                        { title: 'Toughness', data: 'toughness', className: 'text-center' },
+                        { title: 'Special Abilities', data: 'specialAbilities' },
+                        { title: 'Points', data: 'points', className: 'text-center' }
+                    ],
+                    initComplete: function() {
+                        var vueInstance = this;
+                        $('#selected-units-table').on('click', '.badge-custom', function() {
+                            var row = $(this).closest('tr');
+                            var rowIndex = vueInstance.table.row(row).index();
+                            var unitName = vueInstance.selectedArmy[rowIndex].name;
 
-                        // Remove the row from DataTable
-                        vueInstance.table.row(row).remove().draw();
+                            // Remove the row from DataTable
+                            vueInstance.table.row(row).remove().draw();
 
-                        // Remove the corresponding item from Vue dataset
-                        vueInstance.removeFromArmy(rowIndex);
+                            // Remove the corresponding item from Vue dataset
+                            vueInstance.removeFromArmy(rowIndex);
 
-                        // If the removed unit is "Squirrel Handler", remove all "Pykpyk" units
-                        if (unitName === "Squirrel Handler") {
-                            for (var i = vueInstance.selectedArmy.length - 1; i >= 0; i--) {
-                                if (vueInstance.selectedArmy[i].name == 'PykPyks (3)') {
-                                    vueInstance.table.row(i).remove().draw();
-                                    vueInstance.removeFromArmy(i);
+                            // If the removed unit is "Squirrel Handler", remove all "Pykpyk" units
+                            if (unitName === "Squirrel Handler") {
+                                for (var i = vueInstance.selectedArmy.length - 1; i >= 0; i--) {
+                                    if (vueInstance.selectedArmy[i].name == 'PykPyks (3)') {
+                                        vueInstance.table.row(i).remove().draw();
+                                        vueInstance.removeFromArmy(i);
+                                    }
                                 }
                             }
-                        }
-                    });
-                }.bind(this) // Ensure `this` is bound to the Vue instance
-            });
+                        });
+                        $(window).on('resize', function() {
+                            vueInstance.table.columns.adjust().draw(false);
+                        });
+
+                        
+                    }.bind(this) // Ensure `this` is bound to the Vue instance
+
+
+                });
             },     
             watch:{
                 selectedFaction: function(){

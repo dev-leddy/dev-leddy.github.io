@@ -6,9 +6,26 @@
             }
 
             #selected-units-container {
-                overflow-y: visible !important;
-                height: auto !important;
+                /* overflow-y: visible !important; */
+                overflow: visible !important;
+                width: 100% !important;
+                height: 100vh !important;
             }
+
+            #referenceTables {
+                break-before: page; /* Standard */
+                page-break-before: always; /* Older browsers */
+                break-inside: avoid; /* Prevents breaking inside the element */
+                page-break-inside: avoid; /* Older browsers */
+            }
+            
+            .unit-selection, 
+            .selected-units {
+                width: 100% !important; /* Ensure full width usage */
+                height: 100vh !important;
+                overflow: visible !important;
+            }
+        
         }
         @media screen {
             .onlyPrint {
@@ -43,22 +60,21 @@
         .unit-selection, .selected-units {
             overflow-y: auto;
         }
-        .unit-selection {
-            width: 270px;
-        }
         .unit-card {
             position: relative;
-            padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #dee2e6;
             border-radius: 5px;
 			background-color: #f8f9fa;
 			width: 250px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 5px;
         }
         .points-box {
             position: absolute;
-			top: -15px;
-			left: -15px;
+            top: 1px;
+            left: 1px;
 			background-color: #dadfe4;
             border: 1px solid #dee2e6;
             padding: 5px;
@@ -73,8 +89,8 @@
         }
 		.unit-name-box{
 			position: absolute;
-			top: -15px;
-			left: 16px;
+            top: 1px;
+            left: 32px;
 			background-color: #dadfe4;
 			border: 1px solid #dee2e6;
 			padding: 5px;
@@ -82,14 +98,14 @@
 			font-weight: bold;
 			font-size: 16px;
 			height: 33px;
-			width: 212px;
+			width:  215px;
 			display: flex;
 			align-items: center;
 		}
 		.add-btn {
 			position: absolute;
-			top: -11px;
-			right: -14px;
+            top: 4px;
+            right: 7px;
 			background-color: #e9ecef;
 			color: #fff;
 			border: none;
@@ -123,12 +139,10 @@
         }
         .unit-stats {
             display: flex;
-            flex-wrap: wrap;
             font-size: 14px;
-            width: 230px;
-        }
-        .unit-stats > div {
-            margin-right: 10px;
+            width: 100%;
+            padding-left: 2px;
+            padding-right: 2px;
         }
         .unit-stats .label {
             font-weight: bold;
@@ -138,7 +152,8 @@
             font-weight: normal;
         }
         .equipment {
-            text-decoration: underline dotted;
+            font-size: 1.1em;
+            font-weight: bold;
             /* cursor: help; */
         }
         .ability {
@@ -149,6 +164,7 @@
             white-space: pre-wrap; /* Preserve whitespace */
         }
         .back-img{
+            z-index: -10;
             content: ' ';
             display: block;
             position: absolute;
@@ -183,4 +199,15 @@
 
         .badge-custom:hover {
             background-color: #dc3545;
+        }
+        #selected-units-table_wrapper {
+            width: 100%;
+        }
+        
+        #selected-units-table {
+            width: 100%;
+        }
+
+        #selected-units-container{
+            width: 100%;
         }
