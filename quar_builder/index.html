@@ -432,7 +432,7 @@
                         sEmptyTable: "No units added."
                     },
                     columns: [
-                    {   
+                        {      
                             title: 'Quantity', 
                             data: 'quantity',
                             render: function(data, type, row, meta) {
@@ -474,7 +474,7 @@
                             var unitName = vueInstance.selectedArmy[rowIndex].name;
 
                             // Remove the row from DataTable
-                            vueInstance.table.row(row).remove().draw();
+                            vueInstance.table.row(row).remove();
 
                             // Remove the corresponding item from Vue dataset
                             vueInstance.removeFromArmy(rowIndex);
@@ -488,6 +488,11 @@
                                     }
                                 }
                             }
+
+                            var _data = QuarBFB.getData();
+                            QuarBFB.table.clear().draw();
+                            QuarBFB.table.rows.add(_data); // Add new data
+                            QuarBFB.addTableChildRows(_data);
                         });
                         $(window).on('resize', function() {
                             vueInstance.table.columns.adjust().draw(false);
