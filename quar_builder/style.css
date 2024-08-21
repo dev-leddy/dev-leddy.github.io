@@ -67,6 +67,7 @@
         }
 
         .unit-card {
+            height: 415px;
             position: relative;
             margin-bottom: 10px;
             border: 1px solid #dee2e6;
@@ -181,7 +182,6 @@
             font-weight: normal;
         }
         .equipment {
-            font-size: 1.1em;
             font-weight: bold;
             /* cursor: help; */
         }

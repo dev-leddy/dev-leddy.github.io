@@ -85,11 +85,10 @@
                             </div>
 
                         </div>
-                        <div v-if="unit.specialAbilities.length > 0" class="unit-stats mt-2">
+                        <div v-if="unit.specialAbilities.length > 0" class="unit-stats my-auto">
                             <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
-                                <div class="font-weight-bold">Special Abilities: </div>
-                                <span v-for="ability in unit.specialAbilities" :key="ability">
-                                    <!-- <span class="ability" :title="formatAbilityTooltip(ability)">{{ ability }}</span> -->
+                                <div class="font-weight-bold mx-auto">Special Abilities: </div>
+                                <span class="mx-auto" v-for="ability in unit.specialAbilities" :key="ability">
                                     <span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
                                         {{ ability }}
                                     </span>                                
@@ -97,7 +96,12 @@
                                 <div v-if="unit.name == 'PykPyks (3)'"><br></div>
                             </div>
                         </div>
-                        <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-2">
+                        <div v-else class="unit-stats my-auto">
+                            <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
+                                <div class="font-italic font-weight-light mx-auto">No Special Abilities</div>
+                            </div>
+                        </div>
+                        <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-auto">
                             <div class="w-100">
                                 <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip" style="border: 2px solid rgba(0, 0, 0, 0.17); border-radius: 5px; margin-bottom: 2px;">
                                     <div class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
