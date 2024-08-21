@@ -55,23 +55,35 @@
                             </div>
                             <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
                         </div>
-                        <div class="unit-stats" style="margin-top: 35px; margin-left: 3px;">
-                            <div class="d-flex flex-column flex-grow-1">
-                                <div class="font-weight-bold">Skill: </div>
-                                <div>{{ unit.sk }}</div>
+                        <div class="unit-stats flex" style="margin-top: 37px; margin-left: 3px;">
+                            <div class="w-50 my-auto">
+                                <img 
+                                :src="getImageSrc(unit.name)" 
+                                :class="{ 'fallback-image': isFallback(unit.name) }"
+                                style="object-fit: scale-down; width: 100px; height: 100px; margin-bottom: 5px;"
+                                @error="setFallbackImage($event, unit.name)">
                             </div>
-                            <div class="d-flex flex-column flex-grow-1">
-                                <div class="font-weight-bold">Mt: </div>
-                                <div>{{ unit.mt }}</div>
+                            <div class="flex-grow-1 my-auto">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Skill: </div>
+                                    <div>{{ unit.sk }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Might: </div>
+                                    <div>{{ unit.mt }}</div>
+                                </div>
                             </div>
-                            <div class="d-flex flex-column flex-grow-1">
-                                <div class="font-weight-bold">Ma: </div>
-                                <div>{{ unit.ma }}</div>
+                            <div class="flex-grow-1 my-auto">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Move: </div>
+                                    <div>{{ unit.ma }}</div>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="font-weight-bold">Tough: </div>
+                                    <div>{{ unit.toughness }}</div>
+                                </div>
                             </div>
-                            <div class="d-flex flex-column flex-grow-1">
-                                <div class="font-weight-bold">Tgh: </div>
-                                <div>{{ unit.toughness }}</div>
-                            </div>
+
                         </div>
                         <div v-if="unit.specialAbilities.length > 0" class="unit-stats mt-2">
                             <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
@@ -164,14 +176,17 @@
                         </span>
                     </div>
                     <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
-                    <div class="d-flex">
-                        <div class="w-25 no-print">
+                    <div class="d-flex flex-column">
+                        <div class="no-print mb-2" style="width: 200px">
                             <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                        </div>
+                        <div class="d-flex justify-content-between no-print mb-2" style="width: 200px">
+                            <b-button pill variant="primary" style="width: 50px" @click="adjustPoints(-25)">-</b-button>
+                            <b-button pill variant="primary" style="width: 50px" @click="adjustPoints(25)">+</b-button>
                         </div>
                         <div class="ml-auto my-auto badge badge-pill badge-light badge-custom no-print" @click="clearAll()">
                             Clear All
                         </div>
-                        
                     </div>
                     <div class="table-responsive">                
                         <table id="selected-units-table" style="width:100%" class="table table-bordered">
@@ -298,6 +313,7 @@
             data: {
                 selectedFaction: 'Crusader',
                 selectedPoints: 200,
+                fallbackImages: [],
                 availableUnits: {                   
                     "Crusader": [
                         { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": [], "points": 25 },
@@ -454,8 +470,10 @@
                 });
             },     
             watch:{
-                selectedFaction: function(){
+                selectedFaction: function(old, _new){
                     this.clearAll();
+
+                    QuarBFB.fallbackImages.splice(0);                     
                 }
             },                  
             computed: {
@@ -494,6 +512,23 @@
                 }
             },
             methods: {
+                adjustPoints(amount) {
+                    const newPoints = this.selectedPoints + amount;
+                    if (newPoints >= 100 && newPoints <= 600) {
+                        this.selectedPoints = newPoints;
+                    }
+                },
+                getImageSrc(unitName) {
+                    return `images/${this.selectedFaction}/${unitName}.png`;
+                },
+                setFallbackImage(event, unitName) {
+                    event.target.src = 'images/generic/quar.png';
+                    event.target.classList.add('fallback-image');
+                    this.fallbackImages.push(unitName);
+                },
+                isFallback(unitName) {
+                    return this.fallbackImages.includes(unitName);
+                },
                 clearAll: function(){
                     var vueInstance = this; 
                     vueInstance.table.rows().every(function(rowIdx, tableLoop, rowLoop) {

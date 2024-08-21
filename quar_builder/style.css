@@ -225,3 +225,6 @@
         #selected-units-container{
             width: 100%;
         }
+        .fallback-image {
+            filter: grayscale(1);
+        }
