@@ -60,6 +60,12 @@
         .unit-selection, .selected-units {
             overflow-y: auto;
         }
+
+        .unit-selection{
+            /* background-color: rgba(0, 0, 0, 0.5); */
+            padding: 5px;
+        }
+
         .unit-card {
             position: relative;
             margin-bottom: 10px;
@@ -70,13 +76,21 @@
             display: flex;
             flex-direction: column;
             margin-bottom: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .unit-card:hover {
+            transform: translateX(2px); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
         }
         .points-box {
             position: absolute;
             top: 1px;
             left: 1px;
-			background-color: #dadfe4;
-            border: 1px solid #dee2e6;
+			background-color: #89cd93;
+            border: 1px solid #89cd93;
             padding: 5px;
             border-radius: 5px;
             font-weight: bold;
@@ -91,8 +105,8 @@
 			position: absolute;
             top: 1px;
             left: 32px;
-			background-color: #dadfe4;
-			border: 1px solid #dee2e6;
+			background-color: #89cd93;
+			border: 1px solid #89cd93;
 			padding: 5px;
 			border-radius: 5px;
 			font-weight: bold;

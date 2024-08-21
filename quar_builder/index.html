@@ -24,34 +24,29 @@
 </head>
     <div id="app">
         <div class="back-img no-print"></div>
-		<nav class="navbar navbar-light bg-light no-print" style="margin-top: -25px;">
-			<div class="container d-flex justify-content-between align-items-center">
-				<div class="nav-item">
-                    <select id="faction-select" class="form-control" v-model="selectedFaction" @change="clearSelectedUnits">
-						<option value="Crusader">Crusader</option>
-						<option value="Coftyran">Coftyran</option>
-                        <option value="Gwynt">Gwynt</option>
-					</select>
-				</div>
-				
-				<div class="nav-item mx-3">
-					<h2 class="mb-0 text-monospace">Quar Battleforce Builder</h4>
-                        <small>This is a major work in progress. Sorry if I break something, let me know on discord by DMing me. @smarf</small>
-				</div>
-				
-                <div class="mb-2">
-                    <!-- <button class="btn btn-primary" @click="exportToCSV">Export to CSV</button> -->
-                    <button class="btn btn-secondary" @click="printTable">Print</button>
-                    <b-form-checkbox size="sm" v-model="printTables">Include Ref Tables</b-form-checkbox>
-                </div>
-			</div>
+		<nav class="navbar navbar-light bg-light no-print d-flex justify-content-between" style="margin-top: -25px;">
+            <div style="width: 275px;">
+                <select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
+                    <option value="Crusader">Crusader</option>
+                    <option value="Coftyran">Coftyran</option>
+                    <option value="Gwynt">Gwynt</option>
+                </select>
+            </div>
+            <div class="d-flex flex-column">				
+                <h2 class="mx-auto text-monospace">Quar Battleforce Builder</h4>
+                    <small>This is a major work in progress. Sorry if I break something, let me know on discord by DMing me. @smarf</small>
+                    <small>Mobile support coming... soonish.</small>
+            </div>
+            <div class="d-flex">
+                <button class="btn btn-secondary" @click="printTable">Print</button>
+                <b-form-checkbox size="sm" v-model="printTables" class="ml-1 my-auto">Include Ref Tables</b-form-checkbox>
+            </div>
 		</nav>
 
 
         <div class="d-flex" style="height: calc(100vh - 140px);">
             <div class="unit-selection no-print mx-2" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px); min-width:275px">
-                <div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">
-                    
+                <div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">                 
                         <div>
                             <div class="points-box">{{ unit.points }}</div>
                             <div class="unit-name-box">
@@ -60,7 +55,7 @@
                             </div>
                             <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
                         </div>
-                        <div class="unit-stats" style="margin-top: 35px;">
+                        <div class="unit-stats" style="margin-top: 35px; margin-left: 3px;">
                             <div class="d-flex flex-column flex-grow-1">
                                 <div class="font-weight-bold">Skill: </div>
                                 <div>{{ unit.sk }}</div>
@@ -79,15 +74,15 @@
                             </div>
                         </div>
                         <div v-if="unit.specialAbilities.length > 0" class="unit-stats mt-2">
-                            <div class="d-flex flex-column flex-grow-1">
+                            <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
                                 <div class="font-weight-bold">Special Abilities: </div>
                                 <span v-for="ability in unit.specialAbilities" :key="ability">
                                     <!-- <span class="ability" :title="formatAbilityTooltip(ability)">{{ ability }}</span> -->
                                     <span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
                                         {{ ability }}
-                                    </span>
-                                    
+                                    </span>                                
                                 </span>
+                                <div v-if="unit.name == 'PykPyks (3)'"><br></div>
                             </div>
                         </div>
                         <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-2">
@@ -147,11 +142,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        
-                        
-                    
+                        </div> 
                 </div>
             </div>
 
@@ -310,7 +301,7 @@
                 availableUnits: {                   
                     "Crusader": [
                         { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": [], "points": 25 },
-                        { "name": "Rhyfler (Rhyshi)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 28 },
+                        { "name": "Rhyfler (Ryshi)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 28 },
                         { "name": "LMG Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["H-11a"], "specialAbilities": [], "points": 35, "allowed": 1 },
                         { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Dead-eye (2)"], "points": 35, "allowed": 2 },
                         { "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (2/3)"], "points": 28, "allowed": 1 },
@@ -406,6 +397,9 @@
                     data: this.selectedArmy,
                     autoWidth: true,
                     responsive: true,
+                    oLanguage: {
+                        sEmptyTable: "No units added."
+                    },
                     columns: [
                         {   
                             title: 'Unit', 
