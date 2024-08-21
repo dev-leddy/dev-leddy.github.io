@@ -89,8 +89,6 @@
             position: absolute;
             top: 1px;
             left: 1px;
-			background-color: #89cd93;
-            border: 1px solid #89cd93;
             padding: 5px;
             border-radius: 5px;
             font-weight: bold;
@@ -105,8 +103,6 @@
 			position: absolute;
             top: 1px;
             left: 32px;
-			background-color: #89cd93;
-			border: 1px solid #89cd93;
 			padding: 5px;
 			border-radius: 5px;
 			font-weight: bold;
@@ -116,6 +112,25 @@
 			display: flex;
 			align-items: center;
 		}
+
+        .Coftyran{
+            background-color: #5072A7;
+			border: 1px solid #5072A7;
+            color: white;
+        }
+
+        .Crusader{
+            background-color: #8F9779;
+			border: 1px solid #8F9779;
+            color: white;
+        }
+
+        .Gwynt{
+            background-color: #BA0021;
+			border: 1px solid #BA0021;
+            color: white;
+        }
+
 		.add-btn {
 			position: absolute;
             top: 4px;
@@ -228,11 +243,6 @@
         .fallback-image {
             filter: grayscale(1);
         }
-
-
-
-       
-        
         
         /* CSS */
         .button-74 {

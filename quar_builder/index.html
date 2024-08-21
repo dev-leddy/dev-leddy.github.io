@@ -48,8 +48,8 @@
             <div class="unit-selection no-print mx-2" style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 98px); min-width:275px">
                 <div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">                 
                         <div>
-                            <div class="points-box">{{ unit.points }}</div>
-                            <div class="unit-name-box">
+                            <div class="points-box" :class="[selectedFaction]">{{ unit.points }}</div>
+                            <div class="unit-name-box" :class="[selectedFaction]">
                                 <span v-if="unit.allowed">({{unit.allowed}})&nbsp;</span>
                                 {{ unit.name }}
                             </div>
