@@ -186,9 +186,16 @@
                             <button class="button-74" role="button" @click="adjustPoints(-25)">-</button>
                             <button class="button-74" role="button" @click="adjustPoints(25)">+</button>
                         </div>
-                        <div class="ml-auto my-auto badge badge-pill badge-light badge-custom no-print" @click="clearAll()">
-                            Clear All
+                        <div class="d-flex justify-content-between no-print">
+                            <b-form-checkbox v-model="GroupUnits" unchecked-value="false">
+                                Group Duplicates
+                           </b-form-checkbox>
+                            <div class="ml-auto my-auto badge badge-pill badge-light badge-custom" @click="clearAll()">
+                                Clear All
+                            </div>
+
                         </div>
+
                     </div>
                     <div class="table-responsive">                
                         <table id="selected-units-table" style="width:100%" class="table table-bordered">
@@ -316,6 +323,7 @@
                 selectedFaction: 'Crusader',
                 selectedPoints: 200,
                 fallbackImages: [],
+                GroupUnits: false,
                 availableUnits: {                   
                     "Crusader": [
                         { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": [], "points": 25 },
@@ -412,31 +420,46 @@
                     searching: false,
                     paging: false,
                     info: false,
-                    data: this.selectedArmy,
+                    data: this.getData(),
                     autoWidth: true,
                     responsive: true,
                     oLanguage: {
                         sEmptyTable: "No units added."
                     },
                     columns: [
-                        {   
-                            title: 'Unit', 
-                            data: 'name',
-                            width: '20%',
+                    {   
+                            title: 'Quantity', 
+                            data: 'quantity',
                             render: function(data, type, row, meta) {
                                 return `
                                 <div class="d-flex">
                                     <div class="my-auto badge badge-pill badge-light badge-custom no-print">X</div>
-                                    <div class="ml-2">${data}</div> 
+                                    <div class="mx-auto">${data}</div> 
                                 </div>`;
                             }
+                        },
+                        {   
+                            title: 'Unit', 
+                            data: 'name',
+                            width: '20%'
                         },
                         { title: 'Skill', data: 'sk', className: 'text-center' },
                         { title: 'Might', data: 'mt', className: 'text-center'},
                         { title: 'Movement', data: 'ma', className: 'text-center' },
                         { title: 'Toughness', data: 'toughness', className: 'text-center' },
                         { title: 'Special Abilities', data: 'specialAbilities' },
-                        { title: 'Points', data: 'points', className: 'text-center' }
+                        { 
+                            title: 'Points', 
+                            data: 'points',
+                            className: 'text-center',
+                            render: function(data, type, row, meta) {
+                                if(row['quantity'] > 1){
+                                    return data + " (" + parseInt(data * row['quantity']) + ")";
+                                }
+                                return data;
+                                
+                            }
+                         }
                     ],
                     initComplete: function() {
                         var vueInstance = this;
@@ -476,6 +499,12 @@
                     this.clearAll();
 
                     QuarBFB.fallbackImages.splice(0);                     
+                },
+                GroupUnits: function(){
+                    var _data = this.getData();
+                    QuarBFB.table.clear().draw();
+                    QuarBFB.table.rows.add(_data); // Add new data
+                    QuarBFB.addTableChildRows(_data);
                 }
             },                  
             computed: {
@@ -514,6 +543,32 @@
                 }
             },
             methods: {
+                getData(){
+                    if(this.GroupUnits == true){
+                        return this.getGroupedData();
+                    }
+
+                    return this.selectedArmy;
+                },
+                getGroupedData() {
+                    // Create an object to store grouped units with their quantities
+                    const groupedData = {};
+
+                    // Iterate through each item in the selectedArmy array
+                    this.selectedArmy.forEach(unit => {
+                        // Check if the unit name already exists in groupedData
+                        if (groupedData[unit.name]) {
+                            // Increment the quantity for this unit name
+                            groupedData[unit.name].quantity++;
+                        } else {
+                            // Add new entry for this unit name with a quantity of 1
+                            groupedData[unit.name] = { ...unit, quantity: 1 };
+                        }
+                    });
+
+                    // Convert the groupedData object back to an array
+                    return Object.values(groupedData);
+                },
                 adjustPoints(amount) {
                     const newPoints = this.selectedPoints + amount;
                     if (newPoints >= 100 && newPoints <= 600) {
@@ -573,18 +628,25 @@
 
                         // If the number of this unit type is less than the allowed amount times the multiplier, add the unit
                         if (unitCount < unit.allowed * multiplier) {
+                            unit["quantity"] = 1;
                             this.selectedArmy.push(unit);
                         } else {
                             alert(`You can only add ${unit.allowed * multiplier} of ${unit.name}.`);
                         }
                     } else {
                         // If the unit doesn't have an 'allowed' property, just add it
+                        unit["quantity"] = 1;
                         this.selectedArmy.push(unit);
                     }
 
                     this.$nextTick(function() {
-                        this.table.clear();
-                        this.table.rows.add(this.selectedArmy);
+                        var _data = this.getData();
+                        this.addTableChildRows(_data);
+                    });                
+                },
+                addTableChildRows: function(_data){
+                    this.table.clear();
+                        this.table.rows.add(_data);
                         this.table.draw();
 
                         this.table.rows().every(function () {
@@ -611,7 +673,7 @@
 
                                     // Construct the HTML string with conditional class
                                     childHTML += `
-                                        <div class="d-flex border rounded ${marginClass}" style="float: right; background-color: rgb(240, 242, 244);">
+                                        <div class="d-flex border rounded ${marginClass}" style="float: right;background-color: rgb(240, 242, 244);">
                                             <div class="d-flex flex-column ml-2 mr-2 my-auto font-italic" style="width: 120px">
                                                 <div>${data.equipment[i]}</div>
                                                 <img src="images/${data.equipment[i]}.png" style="object-fit: scale-down;width: 100px; height: 38px; margin-bottom: 5px;">                                                                                   
@@ -646,7 +708,6 @@
                                 this.child.show();
                             }
                         });
-                    });                
                 },
 
                 removeFromArmy: function(index) {
