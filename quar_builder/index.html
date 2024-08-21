@@ -99,16 +99,16 @@
                         </div>
                         <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-2">
                             <div class="w-100">
-                                <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip">
+                                <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip" style="border: 2px solid rgba(0, 0, 0, 0.17); border-radius: 5px; margin-bottom: 2px;">
                                     <div class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
                                         <div class="d-flex">
                                             <div class="d-flex flex-column">
                                                 <div class="equipment">{{ equip }}</div>
                                                 <img :src="'images/' + equip + '.png'" style="object-fit: scale-down; width: 100px; height: 28px; margin-bottom: 5px;">
                                             </div>
-                                            <div v-if="equipmentData[equip]?.Abilities.length" class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
-                                                <div class="font-weight-bold font-italic">Abilities: </div>
-                                                <div class="d-flex flex-column ml-2">
+                                            <div v-if="equipmentData[equip]?.Abilities.length" class="d-flex flex-column flex-grow-1" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
+                                                <div class="font-weight-bold font-italic ml-4">Abilities: </div>
+                                                <div class="d-flex flex-column ml-4">
                                                     <div class="ability" v-for="ability in equipmentData[equip]?.Abilities">
                                                         <span v-b-tooltip.html="{ title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window' }">
                                                             {{ ability }}
@@ -611,7 +611,7 @@
 
                                     // Construct the HTML string with conditional class
                                     childHTML += `
-                                        <div class="d-flex w-75 ml-auto border rounded ${marginClass}" style="background-color: rgb(240, 242, 244);">
+                                        <div class="d-flex border rounded ${marginClass}" style="float: right; background-color: rgb(240, 242, 244);">
                                             <div class="d-flex flex-column ml-2 mr-2 my-auto font-italic" style="width: 120px">
                                                 <div>${data.equipment[i]}</div>
                                                 <img src="images/${data.equipment[i]}.png" style="object-fit: scale-down;width: 100px; height: 38px; margin-bottom: 5px;">                                                                                   
