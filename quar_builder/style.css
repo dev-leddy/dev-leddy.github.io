@@ -67,7 +67,7 @@
         }
 
         .unit-card {
-            height: 415px;
+            /* height: 415px; */
             position: relative;
             margin-bottom: 10px;
             border: 1px solid #dee2e6;

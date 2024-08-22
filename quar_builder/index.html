@@ -85,7 +85,7 @@
                             </div>
 
                         </div>
-                        <div v-if="unit.specialAbilities.length > 0" class="unit-stats my-auto">
+                        <div v-if="unit.specialAbilities.length > 0" class="unit-stats my-auto pb-2">
                             <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
                                 <div class="font-weight-bold mx-auto">Special Abilities: </div>
                                 <span class="mx-auto" v-for="ability in unit.specialAbilities" :key="ability">
@@ -97,10 +97,10 @@
                             </div>
                         </div>
                         <div v-else class="unit-stats my-auto">
-                            <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
+                            <!-- <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
                                 <div class="font-weight-bold mx-auto">Special Abilities: </div>
                                 <div class="font-italic font-weight-light mx-auto">No Special Abilities</div>
-                            </div>
+                            </div> -->
                         </div>
                         <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-auto">
                             <div class="w-100">
