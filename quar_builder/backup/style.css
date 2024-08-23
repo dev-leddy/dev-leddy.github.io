@@ -1,19 +1,19 @@
         @page {
             size: 21.7cm 27.94cm;
         }
-
-        @media print
-        {    
+        @media print {      
             body{
                 width: 21.7cm;
                 height: 27.94cm;
             }  
             .printable-unit-card {
-                height: 439px !important;
-                margin: auto !important;
-                margin-top: 50px !important;
-                width: 319px !important;
+                height: 319px !important;
+                margin: 2px !important;
+                width: 439px !important;
             }
+        }
+        @media print
+        {    
             div:has(.floatingchat-container-wrap), .no-print, .no-print *
             {
                 display: none !important;
@@ -25,10 +25,6 @@
                 width: 100% !important;
                 height: 100vh !important;
             }
-            .printable-unit-card:nth-child(4n) {
-                page-break-after: always;
-            }
-            
 
             #referenceTables, #printableCards {
                 break-before: page; /* Standard */
@@ -315,9 +311,9 @@
         .printable-unit-card {
             /* height: 250px;
             width: 350px; */
-            height: 439px !important;
-            margin: 2px;
-            width: 319px !important;
+            height: 319px !important;
+            margin: 2px !important;
+            width: 439px !important;
             border: solid 10px black;
             border-radius: 10px;
             display: flex;
@@ -344,12 +340,10 @@
         }
 
         .printable-unit-card-item{
-            background-color: rgba(0, 0, 0, .45);
+            background-color: rgba(0, 0, 0, .5);
             border-radius: 5px; 
             padding: 4px; 
-            margin-top: 1px;
-            margin-top: auto;
-            margin-bottom: auto;
+            margin-bottom: 2px;
             margin-left: 5px;
             margin-right: 5px;
             color: white;
