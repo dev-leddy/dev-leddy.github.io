@@ -30,7 +30,7 @@
             }
             
 
-            #referenceTables, #printableCards {
+            #referenceTables, #printableCards, .page-break {
                 break-before: page; /* Standard */
                 page-break-before: always; /* Older browsers */
                 break-inside: avoid; /* Prevents breaking inside the element */
@@ -135,7 +135,7 @@
 			align-items: center;
 		}
 
-        .Coftyran{
+        .Coftyran, .Toulmore{
             background-color: #5072A7;
 			border: 1px solid #5072A7;
             color: white;

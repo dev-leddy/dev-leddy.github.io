@@ -27,10 +27,15 @@
 		<nav class="navbar navbar-light bg-light no-print d-flex justify-content-between" style="margin-top: -25px;">
             <div style="width: 275px;">
                 <select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
+                    <option v-for="(units, faction) in availableUnits" :key="faction" :value="faction">
+                      {{ faction }}
+                    </option>
+                  </select>
+                <!-- <select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
                     <option value="Crusader">Crusader</option>
                     <option value="Coftyran">Coftyran</option>
                     <option value="Gwynt">Gwynt</option>
-                </select>
+                </select> -->
             </div>
             <div class="d-flex flex-column">				
                 <h2 class="mx-auto text-monospace">Quar Battleforce Builder</h4>
@@ -335,6 +340,8 @@
                                 <ul>When the commander brings the rhyfler onto the field, they choose a point at least 4” away from enemy rhyflers, spend an Action, and roll on the Infiltrate table.</ul>
                             </ul>
                             <div id="infiltrateOutcomes" class="data-table-container"></div>
+                            <h3 class="page-break">Volley Table</h3>
+                            <div id="volleyOutcomes" class="data-table-container"></div>
                         </div>                        
                     </div>                
                 </div>               
@@ -413,9 +420,20 @@
                     "1/1": "Should have turned left at... – Opponent places the rhyfler anywhere on the battlefield, including Engaged with an enemy rhyfler of his choice."
                 };
 
+                const volleyOutcomes = {
+                    "6/6": "Devastating Volley! – All rhyflers in Zone are attacked at +2 Skill.",
+                    "6/-": "Successful Volley! – All rhyflers in Zone are attacked at +1 Skill.",
+                    "6/1": "That kicks! – Attacks available targets in Zone at +1 Skill and the Scattergunner is Gobsmacked.",
+                    "-/-": "Right on target! – Attacks rhyflers in Zone as normal.",
+                    "1/-": "Breach Fire! – The weapon malfunctions, and the Scattergunner is Gobsmacked.",
+                    "1/1": "Breach Explosion! – The weapon explodes, and the Scattergunner is OOA. Weapon is destroyed."
+                };
+
+
                 renderTable('fragmentationGrenadeOutcomes', fragmentationGrenadeOutcomes);
                 renderTable('smokeGrenadeOutcomes', smokeGrenadeOutcomes);
                 renderTable('infiltrateOutcomes', infiltrateOutcomes);
+                renderTable('volleyOutcomes', volleyOutcomes);
                 $('#referenceTables').addClass('onlyPrint');
         });
 
@@ -429,10 +447,10 @@
                 ShowUnitCards: 'false',
                 availableUnits: {                   
                     "Crusader": [
-                        { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": [], "points": 25 },
-                        { "name": "Rhyfler (Ryshi)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 28 },
+                        { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Support"], "points": 25 },
+                        { "name": "Rhyfler (Ryshi)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 30 },
                         { "name": "LMG Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["H-11a"], "specialAbilities": [], "points": 35, "allowed": 1 },
-                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Dead-eye (2)"], "points": 35, "allowed": 2 },
+                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Dead-eye"], "points": 35, "allowed": 2 },
                         { "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (2/3)"], "points": 28, "allowed": 1 },
                         { "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (3/4)"], "points": 30, "allowed": 1 },
                         { "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Grifkis Shotgun"], "specialAbilities": ["Leader (2/5)"], "points": 30, "allowed": 1 },
@@ -444,9 +462,9 @@
                         { "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": [], "specialAbilities": ["PykPyk(1)"], "points": 5 }
                     ],
                     "Coftyran": [
-                        { "name": "Rhyfler (Harlech)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": [], "points": 25 },
+                        { "name": "Rhyfler (Harlech)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Support"], "points": 25 },
                         { "name": "Rhyfler (Cryfen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Cryfen"], "specialAbilities": [], "points": 32, "allowed": 1 },
-                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Dead-eye (2)"], "points": 35, "allowed": 2 },
+                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Dead-eye"], "points": 35, "allowed": 2 },
                         { "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Leader (2/3)"], "points": 28, "allowed": 1 },
                         { "name": "Yawdryl", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Leader (3/4)"], "points": 33, "allowed": 1 },
                         { "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Pistol", "Sword"], "specialAbilities": ["Leader (2/5)"], "points": 28, "allowed": 1 },
@@ -458,14 +476,30 @@
                         { "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": [], "specialAbilities": ["PykPyk(3)"], "points": 5 }
                     ],
                     "Gwynt": [
-                        { "name": "Rhyfler", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": [], "points": 25 },
+                        { "name": "Rhyfler", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Support"], "points": 25 },
                         { "name": "Milwer", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Leader (2/3)"], "points": 30, "allowed": 1 },
                         { "name": "Yawdryl", "sk": 13, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Doru", "Blade"], "specialAbilities": ["Steady Under Fire (2)", "Leader (3/4)"], "points": 38, "allowed": 1 },
                         { "name": "Grenadier", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Grenadier"], "points": 28 , "allowed": 2},
+                        { "name": "Scattergunner", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["SG-3"], "specialAbilities": [], "points": 34 , "allowed": 2},
                         { "name": "RCO Gunner", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["RCO m60"], "specialAbilities": [], "points": 70, "allowed": 1 },
-                        { "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Pistol", "Sword"], "specialAbilities": ["Leader (2/5)"], "points": 28, "allowed": 1 }
-                    ]
-
+                        { "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Pistol", "Sword"], "specialAbilities": ["Leader (2/5)"], "points": 28, "allowed": 1 },
+                        { "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Standard"], "points": 35, "allowed": 1 },
+                        { "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["PykPyk(3)"], "points": 30, "allowed": 1 },
+                        { "name": "PykPyks (3)", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": [], "specialAbilities": ["PykPyk(3)"], "points": 5 }
+                    ],
+                    "Toulmore": [
+                        { "name": "Rhyfler (Bogen)", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Support"], "points": 27 },
+                        { "name": "Rhyfler (Ryshi)", "sk": 13, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 30 },
+                        { "name": "LMG Rhyfler", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["H-11a"], "specialAbilities": [], "points": 37, "allowed": 1 },
+                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Veteran", "Dead-eye"], "points": 37, "allowed": 2 },
+                        { "name": "Mortar Rhyfler", "sk": 13, "mt": "1d6", "ma": 4, "toughness": 4, "equipment": ["MTR(22)"], "specialAbilities": [], "points": 40, "allowed": 1 },
+                        { "name": "Milwer", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (2/3)"], "points": 30, "allowed": 1 },
+                        { "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Veteran", "Leader (3/4)", "Élan"], "points": 35, "allowed": 1 },
+                        { "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Grifkis Shotgun"], "specialAbilities": ["Leader (2/5)"], "points": 30, "allowed": 1 },
+                        { "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Standard"], "points": 30, "allowed": 1 },
+                        { "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["PykPyk(3)"], "points": 30, "allowed": 1 },
+                        { "name": "PykPyks", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": [], "specialAbilities": ["PykPyk(3)"], "points": 5 }
+                    ]                   
                 },
                 equipmentData: {
                     "Harlech": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
@@ -474,22 +508,27 @@
                     "Pistol": { R: 4, Sn: -1, Abilities: [], Mt: '-' },
                     "RCO m60": { R: 12, Sn: -4, Abilities: ['Blast(2)', 'Slow Reload', 'Crew(2)', 'Gun Shield', 'Heavy'], Mt: '2d6' },
                     "Bogen": { R: 6, Sn: -2, Abilities: [], Mt: '-' },
-                    "Ryshi": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
+                    "Ryshi": { R: 8, Sn: -3, Abilities: ["Large Caliber"], Mt: '-' },
                     "H-11a": { R: 10, Sn: -3, Abilities: ['Automatic', 'Loader'], Mt: '-' },
                     "Grifkis Shotgun": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
                     "Sio-Cly Derringer": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
-                    "Splagen Torpedo": { R: 6, Sn: -4, Abilities: ['Blast(1)'], Mt: '2d6-1' }
+                    "Splagen Torpedo": { R: 6, Sn: "N/A", Abilities: ['Blast(1)'], Mt: '2d6-1' },
+                    "SG-3 Scattergun": { R: 16, SN: "N/A", Abilities: ["Scattergun", "Large Caliber"], Mt: '-'},
+                    "MTR(22)": {R:10, SN: "N/A", Abilities: ["Blast(1)", "Braced"], Mt: "2d6"}
                 },
                 specialAbilities: {
                     "Automatic": "Apply +2 to skill if firing at a single target. Automatic weapons may perform the Area Fire action which can target figures within a 4” circle. Each extra target adds -1 to the Skill roll. Use the best cover available (light cover does not apply), and apply modifiers based on targets’ actions (Dive for Cover, return fire, or move).",
+                    "Braced": "Weapons with bipods and heavy riﬂes sometimes require physical support to fire accurately. When these weapons fire they subtract -1 from Skill unless the firing unit is Prone or base-to-base with terrain providing cover.",
                     "Cavalry": "May perform a combat action as part of a normal move. The attack may be performed at any point during the rhyfler’s movement. Ranged attacks performed with this ability are at an additional -2 to the Skill Check, but Melee attacks grant the attacker the Wallop ability.",
                     "Communications": "After the opponent draws their activation card, their commander may spend a point of Pluck to reveal its value.",
-                    "Dead-eye (X)": "When performing an Aimed Shot increase skill by X.",                                                
+                    "Dead-eye": "Rhyﬂers with this ability may perform Aimed Shot for1 Action instead of the required 2.",                                                
+                    "Élan": "Rhyﬂers within command range of this unit gain the Veteran ability",
                     "Grenadier": "The unit may spend Pluck to adjust a roll on the Grenade charts up or down 1 line.",
                     "Hardened": "Ignore the need to go Prone when hit by ranged fire. Not Gobsmacked when he dives for cover.",
                     "Hero": "Heroes have the Hardened and Veteran abilities. May only include one Hero for every 100 points gathered, with a maximum of four allowed.",
                     "Infiltrate": "A rhyfler with this ability may start the Skirmish off the battlefield. When his commander chooses to bring this rhyfler on the field he designates a point anywhere on the battlefield, no closer than 4” to an enemy rhyfler. He then spends an Action, and rolls on the Infiltrate table.",
                     "Killing Strike": "May reduce effective Skill for an attack by two, to increase his Might by two.",
+                    "Large Caliber": "Weapons that use larger rounds are more eﬀective versus rhyﬂers in cover, Tractors, and other obstacles. Large Caliber weapons ignore Light Cover and reduce standard Cover by -1. Tractors hit by Large Caliber weapons read one row higher on Damage Tables.",
                     "Leader (X/Y)": "Leaders allow a commander to better control his troops through their abilities to activate multiple rhyflers at once. A rhyfler with this ability may perform a Leadership action with a number of rhyflers equal to his Leadership value (X) and within his Leadership range (Y), in inches.",
                     "Leap (X)": "When jumping during a movement action, this rhyfler multiplies the distance allowed, both horizontally and vertically, by their Leap value. This allows the rhyfler to ignore certain barricades and obstacles, as well as enemy rhyflers.",
                     "Loader": "If the firing rhyfler is in base contact with another friendly rhyfler, increase the roll needed to pass any Skill Check by +1.",
@@ -498,12 +537,14 @@
                     "Pathfinder": "This rhyfler is extremely adept at surprising his opponents. The rhyfler has the Infiltrate ability, and when rolling on the Infiltrate table, this he rolls three dice and chooses which two to apply.",
                     "Ranged/Melee (X)": "Rhyflers receive extensive training in the weapons they are issued, allowing them to add this value to the target number when performing the listed combat action.",
                     "Resilient": "Tougher than his companions, a Resilient rhyfler can do a Tend Wounded action on himself.",
+                    "Scattergun": " Scatterguns may be fred as normal but not beyond one Range Band. A Scattergun may also be Volley Fired.",
                     "Shotgun": "Shotguns fire a spread of projectiles. In the first range band, they hit the target with +1 Skill. In the second band, they hit the target and one rhyfler within 1”. In the third band, they hit the target and two rhyflers within 2”. They cannot fire beyond three range bands.",
                     "Skirmisher": "Skirmishers do not suffer movement penalties from difficult terrain, and increase modifiers from cover by 1.",
                     "Slow Reload": "These weapons require an action to reload after each attack. If not reloaded immediately, the rhyfler must be marked as carrying an unloaded weapon.",
                     "Sniper Scope": "Equipped with telescopic sights, these weapons only apply range penalties up close. A weapon with a Sniper Scope suffers a -2 penalty within its first range band, and a -1 within its second. The third range band for the weapon is at no penalty, and further penalties are then calculated from that point, thus the fourth range band is at a -1.",
                     "Standard": "Rhyflers within 2” of their side's standard bearer gain +1 Skill. If the standard bearer is Gobsmacked, he clings to the standard. If Killed, the standard falls and can be picked up by an adjacent rhyfler with an action. A rhyfler who picks up their own side’s standard gains the Standard Special Ability. If an enemy picks it up, the losing side gives 3 Pluck (or all they have) to the gaining side. The original side regains 3 Pluck (or all that remains) if they recover their standard.",
                     "Steady Under Fire (X)":"The unit may use its Leadership values (X/Y) to remove Gobsmacked status from X number of units at range Y. This does not count as an action for the targeted units.",
+                    "Support": "Rhyﬂers with this ability may perform Supporting Fire when they meet the requirements of the Action. They may only Support and be Supported by rhyﬂers with this ability.",
                     "Veteran": "Trained to shrug off battlefield conditions that leave other rhyflers subdued, a successful recovery does not count as one of a Veteran rhyfler’s two allowed actions.",
                     "Wallop": "A rhyfler with the Wallop ability may perform a powerful blow attack by spending a point of Pluck instead of the second action normally required.",
                     "Heavy": "Heavy objects move 1 inch per rhyfler in base-to-base contact. These rhyflers may conduct a Group Movement action as if they have a leader.",
@@ -511,7 +552,8 @@
                     "Braced": "Automatic weapons with bipods and heavy rifles sometimes require physical support to fire accurately. When these weapons fire they subtract -1 from Skill unless the firing unit is Prone or base-to-base with terrain providing cover.",
                     "Gun Shield": "Some crewed weapons are equipped with a gun shield to protect the crew from incoming fire. A gun shield provides partial cover for up to Crew(X) of the weapon.",
                     "Blast(X)": "This weapon affects an area instead of a single target. The firing rhyfler declares a target point, which may be either an enemy rhyfler or point on the battlefield, then makes a Ranged Attack check to hit the target. Target units may not react to Blast attacks. Any infantry model within one Blast distance (X) of the point of impact is automatically knocked Prone. Conduct a Might roll against each unit within the Blast area. Units with partial cover to the Blast center half the Might roll against them. Any units between the blast radius and twice the blast radius must make a skill check or become Prone, but are not attacked. If the check is failed, the firer rolls on the Dispersion table.",
-                    "PykPyk(X)": "Pykpyk Squirrels are treated as tokens and placed on the side of the play area. They need not be placed on the board with their handler, do not need to be activated and may not be attacked. A Pykpyk may be exchanged to reveal the current activation card, reroll any of the player’s die rolls or to perform a Tend Wounded action on an Out Of Action Rhyfler. Pykpyks are not removed if their Handler is Out Of Action. (X) is the number of Pykpyks included with the Handler. Additional Pykpyks may be purchased during the Gathering of Forces."
+                    "PykPyk(X)": "Pykpyk Squirrels are treated as tokens and placed on the side of the play area. They need not be placed on the board with their handler, do not need to be activated and may not be attacked. A Pykpyk may be exchanged to reveal the current activation card, reroll any of the player’s die rolls or to perform a Tend Wounded action on an Out Of Action Rhyfler. Pykpyks are not removed if their Handler is Out Of Action. (X) is the number of Pykpyks included with the Handler. Additional Pykpyks may be purchased during the Gathering of Forces.",
+                    "Volly Fire": "(Requires 2 actions) This attack targets all rhyﬂers, friend or foe, in the weapon’s eﬀect area, or Zone. This Zone is one inch wide and is a line that extends a single Range Band from the Rhyﬂer’s base to the fnal target. Consult the Scattergun Outcome table before any to-hit rolls are made. If the fring model is still active, conduct individual Ranged Attacks against each model in the line of fre. Volley Fire may only be Reacted to by Diving for Cover."
                 },
                 selectedArmy: [],
                 table: '',
