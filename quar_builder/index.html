@@ -223,7 +223,7 @@
                         </div>
                     </div>
                     <div id="printableCards" class="flex-wrap" :class="{ 'd-none': ShowUnitCards == 'false', 'd-flex': ShowUnitCards == true}">
-                        <div class="printable-unit-card justify-content-between" v-for="(unit, index) in selectedArmy" :key="index">
+                        <div class="printable-unit-card justify-content-between" v-for="(unit, index) in filteredArmy" :key="index">
                             <div class="d-flex flex-column" style="width: 100%;">
                                 <div class="text-center font-weight-bold" style="font-size: 1.5em; background-color: rgba(0, 0, 0, 0.45); color: white; padding: 2px; padding-left: 5px; padding-bottom:5px; width: 100%">
                                     ({{unit.points}}) {{unit.name}}
@@ -480,7 +480,7 @@
                         { "name": "Milwer", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Leader (2/3)"], "points": 30, "allowed": 1 },
                         { "name": "Yawdryl", "sk": 13, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Doru", "Blade"], "specialAbilities": ["Steady Under Fire (2)", "Leader (3/4)"], "points": 38, "allowed": 1 },
                         { "name": "Grenadier", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Grenadier"], "points": 28 , "allowed": 2},
-                        { "name": "Scattergunner", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["SG-3"], "specialAbilities": [], "points": 34 , "allowed": 2},
+                        { "name": "Scattergunner", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["SG-3 Scattergun"], "specialAbilities": [], "points": 34 , "allowed": 2},
                         { "name": "RCO Gunner", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["RCO m60"], "specialAbilities": [], "points": 70, "allowed": 1 },
                         { "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Pistol", "Sword"], "specialAbilities": ["Leader (2/5)"], "points": 28, "allowed": 1 },
                         { "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Standard"], "points": 35, "allowed": 1 },
@@ -528,7 +528,7 @@
                     "Hero": "Heroes have the Hardened and Veteran abilities. May only include one Hero for every 100 points gathered, with a maximum of four allowed.",
                     "Infiltrate": "A rhyfler with this ability may start the Skirmish off the battlefield. When his commander chooses to bring this rhyfler on the field he designates a point anywhere on the battlefield, no closer than 4” to an enemy rhyfler. He then spends an Action, and rolls on the Infiltrate table.",
                     "Killing Strike": "May reduce effective Skill for an attack by two, to increase his Might by two.",
-                    "Large Caliber": "Weapons that use larger rounds are more eﬀective versus rhyﬂers in cover, Tractors, and other obstacles. Large Caliber weapons ignore Light Cover and reduce standard Cover by -1. Tractors hit by Large Caliber weapons read one row higher on Damage Tables.",
+                    "Large Caliber": "Weapons that use larger rounds are more effective versus rhyﬂers in cover, Tractors, and other obstacles. Large Caliber weapons ignore Light Cover and reduce standard Cover by -1. Tractors hit by Large Caliber weapons read one row higher on Damage Tables.",
                     "Leader (X/Y)": "Leaders allow a commander to better control his troops through their abilities to activate multiple rhyflers at once. A rhyfler with this ability may perform a Leadership action with a number of rhyflers equal to his Leadership value (X) and within his Leadership range (Y), in inches.",
                     "Leap (X)": "When jumping during a movement action, this rhyfler multiplies the distance allowed, both horizontally and vertically, by their Leap value. This allows the rhyfler to ignore certain barricades and obstacles, as well as enemy rhyflers.",
                     "Loader": "If the firing rhyfler is in base contact with another friendly rhyfler, increase the roll needed to pass any Skill Check by +1.",
@@ -658,6 +658,20 @@
                 }
             },                  
             computed: {
+                filteredArmy(){
+                    console.log("hey")
+                    if(this.GroupUnits == true){
+                        return this.selectedArmy.reduce((acc, current) => {
+                        let existing = acc.find(item => item.name === current.name);
+                        if (!existing) {
+                        acc.push(current);
+                        }
+                        return acc;
+                    }, []);
+                    }
+                    
+                    return this.selectedArmy
+                },
 				filteredUnits() {
 					return this.availableUnits[this.selectedFaction];
 				},
