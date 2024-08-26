@@ -9,10 +9,13 @@
                 height: 27.94cm;
             }  
             .printable-unit-card {
-                height: 439px !important;
-                margin: auto !important;
-                margin-top: 50px !important;
-                width: 319px !important;
+                height: 461px !important;
+                width: 335px !important;
+                transform: scale(1) rotate(90deg) !important;
+                margin-top: -50px !important;
+                margin-right: 0px !important;
+                margin-bottom: -50px !important;
+                margin-left: 125px !important;
             }
             div:has(.floatingchat-container-wrap), .no-print, .no-print *
             {
@@ -25,7 +28,7 @@
                 width: 100% !important;
                 height: 100vh !important;
             }
-            .printable-unit-card:nth-child(4n) {
+            .printable-unit-card:nth-child(6n) {
                 page-break-after: always;
             }
             
@@ -322,6 +325,7 @@
             border-radius: 10px;
             display: flex;
             font-size: 12px;
+            transform: scale(0.7);
         
             /* Lighter treasure map style background */
             background: linear-gradient(145deg, #fdf5e6, #f2e2b3);

@@ -659,7 +659,6 @@
             },                  
             computed: {
                 filteredArmy(){
-                    console.log("hey")
                     if(this.GroupUnits == true){
                         return this.selectedArmy.reduce((acc, current) => {
                         let existing = acc.find(item => item.name === current.name);
