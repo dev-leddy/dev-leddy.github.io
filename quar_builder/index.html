@@ -224,7 +224,7 @@
                                     @error="setFallbackImage($event, unit.name)">      
                                 </div>
                                 <div class="d-flex flex-column my-auto flex-grow-1">
-                                    <div v-if="unit.specialAbilities.length > 0" class="mx-auto font-weight-bold font-italic" v-for="unitAbility in unit.specialAbilities">
+                                    <div v-if="unit.specialAbilities.length > 0" class="mx-auto font-weight-bold font-italic" style="text-shadow: 0px 0px 0px black !important;" v-for="unitAbility in unit.specialAbilities">
                                         {{unitAbility}}
                                     </div>
                                 </div>
@@ -302,7 +302,7 @@
                             </div>                         
                         </div>
                     </div>
-                    <div id="referenceTables">
+                    <div id="referenceTables" style="width: 1000px !important;">
                         <div :class="{'no-print': !printTables}" style="break-before: auto;">
                             <div class="d-flex ml-1 font-italic">
                                 <div class="my-auto">Grenade throws require 2 actions.</div>
@@ -321,13 +321,13 @@
                                 <ul>Remove smoke markers when the Activation Deck is reshuffled.</ul>
                             </ul>
                             <div id="smokeGrenadeOutcomes" class="data-table-container mb-2"></div>
-                            <h3 >Infiltrate Table</h3>
+                            <h3 class="page-break">Infiltrate Table</h3>
                             <ul class="list-unstyled">
                                 <ul>A rhyfler with this ability can start off the battlefield. </ul>
                                 <ul>When the commander brings the rhyfler onto the field, they choose a point at least 4” away from enemy rhyflers, spend an Action, and roll on the Infiltrate table.</ul>
                             </ul>
-                            <div id="infiltrateOutcomes" class="data-table-container"></div>
-                            <h3 class="page-break">Volley Table</h3>
+                            <div id="infiltrateOutcomes" class="data-table-container mb-2"></div>
+                            <h3>Volley Table</h3>
                             <div id="volleyOutcomes" class="data-table-container"></div>
                         </div>                        
                     </div>                
@@ -500,7 +500,7 @@
                     "Grifkis Shotgun": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
                     "Sio-Cly Derringer": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
                     "Splagen Torpedo": { R: 6, Sn: "N/A", Abilities: ['Blast(1)'], Mt: '2d6-1' },
-                    "SG-3 Scattergun": { R: 16, SN: "N/A", Abilities: ["Scattergun", "Large Caliber"], Mt: '-'},
+                    "SG-3 Scattergun": { R: 16, SN: "N/A", Abilities: ["Scattergun", "Large Caliber", "Volley Fire"], Mt: '-'},
                     "MTR(22)": {R:10, SN: "N/A", Abilities: ["Blast(1)", "Braced"], Mt: "2d6"}
                 },
                 specialAbilities: {
@@ -524,7 +524,7 @@
                     "Pathfinder": "This rhyfler is extremely adept at surprising his opponents. The rhyfler has the Infiltrate ability, and when rolling on the Infiltrate table, this he rolls three dice and chooses which two to apply.",
                     "Ranged/Melee (X)": "Rhyflers receive extensive training in the weapons they are issued, allowing them to add this value to the target number when performing the listed combat action.",
                     "Resilient": "Tougher than his companions, a Resilient rhyfler can do a Tend Wounded action on himself.",
-                    "Scattergun": " Scatterguns may be fred as normal but not beyond one Range Band. A Scattergun may also be Volley Fired.",
+                    "Scattergun": " Scatterguns may be fired as normal but not beyond one Range Band. A Scattergun may also be Volley Fired.",
                     "Shotgun": "Shotguns fire a spread of projectiles. In the first range band, they hit the target with +1 Skill. In the second band, they hit the target and one rhyfler within 1”. In the third band, they hit the target and two rhyflers within 2”. They cannot fire beyond three range bands.",
                     "Skirmisher": "Skirmishers do not suffer movement penalties from difficult terrain, and increase modifiers from cover by 1.",
                     "Slow Reload": "These weapons require an action to reload after each attack. If not reloaded immediately, the rhyfler must be marked as carrying an unloaded weapon.",
@@ -540,7 +540,7 @@
                     "Gun Shield": "Some crewed weapons are equipped with a gun shield to protect the crew from incoming fire. A gun shield provides partial cover for up to Crew(X) of the weapon.",
                     "Blast(X)": "This weapon affects an area instead of a single target. The firing rhyfler declares a target point, which may be either an enemy rhyfler or point on the battlefield, then makes a Ranged Attack check to hit the target. Target units may not react to Blast attacks. Any infantry model within one Blast distance (X) of the point of impact is automatically knocked Prone. Conduct a Might roll against each unit within the Blast area. Units with partial cover to the Blast center half the Might roll against them. Any units between the blast radius and twice the blast radius must make a skill check or become Prone, but are not attacked. If the check is failed, the firer rolls on the Dispersion table.",
                     "PykPyk(X)": "Pykpyk Squirrels are treated as tokens and placed on the side of the play area. They need not be placed on the board with their handler, do not need to be activated and may not be attacked. A Pykpyk may be exchanged to reveal the current activation card, reroll any of the player’s die rolls or to perform a Tend Wounded action on an Out Of Action Rhyfler. Pykpyks are not removed if their Handler is Out Of Action. (X) is the number of Pykpyks included with the Handler. Additional Pykpyks may be purchased during the Gathering of Forces.",
-                    "Volly Fire": "(Requires 2 actions) This attack targets all rhyﬂers, friend or foe, in the weapon’s eﬀect area, or Zone. This Zone is one inch wide and is a line that extends a single Range Band from the Rhyﬂer’s base to the fnal target. Consult the Scattergun Outcome table before any to-hit rolls are made. If the fring model is still active, conduct individual Ranged Attacks against each model in the line of fre. Volley Fire may only be Reacted to by Diving for Cover."
+                    "Volley Fire": "(Requires 2 actions) This attack targets all rhyﬂers, friend or foe, in the weapon’s eﬀect area, or Zone. This Zone is one inch wide and is a line that extends a single Range Band from the Rhyﬂer’s base to the fnal target. Consult the Scattergun Outcome table before any to-hit rolls are made. If the fring model is still active, conduct individual Ranged Attacks against each model in the line of fre. Volley Fire may only be Reacted to by Diving for Cover."
                 },
                 selectedArmy: [],
                 table: '',
@@ -667,6 +667,7 @@
                     }, 0);
                 },
                 getKeywords(){
+                    console.log("getKeywords");
                     var obj = {};
                     for(var unit of this.selectedArmy){
                         for(var i in unit.specialAbilities){
@@ -720,7 +721,7 @@
                     return Object.values(groupedData);
                 },
                 adjustPoints(amount) {
-                    const newPoints = this.selectedPoints + amount;
+                    const newPoints = parseInt(this.selectedPoints) + parseInt(amount);
                     if (newPoints >= 100 && newPoints <= 600) {
                         this.selectedPoints = newPoints;
                     }

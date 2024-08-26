@@ -332,6 +332,7 @@
             display: flex;
             font-size: 16px;
             transform: scale(0.7);
+            text-shadow: 1px 1px 1px black;
         
             /* Lighter treasure map style background */
             background: linear-gradient(145deg, #fdf5e6, #f2e2b3);
