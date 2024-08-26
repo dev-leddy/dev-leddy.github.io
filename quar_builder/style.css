@@ -138,9 +138,15 @@
 			align-items: center;
 		}
 
-        .Coftyran, .Toulmore{
+        .Coftyran{
             background-color: #5072A7;
 			border: 1px solid #5072A7;
+            color: white;
+        }
+
+        .Toulmore{
+            background-color: rgb(39,152,182);
+			border: 1px solid rgb(39,152,182);
             color: white;
         }
 
@@ -151,8 +157,8 @@
         }
 
         .Gwynt{
-            background-color: #BA0021;
-			border: 1px solid #BA0021;
+            background-color: rgb(182,86,48);
+			border: 1px solid rgb(182,86,48);
             color: white;
         }
 

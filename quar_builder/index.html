@@ -31,11 +31,6 @@
                       {{ faction }}
                     </option>
                   </select>
-                <!-- <select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
-                    <option value="Crusader">Crusader</option>
-                    <option value="Coftyran">Coftyran</option>
-                    <option value="Gwynt">Gwynt</option>
-                </select> -->
             </div>
             <div class="d-flex flex-column">				
                 <h2 class="mx-auto text-monospace">Quar Battleforce Builder</h4>
@@ -171,19 +166,11 @@
             <div class="selected-units" id="selected-units-container">
                 <div class="mx-5">
                     <div class="d-flex">                    
-                        <span v-if="selectedFaction == 'Coftyran'">
-                            <img src="images/coftyran.png" width="126" height="80">
-                        </span>
-                        <span v-if="selectedFaction == 'Crusader'">
-                            <img src="images/crusader.png" width="126" height="80">
-                        </span>
+                        <img :src="'images/' + selectedFaction + '.png'"
+                        style="object-fit: scale-down; width: 126px; height: 80px;">
                         <h1 class="my-auto mx-auto">{{selectedFaction}}</h1>
-                        <span v-if="selectedFaction == 'Coftyran'">
-                            <img src="images/coftyran.png" width="126" height="80">
-                        </span>
-                        <span v-if="selectedFaction == 'Crusader'">
-                            <img src="images/crusader.png" width="126" height="80">
-                        </span>
+                        <img :src="'images/' + selectedFaction + '.png'"
+                        style="object-fit: scale-down; width: 126px; height: 80px;">
                     </div>
                     <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
                     <div class="d-flex flex-column">
