@@ -225,15 +225,15 @@
                     <div id="printableCards" class="flex-wrap" :class="{ 'd-none': ShowUnitCards == 'false', 'd-flex': ShowUnitCards == true}">
                         <div class="printable-unit-card justify-content-between" v-for="(unit, index) in filteredArmy" :key="index">
                             <div class="d-flex flex-column" style="width: 100%;">
-                                <div class="text-center font-weight-bold" style="font-size: 1.5em; background-color: rgba(0, 0, 0, 0.45); color: white; padding: 2px; padding-left: 5px; padding-bottom:5px; width: 100%">
+                                <div class="text-center font-weight-bold" style="font-size: 1.4em; background-color: rgba(0, 0, 0, 0.45); color: white; padding: 2px; padding-left: 5px; padding-bottom:5px; width: 100%">
                                     ({{unit.points}}) {{unit.name}}
                                 </div>
-                                <div class="d-flex w-100 mt-2">
+                                <div class="d-flex w-100">
                                     <img 
                                     :src="getImageSrc(unit.name)"
                                     class="mx-auto" 
                                     :class="{ 'fallback-image': isFallback(unit.name) }"
-                                    style="object-fit: scale-down; width: 150px; height: 150px; margin-bottom: 5px; filter: drop-shadow(0 0 0.1rem black)"
+                                    style="object-fit: scale-down; width: 140px; height: 140px; filter: drop-shadow(0 0 0.1rem black)"
                                     @error="setFallbackImage($event, unit.name)">      
                                 </div>
                                 <div class="d-flex flex-column my-auto flex-grow-1">
@@ -244,10 +244,10 @@
                                 <div class="flex-grow-1">
                                     <div class="d-flex flex-column w-100">
                                         <div class="d-flex flex-column justify-content-between mt-auto">
-                                            <div class="d-flex printable-unit-card-item" v-for="item in unit.equipment">
+                                            <div class="d-flex printable-unit-card-item my-1" v-for="item in unit.equipment">
                                                 <div class="d-flex flex-column flex-grow-1">
                                                     <div class="font-weight-bold" style="font-size: 1.2em">
-                                                        <img class="my-auto" :src="'images/' + item + '.png'" style="object-fit: scale-down; max-width: 100px; height: 21px; margin-bottom: 5px;"> 
+                                                        <img class="my-auto" :src="'images/' + item + '.png'" style="object-fit: scale-down; max-width: 50px; height: 21px; margin-bottom: 5px;"> 
                                                         <span class="my-auto">{{item}} </span>
                                                     </div>
                                                     
@@ -263,11 +263,11 @@
                                                 <div class="d-flex flex-column flex-grow-1" v-if="equipmentData[item]" style="width:40px">
                                                     <div class="d-flex">
                                                         <div class="d-flex flex-column flex-grow-1 justify-content-center">
-                                                            <div class="font-weight-bold mx-auto">Range: </div>
+                                                            <div class="font-weight-bold mx-auto">Range</div>
                                                             <div class="mx-auto">{{equipmentData[item]?.R}}</div>
                                                         </div>
                                                         <div class="d-flex flex-column flex-grow-1 justify-content-center">
-                                                            <div class="font-weight-bold mx-auto">Snap: </div> 
+                                                            <div class="font-weight-bold mx-auto">Snap</div> 
                                                             <div class="mx-auto">{{equipmentData[item]?.Sn}}  </div> 
                                                         </div>
                                                     </div>

@@ -9,8 +9,8 @@
                 height: 27.94cm;
             }  
             .printable-unit-card {
-                height: 461px !important;
-                width: 335px !important;
+                height: 465px !important;
+                width: 338px !important;
                 transform: scale(1) rotate(90deg) !important;
                 margin-top: -50px !important;
                 margin-right: 0px !important;
@@ -324,7 +324,7 @@
             border: solid 10px black;
             border-radius: 10px;
             display: flex;
-            font-size: 12px;
+            font-size: 16px;
             transform: scale(0.7);
         
             /* Lighter treasure map style background */
