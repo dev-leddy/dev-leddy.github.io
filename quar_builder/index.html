@@ -20,6 +20,8 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <!-- DataTables Bootstrap 4 JS -->
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
 
 </head>
     <div id="app">
@@ -34,7 +36,7 @@
             </div>
             <div class="d-flex flex-column">				
                 <h2 class="mx-auto text-monospace">Quar Battleforce Builder</h4>
-                    <small>This is a major work in progress, mobile support... soonish. If you see issues let me know on discord by DMing me. @smarf</small>
+                    <small>This is a major work in progress, mobile support... soonish. Some cards may not format correctly, working on fixes.</small>
                     <small>All rules and information based on the Clash of Rhyfles V2 Rulebook - Addendum V2. Images are the property of <a href="https://zombiesmith.com/">ZombieSmith</a>.</small>
             </div>
             <div class="d-flex">
@@ -224,16 +226,19 @@
                                     @error="setFallbackImage($event, unit.name)">      
                                 </div>
                                 <div class="d-flex flex-column my-auto flex-grow-1">
-                                    <div v-if="unit.specialAbilities.length > 0" class="mx-auto font-weight-bold font-italic" style="text-shadow: 0px 0px 0px black !important;" v-for="unitAbility in unit.specialAbilities">
-                                        {{unitAbility}}
+                                    <div class="mx-auto font-italic" style="text-shadow: 0px 0px 0px black !important;">
+                                        {{unit.specialAbilities.join(', ')}}
                                     </div>
+                                    <!-- <div v-if="unit.specialAbilities.length > 0" class="mx-auto font-weight-bold font-italic" style="text-shadow: 0px 0px 0px black !important;" v-for="unitAbility in unit.specialAbilities">
+                                        {{unitAbility}}
+                                    </div> -->
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex flex-column w-100">
                                         <div class="d-flex flex-column justify-content-between mt-auto">
                                             <div class="d-flex printable-unit-card-item my-1" v-for="item in unit.equipment">
-                                                <div class="d-flex flex-column flex-grow-1">
-                                                    <div class="font-weight-bold" style="font-size: 1.2em">
+                                                <div class="d-flex flex-column">
+                                                    <div class="font-weight-bold my-auto" style="font-size: 1.2em;">
                                                         <img class="my-auto" :src="'images/' + item + '.png'" style="object-fit: scale-down; max-width: 50px; height: 21px; margin-bottom: 5px;"> 
                                                         <span class="my-auto">{{item}} </span>
                                                     </div>
@@ -247,52 +252,52 @@
                                                     </div>
                                                 </div>
         
-                                                <div class="d-flex flex-column flex-grow-1" v-if="equipmentData[item]" style="width:40px">
+                                                <div class="d-flex flex-column ml-auto my-auto" v-if="equipmentData[item]">
                                                     <div class="d-flex">
-                                                        <div class="d-flex flex-column flex-grow-1 justify-content-center">
-                                                            <div class="font-weight-bold mx-auto">Range</div>
-                                                            <div class="mx-auto">{{equipmentData[item]?.R}}</div>
+                                                        <div class="d-flex flex-column flex-grow-1 justify-content-center mr-2">
+                                                            <div class="mx-auto">Range</div>
+                                                            <div class="mx-auto stat-number">{{equipmentData[item]?.R}}</div>
                                                         </div>
                                                         <div class="d-flex flex-column flex-grow-1 justify-content-center">
-                                                            <div class="font-weight-bold mx-auto">Snap</div> 
-                                                            <div class="mx-auto">{{equipmentData[item]?.Sn}}  </div> 
+                                                            <div class="mx-auto">Snap</div> 
+                                                            <div class="mx-auto stat-number">{{equipmentData[item]?.Sn}}  </div> 
                                                         </div>
                                                     </div>
-
-                                                    <div class="d-flex flex-column flex-grow-1 justify-content-center" v-if="equipmentData[item]?.Mt != '-'">
-                                                        <div class="font-weight-bold mx-auto">Might: </div> 
-                                                        <div class="mx-auto">{{equipmentData[item]?.Mt}}</div>
+                                                    <div class="d-flex flex-column flex-grow-1 justify-content-center mt-2" v-if="equipmentData[item]?.Mt != '-'">
+                                                        <div class="mx-auto">Might: </div> 
+                                                        <div class="mx-auto stat-number">{{equipmentData[item]?.Mt}}</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <div>
                                     <div class="d-flex flex-column justify-content-between pt-2" style="background-color: rgba(0, 0, 0, 0.45);color: white;padding-right: 6px;">                                                                                   
                                         <div class="d-flex flex-column justify-content-between w-100 mb-3">
                                             <div class="d-flex">
                                                 <div class="w-50 d-flex flex-column">
                                                     <!-- <img :src="'images/range.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
-                                                     <div class="font-weight-bold mx-auto">Skill</div>
-                                                     <div class="mx-auto">{{unit.sk}}</div>
+                                                     <div class="mx-auto">Skill</div>
+                                                     <div class="mx-auto stat-number">{{unit.sk}}</div>
                                                 </div>
                                                 <div class="w-50 d-flex flex-column">
                                                     <!-- <img :src="'images/movement.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
-                                                     <div class="font-weight-bold mx-auto">Movement</div>
-                                                     <div class="mx-auto">{{unit.ma}}</div>
+                                                     <div class="mx-auto">Movement</div>
+                                                     <div class="mx-auto stat-number">{{unit.ma}}</div>
                                                      
                                                 </div>
                                                 <div class="w-50 d-flex flex-column">
                                                     <!-- <img :src="'images/might.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
-                                                     <div class="font-weight-bold mx-auto">Might</div>
-                                                     <div class="mx-auto">{{unit.mt}}</div>
+                                                     <div class="mx-auto">Might</div>
+                                                     <div class="mx-auto stat-number">{{unit.mt}}</div>
                                                     
                                                 </div>
                                                 <div class="w-50 d-flex flex-column">
                                                     <!-- <img :src="'images/toughness.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
-                                                     <div class="font-weight-bold mx-auto">Toughness</div>
-                                                     <div class="mx-auto">{{unit.toughness}}</div>                                                    
+                                                     <div class="mx-auto">Toughness</div>
+                                                     <div class="mx-auto stat-number">{{unit.toughness}}</div>                                                    
                                                 </div>                                       
                                             </div>       
                                             </div>
@@ -499,9 +504,9 @@
                     "H-11a": { R: 10, Sn: -3, Abilities: ['Automatic', 'Loader'], Mt: '-' },
                     "Grifkis Shotgun": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
                     "Sio-Cly Derringer": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
-                    "Splagen Torpedo": { R: 6, Sn: "N/A", Abilities: ['Blast(1)'], Mt: '2d6-1' },
-                    "SG-3 Scattergun": { R: 16, SN: "N/A", Abilities: ["Scattergun", "Large Caliber", "Volley Fire"], Mt: '-'},
-                    "MTR(22)": {R:10, SN: "N/A", Abilities: ["Blast(1)", "Braced"], Mt: "2d6"}
+                    "Splagen Torpedo": { R: 6, Sn: "-", Abilities: ['Blast(1)'], Mt: '2d6-1' },
+                    "SG-3 Scattergun": { R: 16, SN: "-", Abilities: ["Scattergun", "Large Caliber", "Volley Fire"], Mt: '-'},
+                    "MTR(22)": {R:10, SN: "-", Abilities: ["Blast(1)", "Braced"], Mt: "2d6"}
                 },
                 specialAbilities: {
                     "Automatic": "Apply +2 to skill if firing at a single target. Automatic weapons may perform the Area Fire action which can target figures within a 4” circle. Each extra target adds -1 to the Skill roll. Use the best cover available (light cover does not apply), and apply modifiers based on targets’ actions (Dive for Cover, return fire, or move).",
@@ -514,7 +519,7 @@
                     "Hardened": "Ignore the need to go Prone when hit by ranged fire. Not Gobsmacked when he dives for cover.",
                     "Hero": "Heroes have the Hardened and Veteran abilities. May only include one Hero for every 100 points gathered, with a maximum of four allowed.",
                     "Infiltrate": "A rhyfler with this ability may start the Skirmish off the battlefield. When his commander chooses to bring this rhyfler on the field he designates a point anywhere on the battlefield, no closer than 4” to an enemy rhyfler. He then spends an Action, and rolls on the Infiltrate table.",
-                    "Killing Strike": "May reduce effective Skill for an attack by two, to increase his Might by two.",
+                    "Killing Strike": "May reduce Skill for a melee attack to increase might. -2 Skill +2 Might.",
                     "Large Caliber": "Weapons that use larger rounds are more effective versus rhyﬂers in cover, Tractors, and other obstacles. Large Caliber weapons ignore Light Cover and reduce standard Cover by -1. Tractors hit by Large Caliber weapons read one row higher on Damage Tables.",
                     "Leader (X/Y)": "Leaders allow a commander to better control his troops through their abilities to activate multiple rhyflers at once. A rhyfler with this ability may perform a Leadership action with a number of rhyflers equal to his Leadership value (X) and within his Leadership range (Y), in inches.",
                     "Leap (X)": "When jumping during a movement action, this rhyfler multiplies the distance allowed, both horizontally and vertically, by their Leap value. This allows the rhyfler to ignore certain barricades and obstacles, as well as enemy rhyflers.",
@@ -886,6 +891,7 @@
 
             }
         });
+
     </script>
 </body>
 </html>

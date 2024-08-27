@@ -331,7 +331,7 @@
             border-radius: 10px;
             display: flex;
             font-size: 16px;
-            transform: scale(0.7);
+            /* transform: scale(0.7); */
             text-shadow: 1px 1px 1px black;
         
             /* Lighter treasure map style background */
@@ -366,3 +366,7 @@
             color: white;
         }
         
+        .stat-number{
+            font-size: 1.1em;
+            font-weight: bold;
+        }
