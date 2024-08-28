@@ -1,347 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quar Battleforce Builder</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.css" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-    <!-- DataTables Bootstrap 4 CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
-
-    
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <!-- DataTables Bootstrap 4 JS -->
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-
-
-</head>
-    <div id="app">
-        <div class="back-img no-print"></div>
-		<nav class="navbar navbar-light bg-light no-print d-flex justify-content-between" style="margin-top: -25px;">
-            <div style="width: 275px;">
-                <select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
-                    <option v-for="(units, faction) in availableUnits" :key="faction" :value="faction">
-                      {{ faction }}
-                    </option>
-                  </select>
-            </div>
-            <div class="d-flex flex-column">				
-                <h2 class="mx-auto text-monospace">Quar Battleforce Builder</h4>
-                    <small>This is a major work in progress, mobile support... soonish. Some cards may not format correctly, working on fixes.</small>
-                    <small>All rules and information based on the Clash of Rhyfles V2 Rulebook - Addendum V2. Images are the property of <a href="https://zombiesmith.com/">ZombieSmith</a>.</small>
-            </div>
-            <div class="d-flex">
-                <button class="btn btn-secondary" @click="printTable">Print</button>
-                <b-form-checkbox size="sm" v-model="printTables" class="ml-1 my-auto">Include Ref Tables</b-form-checkbox>
-            </div>
-		</nav>
-
-
-        <div class="d-flex" style="height: calc(100vh - 140px);">
-            <div class="unit-selection no-print">
-                <div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">                 
-                        <div>
-                            <div class="points-box" :class="[selectedFaction]">{{ unit.points }}</div>
-                            <div class="unit-name-box" :class="[selectedFaction]">
-                                <span v-if="unit.allowed">({{unit.allowed}})&nbsp;</span>
-                                {{ unit.name }}
-                            </div>
-                            <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
-                        </div>
-                        <div class="unit-stats flex" style="margin-top: 37px; margin-left: 3px;">
-                            <div class="w-50 my-auto">
-                                <img 
-                                :src="getImageSrc(unit.name)" 
-                                :class="{ 'fallback-image': isFallback(unit.name) }"
-                                style="object-fit: scale-down; width: 100px; height: 100px; margin-bottom: 5px;"
-                                @error="setFallbackImage($event, unit.name)">
-                            </div>
-                            <div class="flex-grow-1 my-auto">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Skill: </div>
-                                    <div>{{ unit.sk }}</div>
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Might: </div>
-                                    <div>{{ unit.mt }}</div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 my-auto">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Move: </div>
-                                    <div>{{ unit.ma }}</div>
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="font-weight-bold">Tough: </div>
-                                    <div>{{ unit.toughness }}</div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div v-if="unit.specialAbilities.length > 0" class="unit-stats my-auto pb-2">
-                            <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
-                                <div class="font-weight-bold mx-auto">Special Abilities: </div>
-                                <span class="mx-auto" v-for="ability in unit.specialAbilities" :key="ability">
-                                    <span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
-                                        {{ ability }}
-                                    </span>                                
-                                </span>
-                                <div v-if="unit.name == 'PykPyks (3)'"><br></div>
-                            </div>
-                        </div>
-                        <div v-else class="unit-stats my-auto">
-                            <!-- <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Quar Battleforce Builder</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.css" rel="stylesheet">
+		<link rel="stylesheet" href="./style.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+		
+		<!-- DataTables Bootstrap 4 CSS -->
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+		<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+		
+		<!-- DataTables Bootstrap 4 JS -->
+		<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="back-img no-print"></div>
+			<nav class="navbar navbar-light bg-light no-print d-flex justify-content-between" style="margin-top: -25px;">
+				<div style="width: 275px;">
+					<select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
+						<option v-for="(units, faction) in availableUnits" :key="faction" :value="faction">
+							{{ faction }}
+						</option>
+					</select>
+				</div>
+				<div class="d-flex flex-column">
+					<h2 class="mx-auto text-monospace">Quar Battleforce Builder</h2>
+					<small>This is a major work in progress, mobile support... soonish. Some cards may not format correctly, working on fixes.</small>
+					<small>All rules and information based on the Clash of Rhyfles V2 Rulebook - Addendum V2. Images are the property of
+						<a href="https://zombiesmith.com/">ZombieSmith</a>.</small>
+				</div>
+				<div class="d-flex">
+					<button class="btn btn-secondary" @click="printTable">Print</button>
+					<b-form-checkbox size="sm" v-model="printTables" class="ml-1 my-auto">Include Ref Tables</b-form-checkbox>
+				</div>
+			</nav>
+			<div class="d-flex" style="height: calc(100vh - 140px);">
+				<div class="unit-selection no-print">
+					<div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">
+						<div>
+							<div class="points-box" :class="[selectedFaction]">{{ unit.points }}</div>
+							<div class="unit-name-box" :class="[selectedFaction]">
+								<span v-if="unit.allowed">({{unit.allowed}})</span>
+								{{ unit.name }}
+							</div>
+							<div class="add-btn no-print" @click="addToArmy(unit)">+</div>
+						</div>
+						<div class="unit-stats flex" style="margin-top: 37px; margin-left: 3px;">
+							<div class="w-50 my-auto">
+								<img :src="getImageSrc(unit.name)" :class="{ 'fallback-image': isFallback(unit.name) }" style="object-fit: scale-down; width: 100px; height: 100px; margin-bottom: 5px;" @error="setFallbackImage($event, unit.name)">
+							</div>
+							<div class="flex-grow-1 my-auto">
+								<div class="d-flex flex-column flex-grow-1">
+									<div class="font-weight-bold">Skill:
+									</div>
+									<div>{{ unit.sk }}</div>
+								</div>
+								<div class="d-flex flex-column flex-grow-1">
+									<div class="font-weight-bold">Might:
+									</div>
+									<div>{{ unit.mt }}</div>
+								</div>
+							</div>
+							<div class="flex-grow-1 my-auto">
+								<div class="d-flex flex-column flex-grow-1">
+									<div class="font-weight-bold">Move:
+									</div>
+									<div>{{ unit.ma }}</div>
+								</div>
+								<div class="d-flex flex-column flex-grow-1">
+									<div class="font-weight-bold">Tough:
+									</div>
+									<div>{{ unit.toughness }}</div>
+								</div>
+							</div>
+						</div>
+						<div v-if="unit.specialAbilities.length > 0" class="unit-stats my-auto pb-2">
+							<div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
+								<div class="font-weight-bold mx-auto">Special Abilities:
+								</div>
+								<span class="mx-auto" v-for="ability in unit.specialAbilities" :key="ability">
+									<span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
+										{{ ability }}
+									</span>
+								</span>
+								<div v-if="unit.name == 'PykPyks (3)'">
+									<br>
+								</div>
+							</div>
+						</div>
+						<div v-else="" class="unit-stats my-auto">
+							
+							<!-- <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
                                 <div class="font-weight-bold mx-auto">Special Abilities: </div>
                                 <div class="font-italic font-weight-light mx-auto">No Special Abilities</div>
                             </div> -->
-                        </div>
-                        <div v-if="unit.equipment && unit.name != 'PykPyks (3)'" class="unit-stats mt-auto">
-                            <div class="w-100">
-                                <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip" style="border: 2px solid rgba(0, 0, 0, 0.17); border-radius: 5px; margin-bottom: 2px;">
-                                    <div class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
-                                        <div class="d-flex">
-                                            <div class="d-flex flex-column">
-                                                <div class="equipment">{{ equip }}</div>
-                                                <img :src="'images/' + equip + '.png'" style="object-fit: scale-down; width: 100px; height: 28px; margin-bottom: 5px;">
-                                            </div>
-                                            <div v-if="equipmentData[equip]?.Abilities.length" class="d-flex flex-column flex-grow-1" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
-                                                <div class="font-weight-bold font-italic ml-4">Abilities: </div>
-                                                <div class="d-flex flex-column ml-4">
-                                                    <div class="ability" v-for="ability in equipmentData[equip]?.Abilities">
-                                                        <span v-b-tooltip.html="{ title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window' }">
-                                                            {{ ability }}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>                                    
-                                        <div v-if="equipmentData[equip]" class="d-flex flex-column mt-2 px-3 py-1" style="color: white;background-color: #8b9192; border-radius: 5px;">
-                                            <div class="d-flex">
-                                                <div class="d-flex mr-auto">
-                                                    <div class="d-flex">
-                                                        <span class="mr-1 my-auto font-weight-bold">
-                                                            Range:
-                                                            <!-- <img style="filter: invert(1);" src="images/range.svg" width="20px" height="20px"> -->
-                                                        </span>
-                                                        <span class="my-auto">{{ equipmentData[equip]?.R }}</span>
-                                                    </div>
-                                                </div>
-                                                <div v-if="equipmentData[equip]?.Mt !== '-'" class="d-flex">
-                                                    <div>
-                                                        <span class="mr-1 font-weight-bold">
-                                                            Mt:
-                                                            <!-- <img style="filter: invert(1);" src="images/might.svg" width="20px" height="20px"> -->
-                                                        </span>
-                                                        <span class="my-auto">{{ equipmentData[equip]?.Mt }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex ml-auto">
-                                                    <div>
-                                                        <span class="mr-1 font-weight-bold">
-                                                            Snap:
-                                                            <!-- <img style="filter: invert(1);" src="images/snapshot.svg" width="20px" height="20px"> -->
-                                                        </span>
-                                                        <span class="my-auto">{{ equipmentData[equip]?.Sn }}</span>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        
-                                        <div v-if="!equipmentData[equip]" class="font-weight-light font-italic mt-2">Use unit stats for melee.</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                </div>
-            </div>
-
-            <div class="selected-units" id="selected-units-container">
-                <div class="mx-5">
-                    <div class="d-flex">                    
-                        <img :src="'images/' + selectedFaction + '.png'"
-                        style="object-fit: scale-down; width: 126px; height: 80px;">
-                        <h1 class="my-auto mx-auto">{{selectedFaction}}</h1>
-                        <img :src="'images/' + selectedFaction + '.png'"
-                        style="object-fit: scale-down; width: 126px; height: 80px;">
-                    </div>
-                    <div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
-                    <div class="d-flex flex-column">
-                        <div class="no-print mb-2" style="width: 200px">
-                            <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
-                        </div>
-                        <div class="d-flex justify-content-between no-print mb-2" style="width: 200px">
-                            <!-- <b-button pill variant="primary" style="width: 50px" @click="adjustPoints(-25)">-</b-button>
+						</div>
+						<div v-if="unit.equipment &amp;&amp; unit.name != 'PykPyks (3)'" class="unit-stats mt-auto">
+							<div class="w-100">
+								<div v-for="equip in unit.equipment" class="value" data-toggle="tooltip" style="border: 2px solid rgba(0, 0, 0, 0.17); border-radius: 5px; margin-bottom: 2px;">
+									<div class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
+										<div class="d-flex">
+											<div class="d-flex flex-column">
+												<div class="equipment">{{ equip }}</div>
+												<img :src="'images/' + equip + '.png'" style="object-fit: scale-down; width: 100px; height: 28px; margin-bottom: 5px;">
+											</div>
+											<div v-if="equipmentData[equip]?.Abilities.length" class="d-flex flex-column flex-grow-1" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
+												<div class="font-weight-bold font-italic ml-4">Abilities:
+												</div>
+												<div class="d-flex flex-column ml-4">
+													<div class="ability" v-for="ability in equipmentData[equip]?.Abilities">
+														<span v-b-tooltip.html="{ title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window' }">
+															{{ ability }}
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div v-if="equipmentData[equip]" class="d-flex flex-column mt-2 px-3 py-1" style="color: white;background-color: #8b9192; border-radius: 5px;">
+											<div class="d-flex">
+												<div class="d-flex mr-auto">
+													<div class="d-flex">
+														<span class="mr-1 my-auto font-weight-bold">
+															Range:                                                             
+															<!-- <img style="filter: invert(1);" src="images/range.svg" width="20px" height="20px"> -->
+														</span>
+														<span class="my-auto">{{ equipmentData[equip]?.R }}</span>
+													</div>
+												</div>
+												<div v-if="equipmentData[equip]?.Mt !== '-'" class="d-flex">
+													<div>
+														<span class="mr-1 font-weight-bold">
+															Mt:                                                             
+															<!-- <img style="filter: invert(1);" src="images/might.svg" width="20px" height="20px"> -->
+														</span>
+														<span class="my-auto">{{ equipmentData[equip]?.Mt }}</span>
+													</div>
+												</div>
+												<div class="d-flex ml-auto">
+													<div>
+														<span class="mr-1 font-weight-bold">
+															Snap:                                                             
+															<!-- <img style="filter: invert(1);" src="images/snapshot.svg" width="20px" height="20px"> -->
+														</span>
+														<span class="my-auto">{{ equipmentData[equip]?.Sn }}</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div v-if="!equipmentData[equip]" class="font-weight-light font-italic mt-2">Use unit stats for melee.</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="selected-units" id="selected-units-container">
+					<div class="mx-5">
+						<div class="d-flex">
+							<img :src="'images/' + selectedFaction + '.png'" style="object-fit: scale-down; width: 126px; height: 80px;">
+							<h1 class="my-auto mx-auto">{{selectedFaction}}</h1>
+							<img :src="'images/' + selectedFaction + '.png'" style="object-fit: scale-down; width: 126px; height: 80px;">
+						</div>
+						<div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
+						<div class="d-flex flex-column">
+							<div class="no-print mb-2" style="width: 200px">
+								<input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+							</div>
+							<div class="d-flex justify-content-between no-print mb-2" style="width: 200px">
+								
+								<!-- <b-button pill variant="primary" style="width: 50px" @click="adjustPoints(-25)">-</b-button>
                             <b-button pill variant="primary" style="width: 50px" @click="adjustPoints(25)">+</b-button> -->
-                            <button class="button-74" role="button" @click="adjustPoints(-25)">-</button>
-                            <button class="button-74" role="button" @click="adjustPoints(25)">+</button>
-                        </div>
-                        <div class="d-flex justify-content-between no-print">
-                            <b-form-checkbox v-model="GroupUnits" unchecked-value="false">
-                                Group Duplicates
-                           </b-form-checkbox>
-                           <b-form-checkbox v-model="ShowUnitCards" class="ml-2" unchecked-value="false">
-                                Show Unit Cards
-                            </b-form-checkbox>
-
-                            <div class="ml-auto my-auto badge badge-pill badge-light badge-custom" @click="clearAll()">
-                                Clear All
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="table-responsive">                
-                        <table id="selected-units-table" style="width:100%" class="table table-bordered">
-                        </table>
-                    </div>
-    
-                    <div>
-                        <div v-for="(def, key) in getKeywords" :key="key">
-                            <div class="font-weight-bold">{{key}}:</div> 
-                            <div class="font-weight-light">{{def}}</div>
-                        </div>
-                    </div>
-                    <div id="printableCards" class="flex-wrap" :class="{ 'd-none': ShowUnitCards == 'false', 'd-flex': ShowUnitCards == true}">
-                        <div class="printable-unit-card justify-content-between" v-for="(unit, index) in filteredArmy" :key="index">
-                            <div class="d-flex flex-column" style="width: 100%;">
-                                <div class="text-center font-weight-bold" style="font-size: 1.4em; background-color: rgba(0, 0, 0, 0.45); color: white; padding: 2px; padding-left: 5px; padding-bottom:5px; width: 100%">
-                                    ({{unit.points}}) {{unit.name}}
+								<button class="button-74" role="button" @click="adjustPoints(-25)">-</button>
+								<button class="button-74" role="button" @click="adjustPoints(25)">+</button>
+							</div>
+							<div class="d-flex justify-content-between no-print">
+                                <div class="d-flex flex-grow-1">
+                                    <b-form-checkbox v-model="GroupUnits" unchecked-value="false">
+                                        Group Duplicates
+                                    </b-form-checkbox>
+                                    <b-form-checkbox v-model="ShowUnitCards" class="ml-2" unchecked-value="false" >
+                                        Show Unit Cards
+                                    </b-form-checkbox>
                                 </div>
-                                <div class="d-flex w-100">
-                                    <img 
-                                    :src="getImageSrc(unit.name)"
-                                    class="mx-auto" 
-                                    :class="{ 'fallback-image': isFallback(unit.name) }"
-                                    style="object-fit: scale-down; width: 140px; height: 140px; filter: drop-shadow(0 0 0.1rem black)"
-                                    @error="setFallbackImage($event, unit.name)">      
+                                <div class="d-flex flex-grow-1 justify-content-between">
+                                    <b-form-file 
+                                        variant="primary"
+                                        @change="importArmy" 
+                                        accept=".json" 
+                                        class="flex-grow-1" 
+                                        placeholder="Choose file to import..."
+                                        drop-placeholder="" 
+                                        no-drop
+                                        style="width: 100px;">
+                                        Import
+                                    </b-form-file>
+                                    <b-button style="color: #495057; border: 1px solid #ced4da; background-color: #e9ecef; border-radius: .25rem;" 
+                                    @click="exportArmy" class="ml-2">Export</b-button>
                                 </div>
-                                <div class="d-flex flex-column my-auto flex-grow-1">
-                                    <div class="mx-auto font-italic" style="text-shadow: 0px 0px 0px black !important;">
-                                        {{unit.specialAbilities.join(', ')}}
+                                <div class="d-flex flex-grow-1">
+                                    <div class="ml-auto my-auto badge badge-pill badge-light badge-custom" @click="clearAll()">
+                                        Clear All
                                     </div>
-                                    <!-- <div v-if="unit.specialAbilities.length > 0" class="mx-auto font-weight-bold font-italic" style="text-shadow: 0px 0px 0px black !important;" v-for="unitAbility in unit.specialAbilities">
+                                </div>
+
+
+							</div>
+						</div>
+						<div class="table-responsive">
+							<table id="selected-units-table" style="width:100%" class="table table-bordered">
+							</table>
+						</div>
+						<div>
+							<div v-for="(def, key) in getKeywords" :key="key">
+								<div class="font-weight-bold">{{key}}:</div>
+								<div class="font-weight-light">{{def}}</div>
+							</div>
+						</div>
+						<div id="printableCards" class="flex-wrap" :class="{ 'd-none': ShowUnitCards == 'false', 'd-flex': ShowUnitCards == true}">
+							<div class="printable-unit-card justify-content-between" :class="selectedFaction + '-bg'" v-for="(unit, index) in filteredArmy" :key="index">
+								<div class="d-flex flex-column" style="width: 100%;">
+									<div class="text-center font-weight-bold" style="font-size: 1.4em; background-color: rgba(0, 0, 0, 0.65); color: white; padding: 2px; padding-left: 5px; padding-bottom:5px; width: 100%">
+										({{unit.points}}) {{unit.name}}
+									</div>
+									<div class="d-flex w-100">
+										<img :src="getImageSrc(unit.name)" class="mx-auto" :class="{ 'fallback-image': isFallback(unit.name) }" style="object-fit: scale-down; width: 140px; height: 140px; filter: drop-shadow(0 0 0.1rem black)" @error="setFallbackImage($event, unit.name)">
+									</div>
+									<div class="d-flex flex-column my-auto flex-grow-1">
+										<div class="mx-auto font-italic" style="text-shadow: 0px 0px 0px black !important;">
+											{{unit.specialAbilities.join(', ')}}
+										</div>
+										
+										<!-- <div v-if="unit.specialAbilities.length > 0" class="mx-auto font-weight-bold font-italic" style="text-shadow: 0px 0px 0px black !important;" v-for="unitAbility in unit.specialAbilities">
                                         {{unitAbility}}
                                     </div> -->
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex flex-column w-100">
-                                        <div class="d-flex flex-column justify-content-between mt-auto">
-                                            <div class="d-flex printable-unit-card-item my-1" v-for="item in unit.equipment">
-                                                <div class="d-flex flex-column">
-                                                    <div class="font-weight-bold my-auto" style="font-size: 1.2em;">
-                                                        <img class="my-auto" :src="'images/' + item + '.png'" style="object-fit: scale-down; max-width: 50px; height: 21px; margin-bottom: 5px;"> 
-                                                        <span class="my-auto">{{item}} </span>
-                                                    </div>
-                                                    
-                                                    <div class="d-flex flex-column mx-auto">
-                                                        <div v-if="equipmentData[item]?.Abilities > 0" class="font-weight-bold mx-auto">Abilities</div>
-                                                        <!-- {{equipmentData[item]?.Abilities.join(', ')}} -->
-                                                        <div v-for="(ability, i) in equipmentData[item]?.Abilities">                                                   
-                                                            {{ability}}
-                                                        </div>
-                                                    </div>
-                                                </div>
-        
-                                                <div class="d-flex flex-column ml-auto my-auto" v-if="equipmentData[item]">
-                                                    <div class="d-flex">
-                                                        <div class="d-flex flex-column flex-grow-1 justify-content-center mr-2">
-                                                            <div class="mx-auto">Range</div>
-                                                            <div class="mx-auto stat-number">{{equipmentData[item]?.R}}</div>
-                                                        </div>
-                                                        <div class="d-flex flex-column flex-grow-1 justify-content-center">
-                                                            <div class="mx-auto">Snap</div> 
-                                                            <div class="mx-auto stat-number">{{equipmentData[item]?.Sn}}  </div> 
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex flex-column flex-grow-1 justify-content-center mt-2" v-if="equipmentData[item]?.Mt != '-'">
-                                                        <div class="mx-auto">Might: </div> 
-                                                        <div class="mx-auto stat-number">{{equipmentData[item]?.Mt}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <div class="d-flex flex-column justify-content-between pt-2" style="background-color: rgba(0, 0, 0, 0.45);color: white;padding-right: 6px;">                                                                                   
-                                        <div class="d-flex flex-column justify-content-between w-100 mb-3">
-                                            <div class="d-flex">
-                                                <div class="w-50 d-flex flex-column">
-                                                    <!-- <img :src="'images/range.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
-                                                     <div class="mx-auto">Skill</div>
-                                                     <div class="mx-auto stat-number">{{unit.sk}}</div>
-                                                </div>
-                                                <div class="w-50 d-flex flex-column">
-                                                    <!-- <img :src="'images/movement.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
-                                                     <div class="mx-auto">Movement</div>
-                                                     <div class="mx-auto stat-number">{{unit.ma}}</div>
-                                                     
-                                                </div>
-                                                <div class="w-50 d-flex flex-column">
-                                                    <!-- <img :src="'images/might.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
-                                                     <div class="mx-auto">Might</div>
-                                                     <div class="mx-auto stat-number">{{unit.mt}}</div>
-                                                    
-                                                </div>
-                                                <div class="w-50 d-flex flex-column">
-                                                    <!-- <img :src="'images/toughness.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
-                                                     <div class="mx-auto">Toughness</div>
-                                                     <div class="mx-auto stat-number">{{unit.toughness}}</div>                                                    
-                                                </div>                                       
-                                            </div>       
-                                            </div>
-                                        </div>                                       
-                                    </div>
-                                </div>                          
-                            </div>                         
-                        </div>
-                    </div>
-                    <div id="referenceTables" style="width: 1000px !important;">
-                        <div :class="{'no-print': !printTables}" style="break-before: auto;">
-                            <div class="d-flex ml-1 font-italic">
-                                <div class="my-auto">Grenade throws require 2 actions.</div>
-                                <div class="d-flex flex-column ml-auto">
-                                    <div>10" range, roll 2D6 and check the outcome table below.</div>
-                                    <div>Blind frags roll 3D6 and the opposing commander chooses two.</div>
-                                </div>
-                            </div>
-                            <hr/>
-                            <h3>Frag Grenade Table</h3>
-                            <div id="fragmentationGrenadeOutcomes" class="data-table-container mb-2"></div>
-                            <h3>Smoke Grenade Table</h3>
-                            <ul class="list-unstyled">
-                                <ul>A smoke marker matches the size of a rhyfler's base.</ul>
-                                <ul>Imposes a -3 Skill penalty on ranged attacks tracing LOS through it, and a -1 penalty for attacks within 1” of it.</ul>
-                                <ul>Remove smoke markers when the Activation Deck is reshuffled.</ul>
-                            </ul>
-                            <div id="smokeGrenadeOutcomes" class="data-table-container mb-2"></div>
-                            <h3 class="page-break">Infiltrate Table</h3>
-                            <ul class="list-unstyled">
-                                <ul>A rhyfler with this ability can start off the battlefield. </ul>
-                                <ul>When the commander brings the rhyfler onto the field, they choose a point at least 4” away from enemy rhyflers, spend an Action, and roll on the Infiltrate table.</ul>
-                            </ul>
-                            <div id="infiltrateOutcomes" class="data-table-container mb-2"></div>
-                            <h3>Volley Table</h3>
-                            <div id="volleyOutcomes" class="data-table-container"></div>
-                        </div>                        
-                    </div>                
-                </div>               
-            </div>
-        </div>
-    </div>
-
-    <!-- <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+									</div>
+									<div class="flex-grow-1">
+										<div class="d-flex flex-column w-100">
+											<div class="d-flex flex-column justify-content-between mt-auto">
+												<div class="d-flex printable-unit-card-item my-1" v-for="item in unit.equipment">
+													<div class="d-flex flex-column">
+														<div class="font-weight-bold my-auto" style="font-size: 1.2em;">
+															<img class="my-auto" :src="'images/' + item + '.png'" style="object-fit: scale-down; max-width: 50px; height: 21px; margin-bottom: 5px;">
+															<span class="my-auto">{{item}}
+															</span>
+														</div>
+														<div class="d-flex flex-column mx-auto">
+															<div v-if="equipmentData[item]?.Abilities > 0" class="font-weight-bold mx-auto">Abilities</div>
+															
+															<!-- {{equipmentData[item]?.Abilities.join(', ')}} -->
+															<div v-for="(ability, i) in equipmentData[item]?.Abilities">
+																{{ability}}
+															</div>
+														</div>
+													</div>
+													<div class="d-flex flex-column ml-auto my-auto" v-if="equipmentData[item]">
+														<div class="d-flex">
+															<div class="d-flex flex-column flex-grow-1 justify-content-center mr-2">
+																<div class="mx-auto">Range</div>
+																<div class="mx-auto stat-number">{{equipmentData[item]?.R}}</div>
+															</div>
+															<div class="d-flex flex-column flex-grow-1 justify-content-center">
+																<div class="mx-auto">Snap</div>
+																<div class="mx-auto stat-number">{{equipmentData[item]?.Sn}}
+																</div>
+															</div>
+														</div>
+														<div class="d-flex flex-column flex-grow-1 justify-content-center mt-2" v-if="equipmentData[item]?.Mt != '-'">
+															<div class="mx-auto">Might:
+															</div>
+															<div class="mx-auto stat-number">{{equipmentData[item]?.Mt}}</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div>
+										<div class="d-flex flex-column justify-content-between pt-2" style="background-color: rgba(0, 0, 0, 0.65);color: white;padding-right: 6px;">
+											<div class="d-flex flex-column justify-content-between w-100 mb-3">
+												<div class="d-flex">
+													<div class="w-50 d-flex flex-column">
+														
+														<!-- <img :src="'images/range.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
+														<div class="mx-auto">Skill</div>
+														<div class="mx-auto stat-number">{{unit.sk}}</div>
+													</div>
+													<div class="w-50 d-flex flex-column">
+														
+														<!-- <img :src="'images/movement.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
+														<div class="mx-auto">Movement</div>
+														<div class="mx-auto stat-number">{{unit.ma}}</div>
+													</div>
+													<div class="w-50 d-flex flex-column">
+														
+														<!-- <img :src="'images/might.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
+														<div class="mx-auto">Might</div>
+														<div class="mx-auto stat-number">{{unit.mt}}</div>
+													</div>
+													<div class="w-50 d-flex flex-column">
+														
+														<!-- <img :src="'images/toughness.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
+														<div class="mx-auto">Toughness</div>
+														<div class="mx-auto stat-number">{{unit.toughness}}</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="referenceTables" style="width: 1000px !important;">
+						<div :class="{'no-print': !printTables}" style="break-before: auto;">
+							<div class="d-flex ml-1 font-italic">
+								<div class="my-auto">Grenade throws require 2 actions.</div>
+								<div class="d-flex flex-column ml-auto">
+									<div>10" range, roll 2D6 and check the outcome table below.</div>
+									<div>Blind frags roll 3D6 and the opposing commander chooses two.</div>
+								</div>
+							</div>
+							<hr>
+							<h3>Frag Grenade Table</h3>
+							<div id="fragmentationGrenadeOutcomes" class="data-table-container mb-2"></div>
+							<h3>Smoke Grenade Table</h3>
+							<ul class="list-unstyled">
+								<ul>A smoke marker matches the size of a rhyfler's base.</ul>
+								<ul>Imposes a -3 Skill penalty on ranged attacks tracing LOS through it, and a -1 penalty for attacks within 1” of it.</ul>
+								<ul>Remove smoke markers when the Activation Deck is reshuffled.</ul>
+							</ul>
+							<div id="smokeGrenadeOutcomes" class="data-table-container mb-2"></div>
+							<h3 class="page-break">Infiltrate Table</h3>
+							<ul class="list-unstyled">
+								<ul>A rhyfler with this ability can start off the battlefield.
+								</ul>
+								<ul>When the commander brings the rhyfler onto the field, they choose a point at least 4” away from enemy rhyflers, spend an Action, and roll on the Infiltrate table.</ul>
+							</ul>
+							<div id="infiltrateOutcomes" class="data-table-container mb-2"></div>
+							<h3>Volley Table</h3>
+							<div id="volleyOutcomes" class="data-table-container"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>
       kofiWidgetOverlay.draw('thesmarf', {
         'type': 'floating-chat',
@@ -351,7 +365,7 @@
         'floating-chat.display': 'none',
       });
     </script> -->
-    <script>
+		<script>
         $(document).ready(function() {
                 function renderTable(containerId, data) {
                     const tableHtml = `
@@ -672,7 +686,6 @@
                     }, 0);
                 },
                 getKeywords(){
-                    console.log("getKeywords");
                     var obj = {};
                     for(var unit of this.selectedArmy){
                         for(var i in unit.specialAbilities){
@@ -699,6 +712,47 @@
                 }
             },
             methods: {
+                exportArmy: function() {
+                    // Export selected army to JSON
+                    const armyData = JSON.stringify(this.selectedArmy);
+                    const blob = new Blob([armyData], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+
+                    // Create a temporary link to download the JSON file
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'selected_army.json';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                },
+                importArmy: function(event) {
+                    // Import selected army from a JSON file
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                // Ensure reactivity
+                                var _data = JSON.parse(e.target.result);
+                                this.$set(this, 'selectedArmy', _data);
+   
+                                QuarBFB.table.clear().draw();
+                                QuarBFB.table.rows.add(_data); // Add new data
+                                QuarBFB.addTableChildRows(_data);
+
+                                var _points = 0;
+                                for(var i = 0; i < _data.length; i++){
+                                    _points += _data[i].points;
+                                }
+                                this.selectedPoints = Math.ceil(_points / 25) * 25;
+                            } catch (error) {
+                                alert('Failed to import army: Invalid JSON format.');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                },
                 getData(){
                     if(this.GroupUnits == true){
                         return this.getGroupedData();
@@ -892,6 +946,7 @@
             }
         });
 
-    </script>
-</body>
+    
+		</script>
+	</body>
 </html>
