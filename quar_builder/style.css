@@ -2,6 +2,13 @@
             size: 21.7cm 27.94cm;
         }
 
+        @media print and (color) {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+        
         @media print
         {    
             body{
