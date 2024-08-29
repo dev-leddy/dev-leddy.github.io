@@ -26,170 +26,156 @@
 	<body>
 		<div id="app">
 			<div class="back-img no-print"></div>
-			<nav class="navbar navbar-light bg-light no-print d-flex justify-content-between" style="margin-top: -25px;">
-				<div class="d-flex flex-column">
-					<h2 class="mx-auto text-monospace">Quar Battleforce Builder</h2>
-					<small>Mobile support is a WIP</small>
-					<small>All rules and information based on the Clash of Rhyfles V2 Rulebook - Addendum V2. Images are the property of
-						<a href="https://zombiesmith.com/">ZombieSmith</a> and @shemp2771 on Discord.</small>
-				</div>
-
-			</nav>
-            <div class="toolbar d-flex">
-                <div style="width: 275px; ml-5">
-                    <select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
-                        <option v-for="(units, faction) in availableUnits" :key="faction" :value="faction">
-                            {{ faction }}
-                        </option>
-                    </select>
+			<div class="no-print d-flex" style="margin-top: -25px;">
+                <div class="d-flex flex-column mx-auto">
+                    <h2 class="mx-auto text-monospace">Quar Battleforce Builder</h2>
+                    <small class="mx-auto">Mobile support is a WIP</small>
+                    <small class="mx-auto">All rules and information based on the Clash of Rhyfles V2 Rulebook - Addendum V2. Images are the property of
+                        <a href="https://zombiesmith.com/">ZombieSmith</a> and @shemp2771 on Discord.</small>
                 </div>
-                <div class="d-flex ml-auto">
-                    <b-form-checkbox size="sm" v-model="printTables" class="ml-1 my-auto">Include Reference Tables</b-form-checkbox>
-					<button class="btn btn-secondary ml-2" @click="printTable">Print</button>
-				</div>
             </div>
 			<div class="main-container d-flex">
-				<div class="unit-selection no-print">
-
-					<div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">
-						<div>
-							<div class="points-box" :class="[selectedFaction]">{{ unit.points }}</div>
-							<div class="unit-name-box" :class="[selectedFaction]">
-								<span v-if="unit.allowed">({{unit.allowed}})</span>
-								{{ unit.name }}
-							</div>
-							<div class="add-btn no-print" @click="addToArmy(unit)">+</div>
-						</div>
-						<div class="unit-stats flex" style="margin-top: 37px; margin-left: 3px;">
-							<div class="w-50 my-auto">
-								<img :src="getImageSrc(unit.name)" :class="{ 'fallback-image': isFallback(unit.name) }" style="object-fit: scale-down; width: 100px; height: 100px; margin-bottom: 5px;" @error="setFallbackImage($event, unit.name)">
-							</div>
-							<div class="flex-grow-1 my-auto">
-								<div class="d-flex flex-column flex-grow-1">
-									<div class="font-weight-bold">Skill:
-									</div>
-									<div>{{ unit.sk }}</div>
-								</div>
-								<div class="d-flex flex-column flex-grow-1">
-									<div class="font-weight-bold">Might:
-									</div>
-									<div>{{ unit.mt }}</div>
-								</div>
-							</div>
-							<div class="flex-grow-1 my-auto">
-								<div class="d-flex flex-column flex-grow-1">
-									<div class="font-weight-bold">Move:
-									</div>
-									<div>{{ unit.ma }}</div>
-								</div>
-								<div class="d-flex flex-column flex-grow-1">
-									<div class="font-weight-bold">Tough:
-									</div>
-									<div>{{ unit.toughness }}</div>
-								</div>
-							</div>
-						</div>
-						<div v-if="unit.specialAbilities.length > 0" class="unit-stats my-auto pb-2">
-							<div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
-								<div class="font-weight-bold mx-auto">Special Abilities:
-								</div>
-								<span class="mx-auto" v-for="ability in unit.specialAbilities" :key="ability">
-									<span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
-										{{ ability }}
-									</span>
-								</span>
-								<div v-if="unit.name == 'PykPyks (3)'">
-									<br>
-								</div>
-							</div>
-						</div>
-						<div v-else="" class="unit-stats my-auto">
-							
-							<!-- <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
-                                <div class="font-weight-bold mx-auto">Special Abilities: </div>
-                                <div class="font-italic font-weight-light mx-auto">No Special Abilities</div>
-                            </div> -->
-						</div>
-						<div v-if="unit.equipment &amp;&amp; unit.name != 'PykPyks (3)'" class="unit-stats mt-auto">
-							<div class="w-100">
-								<div v-for="equip in unit.equipment" class="value" data-toggle="tooltip" style="border: 2px solid rgba(0, 0, 0, 0.17); border-radius: 5px; margin-bottom: 2px;">
-									<div class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
-										<div class="d-flex">
-											<div class="d-flex flex-column">
-												<div class="equipment">{{ equip }}</div>
-												<img :src="'images/' + equip + '.png'" style="object-fit: scale-down; width: 100px; height: 28px; margin-bottom: 5px;">
-											</div>
-											<div v-if="equipmentData[equip]?.Abilities.length" class="d-flex flex-column flex-grow-1" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
-												<div class="font-weight-bold font-italic ml-4">Abilities:
-												</div>
-												<div class="d-flex flex-column ml-4">
-													<div class="ability" v-for="ability in equipmentData[equip]?.Abilities">
-														<span v-b-tooltip.html="{ title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window' }">
-															{{ ability }}
-														</span>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div v-if="equipmentData[equip]" class="d-flex flex-column mt-2 px-3 py-1" style="color: white;background-color: #8b9192; border-radius: 5px;">
-											<div class="d-flex">
-												<div class="d-flex mr-auto">
-													<div class="d-flex">
-														<span class="mr-1 my-auto font-weight-bold">
-															Range:                                                             
-															<!-- <img style="filter: invert(1);" src="images/range.svg" width="20px" height="20px"> -->
-														</span>
-														<span class="my-auto">{{ equipmentData[equip]?.R }}</span>
-													</div>
-												</div>
-												<div v-if="equipmentData[equip]?.Mt !== '-'" class="d-flex">
-													<div>
-														<span class="mr-1 font-weight-bold">
-															Mt:                                                             
-															<!-- <img style="filter: invert(1);" src="images/might.svg" width="20px" height="20px"> -->
-														</span>
-														<span class="my-auto">{{ equipmentData[equip]?.Mt }}</span>
-													</div>
-												</div>
-												<div class="d-flex ml-auto">
-													<div>
-														<span class="mr-1 font-weight-bold">
-															Snap:                                                             
-															<!-- <img style="filter: invert(1);" src="images/snapshot.svg" width="20px" height="20px"> -->
-														</span>
-														<span class="my-auto">{{ equipmentData[equip]?.Sn }}</span>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div v-if="!equipmentData[equip]" class="font-weight-light font-italic mt-2">Use unit stats for melee.</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+                <div class="d-flex flex-column">
+                    <div style="width: 275px; padding: 5px;">
+                        Faction:
+                        <select id="faction-select" class="form-control" v-model="selectedFaction" @change="clearSelectedUnits">                           
+                            <option v-for="(units, faction) in availableUnits" :key="faction" :value="faction">
+                                {{ faction }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="unit-selection no-print">
+                        <div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">
+                            <div>
+                                <div class="points-box" :class="[selectedFaction]">{{ unit.points }}</div>
+                                <div class="unit-name-box" :class="[selectedFaction]">
+                                    <span v-if="unit.allowed">({{unit.allowed}})</span>
+                                    {{ unit.name }}
+                                </div>
+                                <div class="add-btn no-print" @click="addToArmy(unit)">+</div>
+                            </div>
+                            <div class="unit-stats flex" style="margin-top: 37px; margin-left: 3px;">
+                                <div class="w-50 my-auto">
+                                    <img :src="getImageSrc(unit.name)" :class="{ 'fallback-image': isFallback(unit.name) }" style="object-fit: scale-down; width: 100px; height: 100px; margin-bottom: 5px;" @error="setFallbackImage($event, unit.name)">
+                                </div>
+                                <div class="flex-grow-1 my-auto">
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <div class="font-weight-bold">Skill:
+                                        </div>
+                                        <div>{{ unit.sk }}</div>
+                                    </div>
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <div class="font-weight-bold">Might:
+                                        </div>
+                                        <div>{{ unit.mt }}</div>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 my-auto">
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <div class="font-weight-bold">Move:
+                                        </div>
+                                        <div>{{ unit.ma }}</div>
+                                    </div>
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <div class="font-weight-bold">Tough:
+                                        </div>
+                                        <div>{{ unit.toughness }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="unit.specialAbilities.length > 0" class="unit-stats my-auto pb-2">
+                                <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
+                                    <div class="font-weight-bold mx-auto">Special Abilities:
+                                    </div>
+                                    <span class="mx-auto" v-for="ability in unit.specialAbilities" :key="ability">
+                                        <span class="ability" v-b-tooltip.html="{title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window'}">
+                                            {{ ability }}
+                                        </span>
+                                    </span>
+                                    <div v-if="unit.name == 'PykPyks (3)'">
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else="" class="unit-stats my-auto">
+                                
+                                <!-- <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
+                                    <div class="font-weight-bold mx-auto">Special Abilities: </div>
+                                    <div class="font-italic font-weight-light mx-auto">No Special Abilities</div>
+                                </div> -->
+                            </div>
+                            <div v-if="unit.equipment &amp;&amp; unit.name != 'PykPyks (3)'" class="unit-stats mt-auto">
+                                <div class="w-100">
+                                    <div v-for="equip in unit.equipment" class="value" data-toggle="tooltip" style="border: 2px solid rgba(0, 0, 0, 0.17); border-radius: 5px; margin-bottom: 2px;">
+                                        <div class="d-flex flex-column" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
+                                            <div class="d-flex">
+                                                <div class="d-flex flex-column">
+                                                    <div class="equipment">{{ equip }}</div>
+                                                    <img :src="'images/' + equip + '.png'" style="object-fit: scale-down; width: 100px; height: 28px; margin-bottom: 5px;">
+                                                </div>
+                                                <div v-if="equipmentData[equip]?.Abilities.length" class="d-flex flex-column flex-grow-1" style="background-color:#f0f2f4; border-radius: 5px; padding: 2px; margin-bottom: 2px;">
+                                                    <div class="font-weight-bold font-italic ml-4">Abilities:
+                                                    </div>
+                                                    <div class="d-flex flex-column ml-4">
+                                                        <div class="ability" v-for="ability in equipmentData[equip]?.Abilities">
+                                                            <span v-b-tooltip.html="{ title: formatAbilityTooltip(ability), placement: 'right', interactive: false, trigger: 'hover', boundary: 'window' }">
+                                                                {{ ability }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-if="equipmentData[equip]" class="d-flex flex-column mt-2 px-3 py-1" style="color: white;background-color: #8b9192; border-radius: 5px;">
+                                                <div class="d-flex">
+                                                    <div class="d-flex mr-auto">
+                                                        <div class="d-flex">
+                                                            <span class="mr-1 my-auto font-weight-bold">
+                                                                Range:                                                             
+                                                                <!-- <img style="filter: invert(1);" src="images/range.svg" width="20px" height="20px"> -->
+                                                            </span>
+                                                            <span class="my-auto">{{ equipmentData[equip]?.R }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div v-if="equipmentData[equip]?.Mt !== '-'" class="d-flex">
+                                                        <div>
+                                                            <span class="mr-1 font-weight-bold">
+                                                                Mt:                                                             
+                                                                <!-- <img style="filter: invert(1);" src="images/might.svg" width="20px" height="20px"> -->
+                                                            </span>
+                                                            <span class="my-auto">{{ equipmentData[equip]?.Mt }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex ml-auto">
+                                                        <div>
+                                                            <span class="mr-1 font-weight-bold">
+                                                                Snap:                                                             
+                                                                <!-- <img style="filter: invert(1);" src="images/snapshot.svg" width="20px" height="20px"> -->
+                                                            </span>
+                                                            <span class="my-auto">{{ equipmentData[equip]?.Sn }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-if="!equipmentData[equip]" class="font-weight-light font-italic mt-2">Use unit stats for melee.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				
 				<div class="selected-units" id="selected-units-container">
 					<div class="mx-5">
-						<div class="d-flex">
-							<img :src="'images/' + selectedFaction + '.png'" style="object-fit: scale-down; width: 126px; height: 80px;">
-							<h1 class="my-auto mx-auto">{{selectedFaction}}</h1>
-							<img :src="'images/' + selectedFaction + '.png'" style="object-fit: scale-down; width: 126px; height: 80px;">
+						<div class="d-flex justify-content-between">
+                            <img :src="'images/' + selectedFaction + '.png'" style="object-fit: scale-down; width: 126px; height: 80px;">
+							<h1 class="my-auto">{{selectedFaction}}</h1>
+                            <img :src="'images/' + selectedFaction + '.png'" style="object-fit: scale-down; width: 126px; height: 80px;">
 						</div>
-						<div class="ml-1">{{ totalPoints }} / {{ selectedPoints }}</div>
+
 						<div class="d-flex flex-column">
-							<div class="no-print mb-2" style="width: 200px">
-								<input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
-							</div>
-							<div class="d-flex justify-content-between no-print mb-2" style="width: 200px">
-								
-								<!-- <b-button pill variant="primary" style="width: 50px" @click="adjustPoints(-25)">-</b-button>
-                            <b-button pill variant="primary" style="width: 50px" @click="adjustPoints(25)">+</b-button> -->
-								<button class="button-74" role="button" @click="adjustPoints(-25)">-</button>
-								<button class="button-74" role="button" @click="adjustPoints(25)">+</button>
-							</div>
 							<div class="d-flex justify-content-between no-print">
-                                <div class="d-flex flex-column flex-grow-1">
+                                <div class="d-flex flex-column">
                                     <div class="d-flex">
                                         <b-form-checkbox v-model="GroupUnits" unchecked-value="false">
                                             Group Duplicates
@@ -199,13 +185,12 @@
                                         </b-form-checkbox>
                                     </div>
 
-                                    <div class="d-flex flex-grow-1">
+                                    <div class="d-flex">
                                         <div style="width: 220px;">
                                             <b-form-file 
                                             variant="primary"
                                             @change="importArmy"
                                             accept=".json" 
-                                            class="flex-grow-1" 
                                             placeholder="Import list..."
                                             drop-placeholder="" 
                                             no-drop>
@@ -217,8 +202,25 @@
                                         @click="exportArmy" class="ml-2">Export</b-button>
                                     </div>
                                 </div>
+                                <div class="d-flex flex-column" style="margin-right: 56px;"><!-- hacky AF lmao, fix this -->
+                                    <div class="no-print mb-2" style="width: 200px">
+                                        <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
+                                    </div>
+                                    <div class="d-flex justify-content-between no-print mb-2" style="width: 200px">							
+                                        <button class="button-74" role="button" @click="adjustPoints(-25)">-</button>
+                                        <div>{{ totalPoints }} / {{ selectedPoints }}</div>
+                                        <button class="button-74" role="button" @click="adjustPoints(25)">+</button>
+                                    </div>
+                                </div>
                                 
-                                <div class="d-flex flex-grow-1">
+                                <div class="d-flex flex-column">
+                                    <div class="flex-grow-1 d-flex ml-auto">
+                                        <b-form-checkbox size="sm" v-model="printTables" class="my-auto">Include Reference Tables</b-form-checkbox>
+                                        <button class="btn ml-2 my-auto" @click="printTable" style="color: rgb(73, 80, 87);
+                                        border: 1px solid rgb(206, 212, 218);
+                                        background-color: rgb(233, 236, 239);
+                                        border-radius: 0.25rem;">Print</button>
+                                    </div>
                                     <div class="ml-auto my-auto badge badge-pill badge-light badge-custom" @click="clearAll()">
                                         Clear All
                                     </div>

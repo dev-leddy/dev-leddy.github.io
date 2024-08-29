@@ -60,6 +60,12 @@
                 display: none;
             }
          }
+
+        .toolbar {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
         .navbar {
             position: relative;
             background: transparent; /* Remove default background */
@@ -92,7 +98,7 @@
         .unit-selection{
             padding: 5px;
             overflow: hidden auto;
-            height: calc(100vh - 136px);
+            height: calc(100vh - 152px);
             min-width: 275px;
             margin-left: auto;
         }
