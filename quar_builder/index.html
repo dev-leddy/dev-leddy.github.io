@@ -232,8 +232,8 @@
 									<div class="text-center font-weight-bold" style="font-size: 1.4em; background-color: rgba(0, 0, 0, 0.65); color: white; padding: 2px; padding-left: 5px; padding-bottom:5px; width: 100%">
 										({{unit.points}}) {{unit.name}}
 									</div>
-									<div class="d-flex w-100">
-										<img :src="getImageSrc(unit.name)" class="mx-auto" :class="{ 'fallback-image': isFallback(unit.name) }" style="object-fit: scale-down; width: 140px; height: 140px; filter: drop-shadow(0 0 0.1rem black)" @error="setFallbackImage($event, unit.name)">
+									<div class="d-flex w-100" style="height: 150px;">
+										<img :src="getImageSrc(unit.name)" class="mx-auto my-auto" :class="{ 'fallback-image': isFallback(unit.name) }" style="object-fit: scale-down; width: 140px; height: 140px; filter: drop-shadow(0 0 0.1rem black)" @error="setFallbackImage($event, unit.name)">
 									</div>
 									<div class="d-flex flex-column my-auto flex-grow-1">
 										<div class="mx-auto font-italic" style="text-shadow: 0px 0px 0px black !important;">
@@ -251,7 +251,8 @@
 													<div class="d-flex flex-column">
 														<div class="font-weight-bold my-auto" style="font-size: 1.2em;">
 															<img class="my-auto" :src="'images/' + item + '.png'" style="object-fit: scale-down; max-width: 50px; height: 21px; margin-bottom: 5px;">
-															<span class="my-auto">{{item}}
+															<span class="my-auto">
+                                                                {{getShortItemName(item)}}
 															</span>
 														</div>
 														<div class="d-flex flex-column mx-auto">
@@ -287,7 +288,7 @@
 									</div>
 									<div>
 										<div class="d-flex flex-column justify-content-between pt-2" style="background-color: rgba(0, 0, 0, 0.65);color: white;padding-right: 6px;">
-											<div class="d-flex flex-column justify-content-between w-100 mb-3">
+											<div class="d-flex flex-column justify-content-between w-100 mb-1">
 												<div class="d-flex">
 													<div class="w-50 d-flex flex-column">
 														
@@ -712,6 +713,19 @@
                 }
             },
             methods: {
+                getShortItemName: function(item){
+                    switch(item){
+                        case "Sio-Cly Derringer":
+                            return "Sio-Clay";
+                        case "Grifkis Shotgun":
+                            return "Grifkis";
+                        case "Splagen Torpedo":
+                            return "Splagen";
+                        case "SG-3 Scattergun":
+                            return "SG-3";
+                    }
+                    return item;
+                },
                 exportArmy: function() {
                     // Export selected army to JSON
                     const armyData = JSON.stringify(this.selectedArmy);
