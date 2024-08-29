@@ -92,13 +92,51 @@
         .unit-selection{
             padding: 5px;
             overflow: hidden auto;
-            height: calc(-98px + 100vh);
+            height: calc(100vh - 136px);
             min-width: 275px;
             margin-left: auto;
         }
 
+        .unit-selection-parent{
+            height: calc(100vh - 140px);
+        }
+
+        @media (max-width: 768px) {
+            html{
+                overflow-x: hidden;
+            }
+            .main-container {
+                flex-direction: column;
+                width: 100vw;
+            }
+        
+            .unit-selection {
+                height: auto;
+                width: 100vw;
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto; /* Enable horizontal scrolling */
+            }
+        
+            .unit-card {
+                min-width: 250px; /* Ensure cards don't stretch */
+                max-width: 250px;
+                overflow: hidden;
+                margin-right: 10px;
+                flex-shrink: 0; /* Prevent cards from shrinking */
+            }
+
+            #selected-units-container{
+                height: 100vh;
+            }
+
+            .selected-units-wrapper{
+                margin-right: 1px !important;
+                margin-left: 1px !important;
+             }
+        }
+
         .unit-card {
-            /* height: 415px; */
             position: relative;
             margin-bottom: 10px;
             border: 1px solid #dee2e6;
@@ -314,12 +352,17 @@
             outline: none;
         }
         #selected-units-container{
-            height: calc(100vh - 98px);
+            height: calc(100vh - 136px);
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
             overflow-y: auto; overflow-x: hidden; 
-         }
+        }
+
+        .selected-units-wrapper{
+        margin-right: 3rem !important;
+        margin-left: 3rem !important;
+        }
         
         @media (min-width: 768px) {
           .button-74 {

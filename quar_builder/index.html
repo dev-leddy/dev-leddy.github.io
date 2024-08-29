@@ -8,6 +8,7 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.css" rel="stylesheet">
 		<link rel="stylesheet" href="./style.css">
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css">
 		
 		<!-- DataTables Bootstrap 4 CSS -->
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
@@ -17,7 +18,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 		<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-		
+		<script src="https://https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
 		<!-- DataTables Bootstrap 4 JS -->
 		<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
@@ -26,26 +27,30 @@
 		<div id="app">
 			<div class="back-img no-print"></div>
 			<nav class="navbar navbar-light bg-light no-print d-flex justify-content-between" style="margin-top: -25px;">
-				<div style="width: 275px;">
-					<select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
-						<option v-for="(units, faction) in availableUnits" :key="faction" :value="faction">
-							{{ faction }}
-						</option>
-					</select>
-				</div>
 				<div class="d-flex flex-column">
 					<h2 class="mx-auto text-monospace">Quar Battleforce Builder</h2>
-					<small>This is a major work in progress, mobile support... soonish. Some cards may not format correctly, working on fixes.</small>
+					<small>Mobile support is a WIP</small>
 					<small>All rules and information based on the Clash of Rhyfles V2 Rulebook - Addendum V2. Images are the property of
-						<a href="https://zombiesmith.com/">ZombieSmith</a>.</small>
+						<a href="https://zombiesmith.com/">ZombieSmith</a> and @shemp2771 on Discord.</small>
 				</div>
-				<div class="d-flex">
-					<button class="btn btn-secondary" @click="printTable">Print</button>
-					<b-form-checkbox size="sm" v-model="printTables" class="ml-1 my-auto">Include Ref Tables</b-form-checkbox>
-				</div>
+
 			</nav>
-			<div class="d-flex" style="height: calc(100vh - 140px);">
+            <div class="toolbar d-flex">
+                <div style="width: 275px; ml-5">
+                    <select id="faction-select" class="form-control w-50" v-model="selectedFaction" @change="clearSelectedUnits">
+                        <option v-for="(units, faction) in availableUnits" :key="faction" :value="faction">
+                            {{ faction }}
+                        </option>
+                    </select>
+                </div>
+                <div class="d-flex ml-auto">
+                    <b-form-checkbox size="sm" v-model="printTables" class="ml-1 my-auto">Include Reference Tables</b-form-checkbox>
+					<button class="btn btn-secondary ml-2" @click="printTable">Print</button>
+				</div>
+            </div>
+			<div class="main-container d-flex">
 				<div class="unit-selection no-print">
+
 					<div v-for="(unit, index) in filteredUnits" :key="index" class="unit-card">
 						<div>
 							<div class="points-box" :class="[selectedFaction]">{{ unit.points }}</div>
@@ -184,29 +189,35 @@
 								<button class="button-74" role="button" @click="adjustPoints(25)">+</button>
 							</div>
 							<div class="d-flex justify-content-between no-print">
-                                <div class="d-flex flex-grow-1">
-                                    <b-form-checkbox v-model="GroupUnits" unchecked-value="false">
-                                        Group Duplicates
-                                    </b-form-checkbox>
-                                    <b-form-checkbox v-model="ShowUnitCards" class="ml-2" unchecked-value="false" >
-                                        Show Unit Cards
-                                    </b-form-checkbox>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="d-flex">
+                                        <b-form-checkbox v-model="GroupUnits" unchecked-value="false">
+                                            Group Duplicates
+                                        </b-form-checkbox>
+                                        <b-form-checkbox v-model="ShowUnitCards" class="ml-2" unchecked-value="false" >
+                                            Show Unit Cards
+                                        </b-form-checkbox>
+                                    </div>
+
+                                    <div class="d-flex flex-grow-1">
+                                        <div style="width: 220px;">
+                                            <b-form-file 
+                                            variant="primary"
+                                            @change="importArmy"
+                                            accept=".json" 
+                                            class="flex-grow-1" 
+                                            placeholder="Import list..."
+                                            drop-placeholder="" 
+                                            no-drop>
+                                            Import
+                                        </b-form-file>
+                                        </div>
+
+                                        <b-button style="color: #495057; border: 1px solid #ced4da; background-color: #e9ecef; border-radius: .25rem;" 
+                                        @click="exportArmy" class="ml-2">Export</b-button>
+                                    </div>
                                 </div>
-                                <div class="d-flex flex-grow-1 justify-content-between">
-                                    <b-form-file 
-                                        variant="primary"
-                                        @change="importArmy" 
-                                        accept=".json" 
-                                        class="flex-grow-1" 
-                                        placeholder="Choose file to import..."
-                                        drop-placeholder="" 
-                                        no-drop
-                                        style="width: 100px;">
-                                        Import
-                                    </b-form-file>
-                                    <b-button style="color: #495057; border: 1px solid #ced4da; background-color: #e9ecef; border-radius: .25rem;" 
-                                    @click="exportArmy" class="ml-2">Export</b-button>
-                                </div>
+                                
                                 <div class="d-flex flex-grow-1">
                                     <div class="ml-auto my-auto badge badge-pill badge-light badge-custom" @click="clearAll()">
                                         Clear All
