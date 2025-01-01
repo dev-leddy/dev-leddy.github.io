@@ -29,13 +29,14 @@
 			<div class="no-print d-flex" style="margin-top: -25px;">
                 <div class="d-flex flex-column mx-auto">
                     <h2 class="mx-auto text-monospace">Quar Battleforce Builder</h2>
-                    <small class="mx-auto">Mobile support is a WIP</small>
                     <small class="mx-auto">All rules and information based on the 
                         <a href="https://www.rhyfler.com/files/ClashOfRhyflesQuickStart.pdf">Clash of Rhyfles V2 Rulebook </a>
                         - 
                         <a href="https://www.rhyfler.com/files/ClashofRhyflesAddendumv2.pdf">Addendum V2</a>
                         . Images are the property of 
-                        <a href="https://zombiesmith.com/">ZombieSmith</a> and @shemp2771 on Discord.</small>
+                        <a href="https://zombiesmith.com/">ZombieSmith</a> and @shemp2771 on Discord.
+                    </small>
+                    <small class="mx-auto">1/1/25 - Added Western Arnyara and Aber, still a work in progress.</small>
                 </div>
             </div>
 			<div class="main-container d-flex">
@@ -522,7 +523,18 @@
                         { "name": "Standard Bearer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Standard"], "points": 30, "allowed": 1 },
                         { "name": "Squirrel Handler", "sk": 12, "mt": "1d6+2", "ma": 4, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["PykPyk(3)"], "points": 30, "allowed": 1 },
                         { "name": "PykPyks", "sk": "-", "mt": "-", "ma": "-", "toughness": "-", "equipment": [], "specialAbilities": ["PykPyk(3)"], "points": 5 }
-                    ]                   
+                    ],
+                    "Western Arnyara and Aber":[
+                        {"name": "Able", "sk": 11, "mt": "1d6", "ma": 5, "toughness": 4, "equipment": ["MAR SMG"], "specialAbilities": ["Support"], "points": 22},
+                        {"name": "Able", "sk": 11, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["GREE Pistol", "Answyth Blade"], "specialAbilities": [], "points": 22},
+                        {"name": "Able", "sk": 11, "mt": "1d6", "ma": 5, "toughness": 4, "equipment": ["GREE Pistol", "GREE Pistol"], "specialAbilities": ["Multi-Attack (2)"], "points": 28, "allowed": 2},
+                        {"name": "Able", "sk": 11, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["KEEGY Heavy Rhyfle"], "specialAbilities": [], "points": 28, "allowed": 3},
+                        {"name": "Able First Class", "sk": 12, "mt": "1d6+1", "ma": 5, "toughness": 4, "equipment": ["MAR SMG"], "specialAbilities": ["Support"], "points": 25, "allowed": 1},
+                        {"name": "Mate", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["GREE Pistol", "Answyth Blade"], "specialAbilities": ["Leader (2/3)","Fire and Advance"], "points": 31, "allowed": 1},
+                        {"name": "Bosun", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["MAR SMG"], "specialAbilities": ["Leader (3/4)", "Fire and Advance"], "points": 33, "allowed": 1},
+                        {"name": "House Lord", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["GREE Pistol", "Answyth Blade"], "specialAbilities": ["Leader (2/5)"], "points": 30, "allowed": 1},
+                        {"name": "Autocycle", "sk": 12, "mt": "1d6+1", "ma": "15/5", "toughness": 4, "equipment": ["MAR SMG", "GREE Pistol"], "specialAbilities": ["Autocycle"], "points": 35, "allowed": 2}
+                    ]
                 },
                 equipmentData: {
                     "Harlech": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
@@ -537,15 +549,20 @@
                     "Sio-Cly Derringer": { R: 4, Sn: -1, Abilities: ['Shotgun'], Mt: '-' },
                     "Splagen Torpedo": { R: 6, Sn: "-", Abilities: ['Blast(1)'], Mt: '2d6-1' },
                     "SG-3 Scattergun": { R: 16, SN: "-", Abilities: ["Scattergun", "Large Caliber", "Volley Fire"], Mt: '-'},
-                    "MTR(22)": {R:10, SN: "-", Abilities: ["Blast(1)", "Braced"], Mt: "2d6"}
+                    "MTR(22)": {R:10, Sn: "-", Abilities: ["Blast(1)", "Braced"], Mt: "2d6"},
+                    "MAR SMG": {R: 6, SnN: -2, Abilities: [], Mt: '-'},
+                    "KEEGY Heavy Rhyfle": {R: 8, Sn: -3, Abilities: ["Large Caliber"], Mt: "-"},
+                    "GREE Pistol": {R: 4, Sn: -1, Abilities: [], Mt: '-'}
                 },
                 specialAbilities: {
+                    "Autocycle": "These fast-moving units bring unparalleled mobility to the battlefield. Rhyflers riding Autocycles may only perform Standard Move Actions while mounted, with no Sprinting or Charging allowed. Mounted rhyflers cannot enter difficult terrain, Go Prone, or Dive for Cover. If a Mounted rhyfler whose last action was movement is Gobsmacked or taken OOA, they continue straight forward 5” and then fall Prone, dismounting the rhyfler. A “stationary” Mounted rhyfler who is Gobsmacked or taken OOA falls Prone and is then considered unmounted. To Fire, the rhyfler may either stay mounted and apply their weapon’s Snapfire Modifier or dismount. A rhyfler may dismount by spending a point of Pluck or performing a Move Action at -1” to their Movement Allowance. Remounting the Autocycle can be done by spending a point of Pluck or subtracting 1” from the unit’s Movement Allowance for that Action. The Movement Allowance for an Autocycle unit is listed as two numbers, A/B, where A is the mounted MA, and B is for the unmounted rhyfler.",
                     "Automatic": "Automatic weapons may perform the Area Fire action which can target figures within a 4” circle. Each extra target adds -1 to the Skill roll. Use the best cover available (light cover does not apply), and apply modifiers based on targets’ actions (Dive for Cover, return fire, or move).",
                     "Braced": "Weapons with bipods and heavy riﬂes sometimes require physical support to fire accurately. When these weapons fire they subtract -1 from Skill unless the firing unit is Prone or base-to-base with terrain providing cover.",
                     "Cavalry": "May perform a combat action as part of a normal move. The attack may be performed at any point during the rhyfler’s movement. Ranged attacks performed with this ability are at an additional -2 to the Skill Check, but Melee attacks grant the attacker the Wallop ability.",
                     "Communications": "After the opponent draws their activation card, their commander may spend a point of Pluck to reveal its value.",
                     "Dead-eye": "Rhyﬂers with this ability may perform Aimed Shot for1 Action instead of the required 2.",                                                
                     "Élan": "Rhyﬂers within command range of this unit gain the Veteran ability",
+                    "Fire and Advance": "This rhyfler may perform a special type of Group Move using his Leader(X,Y) Ability, in which some rhyflers provide a fusillade of Covering Fire while others advance. This rhyfler selects himself and as many rhyflers within Y inches as he would like. Half of the selected rhyflers fire wildly at enemy units, while the other half perform either a Sprint move that ends in cover, or they may individually spend a Pluck to end in base contact with another rhyfler. If there is an odd number, the larger grouping must provide the Covering Fire.",
                     "Grenadier": "The unit may spend Pluck to adjust a roll on the Grenade charts up or down 1 line.",
                     "Hardened": "Ignore the need to go Prone when hit by ranged fire. Not Gobsmacked when he dives for cover.",
                     "Hero": "Heroes have the Hardened and Veteran abilities. May only include one Hero for every 100 points gathered, with a maximum of four allowed.",
@@ -556,6 +573,7 @@
                     "Leap (X)": "When jumping during a movement action, this rhyfler multiplies the distance allowed, both horizontally and vertically, by their Leap value. This allows the rhyfler to ignore certain barricades and obstacles, as well as enemy rhyflers.",
                     "Loader": "If the firing rhyfler is in base contact with another friendly rhyfler, increase the roll needed to pass any Skill Check by +1.",
                     "Medic (X)": "Trained to patch up minor wounds and get rhyflers back on the battlefield, Medics can do a better job of Tend Wounded by subtracting their level to their skill for the Tend Wounded roll.",
+                    "Multi-Attack (X)": "Multi-Attack(X) may make X attacks per Ranged Combat Action. Each attack must target a different enemy, is resolved separately, and all targets must be declared before resolving any actions. Each attack incurs an additional -X to Skill. If the firing unit is wounded due to Reaction Fire, any remaining attacks are resolved as normal before the unit is marked OOA.",
                     "Parry": "Armed with advanced training in hand-to-hand combat, this rhyfler, when Gobsmacked by a melee attack, may attempt a Skill check to avoid the change in Status.",
                     "Pathfinder": "This rhyfler is extremely adept at surprising his opponents. The rhyfler has the Infiltrate ability, and when rolling on the Infiltrate table, this he rolls three dice and chooses which two to apply.",
                     "Ranged/Melee (X)": "Rhyflers receive extensive training in the weapons they are issued, allowing them to add this value to the target number when performing the listed combat action.",
