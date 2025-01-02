@@ -37,6 +37,7 @@
                         <a href="https://zombiesmith.com/">ZombieSmith</a> and @shemp2771 on Discord.
                     </small>
                     <small class="mx-auto">1/1/25 - Added Western Arnyara and Aber, still a work in progress.</small>
+                    <small class="mx-auto">1/2/25 - Added FIDWOG, still a work in progress.</small>
                 </div>
             </div>
 			<div class="main-container d-flex">
@@ -342,7 +343,7 @@
 					<div id="referenceTables" style="width: 1000px !important;">
 						<div :class="{'no-print': !printTables}" style="break-before: auto;">
 							<div class="d-flex ml-1 font-italic">
-								<div class="my-auto">Grenade throws require 2 actions.</div>
+								<div class="my-auto">Grenade throws require the explosive to be primed. Priming requires 1 action, throwing another.</div>
 								<div class="d-flex flex-column ml-auto">
 									<div>10" range, roll 2D6 and check the outcome table below.</div>
 									<div>Blind frags roll 3D6 and the opposing commander chooses two.</div>
@@ -474,7 +475,7 @@
                         { "name": "Rhyfler (Bogen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Support"], "points": 25 },
                         { "name": "Rhyfler (Ryshi)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 30 },
                         { "name": "LMG Rhyfler", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["H-11a"], "specialAbilities": [], "points": 35, "allowed": 1 },
-                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Dead-eye"], "points": 35, "allowed": 2 },
+                        { "name": "Squad Marksquar", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Dead-eye"], "points": 30, "allowed": 1 },
                         { "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (2/3)"], "points": 28, "allowed": 1 },
                         { "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (3/4)"], "points": 30, "allowed": 1 },
                         { "name": "is-Caerten", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Grifkis Shotgun"], "specialAbilities": ["Leader (2/5)"], "points": 30, "allowed": 1 },
@@ -488,7 +489,7 @@
                     "Coftyran": [
                         { "name": "Rhyfler (Harlech)", "sk": 12, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Support"], "points": 25 },
                         { "name": "Rhyfler (Cryfen)", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Cryfen"], "specialAbilities": [], "points": 32, "allowed": 1 },
-                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Dead-eye"], "points": 35, "allowed": 2 },
+                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Dead-eye", "Blunt Round"], "points": 35, "allowed": 2 },
                         { "name": "Milwer", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Leader (2/3)"], "points": 28, "allowed": 1 },
                         { "name": "Yawdryl", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Doru"], "specialAbilities": ["Leader (3/4)"], "points": 33, "allowed": 1 },
                         { "name": "is-Caerten", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["Pistol", "Sword"], "specialAbilities": ["Leader (2/5)"], "points": 28, "allowed": 1 },
@@ -515,7 +516,7 @@
                         { "name": "Rhyfler (Bogen)", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Support"], "points": 27 },
                         { "name": "Rhyfler (Ryshi)", "sk": 13, "mt": "2d6-1", "ma": 5, "toughness": 4, "equipment": ["Ryshi"], "specialAbilities": [], "points": 30 },
                         { "name": "LMG Rhyfler", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["H-11a"], "specialAbilities": [], "points": 37, "allowed": 1 },
-                        { "name": "Sharpshooter", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Veteran", "Dead-eye"], "points": 37, "allowed": 2 },
+                        { "name": "Squad Marksquar", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Harlech"], "specialAbilities": ["Veteran", "Dead-eye"], "points": 37, "allowed": 1 },
                         { "name": "Mortar Rhyfler", "sk": 13, "mt": "1d6", "ma": 4, "toughness": 4, "equipment": ["MTR(22)"], "specialAbilities": [], "points": 40, "allowed": 1 },
                         { "name": "Milwer", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Leader (2/3)"], "points": 30, "allowed": 1 },
                         { "name": "Yawdryl", "sk": 13, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["Bogen"], "specialAbilities": ["Veteran", "Leader (3/4)", "Élan"], "points": 35, "allowed": 1 },
@@ -534,12 +535,26 @@
                         {"name": "Bosun", "sk": 12, "mt": "1d6+2", "ma": 5, "toughness": 4, "equipment": ["MAR SMG"], "specialAbilities": ["Leader (3/4)", "Fire and Advance"], "points": 33, "allowed": 1},
                         {"name": "House Lord", "sk": 12, "mt": "2d6", "ma": 5, "toughness": 4, "equipment": ["GREE Pistol", "Answyth Blade"], "specialAbilities": ["Leader (2/5)"], "points": 30, "allowed": 1},
                         {"name": "Autocycle", "sk": 12, "mt": "1d6+1", "ma": "15/5", "toughness": 4, "equipment": ["MAR SMG", "GREE Pistol"], "specialAbilities": ["Autocycle"], "points": 35, "allowed": 2}
+                    ],
+                    "Fidwog FOD":[
+                        {"name":"Gaefyn","sk":12,"mt":"1d6+1","ma":5,"toughness":4,"equipment":["Sketych Rifle"],"specialAbilities":["Support"],"points":25},
+                        {"name":"han-Gaefyn","sk":12,"mt":"1d6+1","ma":5,"toughness":4,"equipment":["Bensa LMG"],"specialAbilities":[],"points":30,"allowed":1},
+                        {"name":"Marksquar","sk":12,"mt":"1d6+1","ma":5,"toughness":4,"equipment":["is-Haem Long"],"specialAbilities":["Dead-eye"],"points":35,"allowed":1},
+                        {"name":"Crown Milwer","sk":12,"mt":"1d6+1","ma":5,"toughness":4,"equipment":["Sketych Rifle"],"specialAbilities":["Leader (3/5)","Support"],"points":32,"allowed":1},
+                        {"name":"Yawdryl","sk":13,"mt":"1d6+1","ma":5,"toughness":4,"equipment":["Sketych Rifle"],"specialAbilities":["Leader (4/6)"],"points":35,"allowed":1},
+                        {"name":"Standard Bearer","sk":12,"mt":"1d6","ma":5,"toughness":4,"equipment":["Pistol"],"specialAbilities":["Standard"],"points":29,"allowed":1},
+                        {"name":"Squirrel Messenger","sk":12,"mt":"1d6","ma":5,"toughness":4,"equipment":["Pistol"],"specialAbilities":["PykPyk(3)"],"points":29,"allowed":1},
+                        {"name":"Miner","sk":13,"mt":"2d6+1","ma":5,"toughness":4,"equipment":["FF10"],"specialAbilities":["Infiltrate","Hardened"],"points":40,"allowed":2},
+                        {"name":"Lancer","sk":13,"mt":"1d6","ma":5,"toughness":4,"equipment":["Grafaenk Mk4 Lance"],"specialAbilities":[],"points":35,"allowed":2},
+                        {"name":"Fydo","sk":14,"mt":"2d6","ma":8,"toughness":5,"equipment":["Teeth and Claws"],"specialAbilities":["Leap(2)","Pack"],"points":18,"allowed":2},
+                        {"name":"is-Caerten","sk":13,"mt":"2d6","ma":5,"toughness":4,"equipment":["Pistol","Mace"],"specialAbilities":["Leader (2/8)"],"points":32,"allowed":1}
                     ]
+
                 },
                 equipmentData: {
                     "Harlech": { R: 8, Sn: -3, Abilities: [], Mt: '-' },
                     "Cryfen": { R: 8, Sn: -3, Abilities: ['Automatic', 'Loader'], Mt: '-' },
-                    "Doru": { R: 4, Sn: -1, Abilities: ['Automatic'], Mt: '-' },
+                    "Doru": { R: 4, Sn: -1, Abilities: ['Select Fire(2)'], Mt: '-' },
                     "Pistol": { R: 4, Sn: -1, Abilities: [], Mt: '-' },
                     "RCO m60": { R: 12, Sn: -4, Abilities: ['Blast(2)', 'Slow Reload', 'Crew(2)', 'Gun Shield', 'Heavy'], Mt: '2d6' },
                     "Bogen": { R: 6, Sn: -2, Abilities: [], Mt: '-' },
@@ -552,23 +567,31 @@
                     "MTR(22)": {R:10, Sn: "-", Abilities: ["Blast(1)", "Braced"], Mt: "2d6"},
                     "MAR SMG": {R: 6, SnN: -2, Abilities: [], Mt: '-'},
                     "KEEGY Heavy Rhyfle": {R: 8, Sn: -3, Abilities: ["Large Caliber"], Mt: "-"},
-                    "GREE Pistol": {R: 4, Sn: -1, Abilities: [], Mt: '-'}
+                    "GREE Pistol": {R: 4, Sn: -1, Abilities: [], Mt: '-'},
+                    "Sketych Rifle": {R: 6, Sn: -2, Abilities: [], Mt: '-'},
+                    "Bensa LMG": {R: 6, Sn: -2, Abilities: ["Select Fire (2)", "Large Caliber"], Mt: '-'},
+                    "FF10": {R: 4, Sn: -2, Abilities: ["Shotgun"], Mt: '-'},
+                    "is-Haem Long": {R: 4, Sn: -2, Abilities: ["Slow Reload"], Mt: '-'},
+                    "Pistol": {R: 4, Sn: -1, Abilities: [], Mt: '-'},
+                    "Grafaenk Mk4 Lance": {R: 6, Sn: "n/a", Abilities:["Grafaenk MK4 Lance"], Mt: '-'}
                 },
                 specialAbilities: {
-                    "Autocycle": "These fast-moving units bring unparalleled mobility to the battlefield. Rhyflers riding Autocycles may only perform Standard Move Actions while mounted, with no Sprinting or Charging allowed. Mounted rhyflers cannot enter difficult terrain, Go Prone, or Dive for Cover. If a Mounted rhyfler whose last action was movement is Gobsmacked or taken OOA, they continue straight forward 5” and then fall Prone, dismounting the rhyfler. A “stationary” Mounted rhyfler who is Gobsmacked or taken OOA falls Prone and is then considered unmounted. To Fire, the rhyfler may either stay mounted and apply their weapon’s Snapfire Modifier or dismount. A rhyfler may dismount by spending a point of Pluck or performing a Move Action at -1” to their Movement Allowance. Remounting the Autocycle can be done by spending a point of Pluck or subtracting 1” from the unit’s Movement Allowance for that Action. The Movement Allowance for an Autocycle unit is listed as two numbers, A/B, where A is the mounted MA, and B is for the unmounted rhyfler.",
+                    "Autocycle":"The Movement Allowance for an Autocycle unit will be listed as two numbers, A/B. The first is the mounted MA, and the second is for the unmounted rhyfler. As they are light “Scout” vehicles Autocycles do not incur movement penalties from terrain. Rhyflers riding Autocycles may only perform Standard Move Actions or Sprinting while mounted. Due to its speed an Autocycle gains a -2 cover modifier when attacked if its last activation was movement. Mounted rhyflers may not Go Prone or Dive for Cover. If a Mounted rhyfler whose last action was movement is Gobsmacked or taken OOA they continue straight forward 5” and then fall Prone, dismounting the rhyfler. A “stationary” Mounted rhyfler who is Gobsmacked or taken OOA falls Prone and is then considered unmounted. In order to Fire the rhyfler may either stay mounted and apply their weapon’s Snapshot Modifier, or they must dismount. A dismounted rhyfler gains Gun Shield if in base to base contact with the Autocycle. A rhyfler may dismount by spending a point of Pluck. They may also dismount by performing a Move Action at -1” to their Movement Allowance. Remounting the Autocycle can be done by either spending a point of Pluck or subtracting 1” from the unit’s Movement Allowance for that Action.",
                     "Automatic": "Automatic weapons may perform the Area Fire action which can target figures within a 4” circle. Each extra target adds -1 to the Skill roll. Use the best cover available (light cover does not apply), and apply modifiers based on targets’ actions (Dive for Cover, return fire, or move).",
+                    "Blunt Round": "Coftyran Sharpshooter have made it common practice to carry specially modified ammunition for targeting tractors. In order to use them the sharpshooter must first perform a Prepare Weapon Task to load these anti-tractor rounds. These Blunt Rounds grant them a 1d6+2 Might roll against tractors, but do not confer any special bonuses against rhyflers.",
                     "Braced": "Weapons with bipods and heavy riﬂes sometimes require physical support to fire accurately. When these weapons fire they subtract -1 from Skill unless the firing unit is Prone or base-to-base with terrain providing cover.",
                     "Cavalry": "May perform a combat action as part of a normal move. The attack may be performed at any point during the rhyfler’s movement. Ranged attacks performed with this ability are at an additional -2 to the Skill Check, but Melee attacks grant the attacker the Wallop ability.",
                     "Communications": "After the opponent draws their activation card, their commander may spend a point of Pluck to reveal its value.",
-                    "Dead-eye": "Rhyﬂers with this ability may perform Aimed Shot for1 Action instead of the required 2.",                                                
+                    "Dead-eye": "Rhyﬂers with this ability may perform Aimed Shot for 1 Action instead of 2.",                                                
                     "Élan": "Rhyﬂers within command range of this unit gain the Veteran ability",
                     "Fire and Advance": "This rhyfler may perform a special type of Group Move using his Leader(X,Y) Ability, in which some rhyflers provide a fusillade of Covering Fire while others advance. This rhyfler selects himself and as many rhyflers within Y inches as he would like. Half of the selected rhyflers fire wildly at enemy units, while the other half perform either a Sprint move that ends in cover, or they may individually spend a Pluck to end in base contact with another rhyfler. If there is an odd number, the larger grouping must provide the Covering Fire.",
-                    "Grenadier": "The unit may spend Pluck to adjust a roll on the Grenade charts up or down 1 line.",
+                    "Grafaenk MK4 Lance": "See Addendum 1224 for rules and chart.",
+                    "Grenadier": "The rhyfler does not need to first Prime Explosive before performing the Throw Grenade Task, they may simply proceed to the attack.",
                     "Hardened": "Ignore the need to go Prone when hit by ranged fire. Not Gobsmacked when he dives for cover.",
                     "Hero": "Heroes have the Hardened and Veteran abilities. May only include one Hero for every 100 points gathered, with a maximum of four allowed.",
                     "Infiltrate": "A rhyfler with this ability may start the Skirmish off the battlefield. When his commander chooses to bring this rhyfler on the field he designates a point anywhere on the battlefield, no closer than 4” to an enemy rhyfler. He then spends an Action, and rolls on the Infiltrate table.",
                     "Killing Strike": "May reduce Skill for a melee attack to increase might. -2 Skill +2 Might.",
-                    "Large Caliber": "Weapons that use larger rounds are more effective versus rhyﬂers in cover, Tractors, and other obstacles. Large Caliber weapons ignore Light Cover and reduce standard Cover by -1. Tractors hit by Large Caliber weapons read one row higher on Damage Tables.",
+                    "Large Caliber": "Weapons that use larger rounds are more effective versus rhyflers in cover, Tractors, and other obstacles. Large Caliber weapons ignore Light Cover and reduce standard Cover by -1. Tractors hit by Large Caliber weapons suffer a 1d6+2 Might roll.",
                     "Leader (X/Y)": "Leaders allow a commander to better control his troops through their abilities to activate multiple rhyflers at once. A rhyfler with this ability may perform a Leadership action with a number of rhyflers equal to his Leadership value (X) and within his Leadership range (Y), in inches.",
                     "Leap (X)": "When jumping during a movement action, this rhyfler multiplies the distance allowed, both horizontally and vertically, by their Leap value. This allows the rhyfler to ignore certain barricades and obstacles, as well as enemy rhyflers.",
                     "Loader": "If the firing rhyfler is in base contact with another friendly rhyfler, increase the roll needed to pass any Skill Check by +1.",
@@ -579,6 +602,7 @@
                     "Ranged/Melee (X)": "Rhyflers receive extensive training in the weapons they are issued, allowing them to add this value to the target number when performing the listed combat action.",
                     "Resilient": "Tougher than his companions, a Resilient rhyfler can do a Tend Wounded action on himself.",
                     "Scattergun": " Scatterguns may be fired as normal but not beyond one Range Band. A Scattergun may also be Volley Fired.",
+                    "Select Fire (X)":"Submachine guns, and some Light Machineguns, are capable of firing smaller, controlled bursts than their larger cousins, resulting in more accuracy, albeit against fewer targets. This weapon may perform a Ranged Attack against up to X enemy units within 4” of each other. Each attack must be against a different target, each is resolved separately (including Reactions), and all targets are declared before any attacks are resolved. Each attack suffers an additional penalty equal to the weapon’s Snapshot value. If the firing unit is wounded due to Reaction Fire any remaining attacks are resolved as normal before the unit is marked OOA. A weapon with the Select Fire ability may instead choose to perform a normal Ranged Attack against a single target at no additional penalty.",
                     "Shotgun": "Shotguns fire a spread of projectiles. In the first range band, they hit the target with +1 Skill. In the second band, they hit the target and one rhyfler within 1”. In the third band, they hit the target and two rhyflers within 2”. They cannot fire beyond three range bands.",
                     "Skirmisher": "Skirmishers do not suffer movement penalties from difficult terrain, and increase modifiers from cover by 1.",
                     "Slow Reload": "These weapons require an action to reload after each attack. If not reloaded immediately, the rhyfler must be marked as carrying an unloaded weapon.",
@@ -591,7 +615,7 @@
                     "Heavy": "Heavy objects move 1 inch per rhyfler in base-to-base contact. These rhyflers may conduct a Group Movement action as if they have a leader.",
                     "Crew(X)": "For a crewed weapon X is the number of rhyflers required to operate the weapon. All crew must be Ready or on Overwatch and base-to-base with the weapon. If active crew drop below X the Skill of the Rhyfler operating the weapon is at -2. Firing the Crewed weapon counts as a combat action for the entire crew. Crew Move - Weapon Crew may perform a Group Movement action as if they have a leader.",
                     "Braced": "Automatic weapons with bipods and heavy rifles sometimes require physical support to fire accurately. When these weapons fire they subtract -1 from Skill unless the firing unit is Prone or base-to-base with terrain providing cover.",
-                    "Gun Shield": "Some crewed weapons are equipped with a gun shield to protect the crew from incoming fire. A gun shield provides partial cover for up to Crew(X) of the weapon.",
+                    "Gun Shield": "Some crewed weapons are equipped with a gun shield to protect the crew from incoming fire. A gun shield provides partial cover for up to Crew(X) of the weapon. Cremembers within 1 inch of the weapon benefit from a -2 Cover Modifier.",
                     "Blast(X)": "This weapon affects an area instead of a single target. The firing rhyfler declares a target point, which may be either an enemy rhyfler or point on the battlefield, then makes a Ranged Attack check to hit the target. Target units may not react to Blast attacks. Any infantry model within one Blast distance (X) of the point of impact is automatically knocked Prone. Conduct a Might roll against each unit within the Blast area. Units with partial cover to the Blast center half the Might roll against them. Any units between the blast radius and twice the blast radius must make a skill check or become Prone, but are not attacked. If the check is failed, the firer rolls on the Dispersion table.",
                     "PykPyk(X)": "Pykpyk Squirrels are treated as tokens and placed on the side of the play area. They need not be placed on the board with their handler, do not need to be activated and may not be attacked. A Pykpyk may be exchanged to reveal the current activation card, reroll any of the player’s die rolls or to perform a Tend Wounded action on an Out Of Action Rhyfler. Pykpyks are not removed if their Handler is Out Of Action. (X) is the number of Pykpyks included with the Handler. Additional Pykpyks may be purchased during the Gathering of Forces.",
                     "Volley Fire": "(Requires 2 actions) This attack targets all rhyﬂers, friend or foe, in the weapon’s eﬀect area, or Zone. This Zone is one inch wide and is a line that extends a single Range Band from the Rhyﬂer’s base to the fnal target. Consult the Scattergun Outcome table before any to-hit rolls are made. If the fring model is still active, conduct individual Ranged Attacks against each model in the line of fre. Volley Fire may only be Reacted to by Diving for Cover."
