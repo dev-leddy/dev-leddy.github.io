@@ -115,17 +115,131 @@ button#generate-pdf-btn {
 button#generate-pdf-btn:hover {
   background: #0056b3;
 }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: #222;
+  padding: 20px 20px 10px; /* more top & side padding */
+  border-radius: 10px;
+  position: relative;
+  display: inline-block;
+}
+
+.modal-content img {
+  width: 280px;   /* slightly larger */
+  height: 392px;  /* keeping MTG card ratio */
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 0 15px #000;
+}
+
+.close-btn {
+  position: absolute;
+  top: -4px;        /* lifted above image */
+  right: -2px;     /* moved a little right */
+  background: transparent;
+  border: none;
+  color: transparent;
+  font-size: 28px;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 1;
+  user-select: none;
+  z-index: 10;
+}
+
+.search-input {
+  margin: 10px 20px;
+  padding: 8px 12px;
+  font-size: 16px;
+  width: calc(100% - 60px);
+  max-width: 400px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.header-bar {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1000;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.top-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.top-controls h3 {
+  margin: 0;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.bottom-row input {
+  flex: 1;
+  max-width: 300px;
+}
+
+.generate-btn {
+  white-space: nowrap;
+}
+
+.generate-btn {
+  padding: 8px 16px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+}
+
+.generate-btn:hover {
+  background-color: #0056b3;
+}
+
+
 
   </style>
 </head>
 <body>
   <div id="app">
-    <h1>Printable Upgrade Cards</h1>
-    <div class="image-list">
-<div class="card" v-for="image in images" :key="image.name">
+<header class="header-bar">
+  <div class="top-controls">
+    <h3>Upgrade PDF Generator</h3>
+    <div class="bottom-row">
+      <input v-model="searchQuery" placeholder="Search cards..." type="text" />
+      <button @click="generatePDF" class="generate-btn">Generate PDF</button>
+    </div>
+  </div>
+</header>
+
+   <div class="image-list">
+<div class="card" v-for="image in filteredImages" :key="image.name" >
   <!-- <h3 class="card-header">{{ formatFileName(image.name) }}</h3> -->
 
-  <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" :alt="image.name" />
+  <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" :alt="image.name" @click="openModal(image.name)" style="cursor: pointer;"/>
 
   <div class="quantity-control">
     <button @click="decrementQuantity(image)">−</button>
@@ -140,10 +254,13 @@ button#generate-pdf-btn:hover {
   </div>
 </div>
     </div>
-	
-	  <footer>
-		<button id="generate-pdf-btn" @click="generatePDF">Generate PDF</button>
-	  </footer>
+	  <div v-if="modalVisible" class="modal-overlay" @click.self="closeModal">
+  <div class="modal-content">
+    <button class="close-btn" @click="closeModal">×</button>
+    <img :src="'./Generic_Upgrades/' + encodeURIComponent(selectedImage)" alt="Card Preview" />
+  </div>
+</div>
+
   </div>
 
 
@@ -155,6 +272,9 @@ button#generate-pdf-btn:hover {
     createApp({
       data() {
         return {
+			searchQuery: '',
+		    modalVisible: false,
+			selectedImage: null,
           images: [
             { name: 'anger.jpg', quantity: 0 },
             { name: 'armor-piercing shells.jpg', quantity: 0 },
@@ -219,7 +339,22 @@ button#generate-pdf-btn:hover {
           ]
         };
       },
+	  computed: {
+  filteredImages() {
+    const q = this.searchQuery.trim().toLowerCase();
+    if (!q) return this.images;
+    return this.images.filter(img => img.name.toLowerCase().includes(q));
+  }
+},
       methods: {
+	    openModal(imageName) {
+    this.selectedImage = imageName;
+    this.modalVisible = true;
+  },
+  closeModal() {
+    this.modalVisible = false;
+    this.selectedImage = null;
+  },
         formatFileName(name) {
           // Remove extension and replace underscores with spaces, capitalize words
           const noExt = name.replace(/\.[^/.]+$/, "");
