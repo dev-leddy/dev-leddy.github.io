@@ -1,122 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Generic Upgrade Cards PDF Generator</title>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    input[type=number] { width: 60px; }
-    img { max-width: 100px; max-height: 140px; object-fit: contain; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Generic Upgrade Cards</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<style>
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: Arial, sans-serif;
+  }
+  #app {
+    padding: 1rem;
+    padding-bottom: 60px; /* space for fixed footer */
+    background: #fff;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  /* Grid container for cards */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px; /* small black bleed */
+    background: black; /* black bleed lines */
+  }
+
+  /* Each card container */
+  .card {
+    background: white;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+  }
+
+  .card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 63 / 88; /* MTG card approx ratio */
+    object-fit: cover;
+  }
+
+  .card input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.25rem;
+    border: 1px solid #ccc;
+    margin-top: 0.25rem;
+    text-align: center;
+  }
+
+  /* Fixed footer bar */
+  footer.footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #f9f9f9;
+    border-top: 1px solid #ddd;
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 1rem;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+
+  footer.footer button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
-  <div id="app">
-    <h1>Generic Upgrade Cards</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Preview</th>
-          <th>Filename (from Generic_Upgrades/)</th>
-          <th>Quantity</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="image in images" :key="image.name">
-          <td><img :src="image.url" :alt="image.name" /></td>
-          <td>{{ image.name }}</td>
-          <td>
-            <input type="number" min="0" v-model.number="image.quantity" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <button @click="generatePDF">Generate PDF</button>
+<div id="app">
+  <h1>Generic Upgrade Cards</h1>
+  <div class="cards-grid">
+    <div class="card" v-for="image in images" :key="image.name">
+      <img :src="image.url" :alt="image.name" />
+      <input type="number" min="0" v-model.number="image.quantity" placeholder="Quantity" />
+    </div>
   </div>
+</div>
 
-  <script>
-    const { jsPDF } = window.jspdf;
+<footer class="footer">
+  <button @click="generatePDF">Generate PDF</button>
+</footer>
 
-    Vue.createApp({
-      data() {
-        return {
-          images: [],
-          cardWidth: 63,  // mm (Magic card approx 63x88 mm)
-          cardHeight: 88,
-          margin: 10,
-          cardsPerRow: 3
-        }
-      },
-      mounted() {
-        fetch('./Generic_Upgrades/filelist.json')
-          .then(res => res.json())
-          .then(files => {
-            this.images = files.map(name => ({
-              name,
-              url: './Generic_Upgrades/' + encodeURIComponent(name),
-              quantity: 0
-            }));
-          });
-      },
-      methods: {
-        async generatePDF() {
-          const pdf = new jsPDF({
-            unit: 'mm',
-            format: 'a4'
-          });
-          let x = this.margin;
-          let y = this.margin;
-          let cardCount = 0;
+<script>
+const app = Vue.createApp({
+  data() {
+    return {
+      images: [
+        { name: 'anger.jpg', url: './Generic_Upgrades/anger.jpg', quantity: 0 },
+        { name: 'armor-piercing shells.jpg', url: './Generic_Upgrades/armor-piercing%20shells.jpg', quantity: 0 },
+        { name: 'ascension_cables.jpg', url: './Generic_Upgrades/ascension_cables.jpg', quantity: 0 },
+        // add rest or load dynamically
+      ]
+    }
+  },
+  methods: {
+    generatePDF() {
+      alert('Your PDF generation logic goes here!');
+      // Implement your PDF logic here
+    }
+  }
+});
 
-          for (const image of this.images) {
-            for (let i = 0; i < image.quantity; i++) {
-              try {
-                const imgData = await this.loadImageAsBase64(image.url);
-                pdf.addImage(imgData, 'JPEG', x, y, this.cardWidth, this.cardHeight);
-              } catch (e) {
-                console.warn(`Failed to load image ${image.name}`, e);
-              }
-              cardCount++;
-              x += this.cardWidth + this.margin;
-
-              if (cardCount % this.cardsPerRow === 0) {
-                x = this.margin;
-                y += this.cardHeight + this.margin;
-              }
-              if (y + this.cardHeight + this.margin > 297) { // A4 height in mm
-                pdf.addPage();
-                x = this.margin;
-                y = this.margin;
-              }
-            }
-          }
-          if (cardCount > 0) {
-            pdf.save('Generic_Upgrade_Cards.pdf');
-          } else {
-            alert('Please enter quantities before generating PDF.');
-          }
-        },
-        loadImageAsBase64(url) {
-          return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
-              const canvas = document.createElement('canvas');
-              canvas.width = img.width;
-              canvas.height = img.height;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0);
-              resolve(canvas.toDataURL('image/jpeg'));
-            };
-            img.onerror = reject;
-            img.src = url;
-          });
-        }
-      }
-    }).mount('#app');
-  </script>
+app.mount('#app');
+</script>
 </body>
 </html>
