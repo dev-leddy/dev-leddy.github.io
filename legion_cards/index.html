@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generic Upgrade Cards PDF Generator</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    input[type=number] { width: 60px; }
+    img { max-width: 100px; max-height: 140px; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Generic Upgrade Cards</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Preview</th>
+          <th>Filename (from Generic_Upgrades/)</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="image in images" :key="image.name">
+          <td><img :src="image.url" :alt="image.name" /></td>
+          <td>{{ image.name }}</td>
+          <td>
+            <input type="number" min="0" v-model.number="image.quantity" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button @click="generatePDF">Generate PDF</button>
+  </div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    Vue.createApp({
+      data() {
+        return {
+          images: [],
+          cardWidth: 63,  // mm (Magic card approx 63x88 mm)
+          cardHeight: 88,
+          margin: 10,
+          cardsPerRow: 3
+        }
+      },
+      mounted() {
+        fetch('./Generic_Upgrades/filelist.json')
+          .then(res => res.json())
+          .then(files => {
+            this.images = files.map(name => ({
+              name,
+              url: './Generic_Upgrades/' + encodeURIComponent(name),
+              quantity: 0
+            }));
+          });
+      },
+      methods: {
+        async generatePDF() {
+          const pdf = new jsPDF({
+            unit: 'mm',
+            format: 'a4'
+          });
+          let x = this.margin;
+          let y = this.margin;
+          let cardCount = 0;
+
+          for (const image of this.images) {
+            for (let i = 0; i < image.quantity; i++) {
+              try {
+                const imgData = await this.loadImageAsBase64(image.url);
+                pdf.addImage(imgData, 'JPEG', x, y, this.cardWidth, this.cardHeight);
+              } catch (e) {
+                console.warn(`Failed to load image ${image.name}`, e);
+              }
+              cardCount++;
+              x += this.cardWidth + this.margin;
+
+              if (cardCount % this.cardsPerRow === 0) {
+                x = this.margin;
+                y += this.cardHeight + this.margin;
+              }
+              if (y + this.cardHeight + this.margin > 297) { // A4 height in mm
+                pdf.addPage();
+                x = this.margin;
+                y = this.margin;
+              }
+            }
+          }
+          if (cardCount > 0) {
+            pdf.save('Generic_Upgrade_Cards.pdf');
+          } else {
+            alert('Please enter quantities before generating PDF.');
+          }
+        },
+        loadImageAsBase64(url) {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              resolve(canvas.toDataURL('image/jpeg'));
+            };
+            img.onerror = reject;
+            img.src = url;
+          });
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
