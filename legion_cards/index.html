@@ -6,95 +6,139 @@
   <title>Generic Upgrade Cards</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet" />
   <style>
+    body, h1, h3, button {
+    font-family: 'Orbitron', Arial, sans-serif;
+  }
     body {
-      font-family: Arial, sans-serif;
-      margin: 0 0 60px; /* Bottom space for sticky footer */
-    }
-    h1 {
-      margin: 20px;
-    }
-    .image-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      padding: 0 20px 20px;
-    }
-    .card {
-      border: 1px solid black;
-      padding: 8px;
-      width: 140px; /* About 50% smaller than normal preview */
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #fff;
-    }
-    .card h3 {
-      margin: 5px 0;
-      font-size: 14px;
-      text-align: center;
-      user-select: none;
-    }
-    .card img {
-      width: 100%;
-      height: auto;
-      border: 1px solid black;
-      box-sizing: border-box;
-      margin-bottom: 8px;
-    }
-    .quantity-input {
-      width: 60px;
-      text-align: center;
-      font-size: 14px;
-      padding: 4px;
-      border: 1px solid #888;
-      border-radius: 4px;
-    }
-    footer {
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      height: 60px;
-      width: 100%;
-      background: #f5f5f5;
-      border-top: 1px solid #ccc;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 0 20px;
-      box-sizing: border-box;
-      z-index: 999;
-    }
-    button#generate-pdf-btn {
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #007bff;
-      border: none;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button#generate-pdf-btn:hover {
-      background: #0056b3;
-    }
+  font-family: Arial, sans-serif;
+  margin: 0 0 60px; /* Bottom space for sticky footer */
+}
+h1 {
+  margin: 20px;
+}
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 0 20px 20px;
+}
+.card {
+  border: 1px solid #222;
+  padding: 8px;
+  width: 180px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #2c2c2c; /* darkish background */
+  border-radius: 12px;  /* nice rounded corners */
+  color: #eee; /* lighter text for contrast */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+
+.card h3 {
+  height: 48px; /* taller header */
+  line-height: 1.2em;
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  text-align: center;
+  user-select: none;
+  white-space: normal;
+  word-break: break-word;
+    color: #eee;
+}
+.card img {
+  width: 100%;
+  height: auto;
+  border: 1px solid black;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.quantity-control button {
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  user-select: none;
+  border-radius: 4px;
+}
+.quantity-control button:hover {
+  background-color: #ddd;
+}
+.quantity-input {
+  width: 60px; /* kept your original width */
+  text-align: center;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: #444;
+  color: #eee;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 60px;
+  width: 100%;
+  background: #f5f5f5;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 999;
+}
+button#generate-pdf-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #007bff;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button#generate-pdf-btn:hover {
+  background: #0056b3;
+}
+
   </style>
 </head>
 <body>
   <div id="app">
-    <h1>Generic Upgrade Cards</h1>
+    <h1>Printable Upgrade Cards</h1>
     <div class="image-list">
-      <div class="card" v-for="image in images" :key="image.name">
-        <h3>{{ formatFileName(image.name) }}</h3>
-        <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" :alt="image.name" />
-        <input
-          class="quantity-input"
-          type="number"
-          min="0"
-          v-model.number="image.quantity"
-          placeholder="Qty"
-        />
-      </div>
+<div class="card" v-for="image in images" :key="image.name">
+  <!-- <h3 class="card-header">{{ formatFileName(image.name) }}</h3> -->
+
+  <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" :alt="image.name" />
+
+  <div class="quantity-control">
+    <button @click="decrementQuantity(image)">−</button>
+    <input
+      class="quantity-input"
+      type="number"
+      min="0"
+      v-model.number="image.quantity"
+      placeholder="Qty"
+    />
+    <button @click="incrementQuantity(image)">+</button>
+  </div>
+</div>
     </div>
 	
 	  <footer>
@@ -183,7 +227,15 @@
             .split(/[\s_]+/)
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
-        },
+        }, 
+  incrementQuantity(image) {
+    image.quantity = (image.quantity || 0) + 1;
+  },
+  decrementQuantity(image) {
+    if (image.quantity > 0) {
+      image.quantity--;
+    }
+  },
         getBase64ImageFromUrl(url) {
           return new Promise((resolve, reject) => {
             const img = new Image();
