@@ -9,253 +9,210 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding-bottom: 60px; /* space for footer */
-    }
-    #app {
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
+      margin: 0 0 60px; /* Bottom space for sticky footer */
     }
     h1 {
-      margin-bottom: 24px;
+      margin: 20px;
     }
-    .cards-container {
+    .image-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 15px;
+      padding: 0 20px 20px;
     }
     .card {
-      flex: 1 1 150px;
-      max-width: 150px;
-      text-align: center;
+      border: 1px solid black;
+      padding: 8px;
+      width: 140px; /* About 50% smaller than normal preview */
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
+      background: #fff;
+    }
+    .card h3 {
+      margin: 5px 0;
+      font-size: 14px;
+      text-align: center;
+      user-select: none;
     }
     .card img {
       width: 100%;
       height: auto;
-      transform: scale(0.5);
-      transform-origin: top center;
+      border: 1px solid black;
+      box-sizing: border-box;
       margin-bottom: 8px;
-      border: 1px solid #000; /* subtle border */
-      box-shadow: 0 0 4px rgba(0,0,0,0.2);
     }
-    .card-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-      font-size: 1rem;
-      text-transform: capitalize;
-    }
-    .card input[type="number"] {
+    .quantity-input {
       width: 60px;
-      margin-top: 4px;
-      padding: 4px;
-      font-size: 0.9rem;
       text-align: center;
+      font-size: 14px;
+      padding: 4px;
+      border: 1px solid #888;
+      border-radius: 4px;
     }
-    .footer {
+    footer {
       position: fixed;
       bottom: 0;
       right: 0;
-      left: 0;
-      padding: 12px 20px;
-      background: #fff;
+      height: 60px;
+      width: 100%;
+      background: #f5f5f5;
       border-top: 1px solid #ccc;
       display: flex;
       justify-content: flex-end;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-      z-index: 1000;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 999;
     }
-    .footer button {
-      padding: 10px 16px;
-      font-size: 1rem;
+    button#generate-pdf-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      border: none;
+      color: white;
+      border-radius: 4px;
       cursor: pointer;
+    }
+    button#generate-pdf-btn:hover {
+      background: #0056b3;
     }
   </style>
 </head>
 <body>
   <div id="app">
     <h1>Generic Upgrade Cards</h1>
-    <div class="cards-container">
-      <div class="card" v-for="(image, index) in images" :key="index">
-        <h3 class="card-title">{{ cleanName(image.name) }}</h3>
-        <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" alt="" />
-        <input type="number" min="0" v-model.number="image.quantity" placeholder="Quantity" />
+    <div class="image-list">
+      <div class="card" v-for="image in images" :key="image.name">
+        <h3>{{ formatFileName(image.name) }}</h3>
+        <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" :alt="image.name" />
+        <input
+          class="quantity-input"
+          type="number"
+          min="0"
+          v-model.number="image.quantity"
+          placeholder="Qty"
+        />
       </div>
-    </div>
-    <div class="footer">
-      <button @click="generatePDF">Generate PDF</button>
     </div>
   </div>
 
+  <footer>
+    <button id="generate-pdf-btn" @click="generatePDF">Generate PDF</button>
+  </footer>
+
   <script>
+    const { createApp } = Vue;
     const { jsPDF } = window.jspdf;
 
-    Vue.createApp({
+    createApp({
       data() {
         return {
           images: [
-            { name: "anger.jpg", quantity: 0 },
-            { name: "armor-piercing shells.jpg", quantity: 0 },
-            { name: "ascension_cables.jpg", quantity: 0 },
-            { name: "attack_protocols.jpg", quantity: 0 },
-            { name: "barrage_generator.jpg", quantity: 0 },
-            { name: "bunker_buster_shells.jpg", quantity: 0 },
-            { name: "burst_of_speed.jpg", quantity: 0 },
-            { name: "command_control_array.jpg", quantity: 0 },
-            { name: "comms_jammer.jpg", quantity: 0 },
-            { name: "concussion_grenades.jpg", quantity: 0 },
-            { name: "defense_protocols.jpg", quantity: 0 },
-            { name: "defensive_stance.jpg", quantity: 0 },
-            { name: "duck_and_cover.jpg", quantity: 0 },
-            { name: "electrobinoculars.jpg", quantity: 0 },
-            { name: "emergency transponder.jpg", quantity: 0 },
-            { name: "emergency_stims.jpg", quantity: 0 },
-            { name: "emp_droid_poppers.jpg", quantity: 0 },
-            { name: "endurance.jpg", quantity: 0 },
-            { name: "engagement_protocols.jpg", quantity: 0 },
-            { name: "environmental_gear.jpg", quantity: 0 },
-            { name: "fear.jpg", quantity: 0 },
-            { name: "force_barrier.jpg", quantity: 0 },
-            { name: "force_choke.jpg", quantity: 0 },
-            { name: "force_guidance.jpg", quantity: 0 },
-            { name: "force_push.jpg", quantity: 0 },
-            { name: "force_reflexes.jpg", quantity: 0 },
-            { name: "fragmentation_grenades.jpg", quantity: 0 },
-            { name: "grappling_hooks.jpg", quantity: 0 },
-            { name: "hacked comms unit.jpg", quantity: 0 },
-            { name: "high-energy_shells.jpg", quantity: 0 },
-            { name: "hope.jpg", quantity: 0 },
-            { name: "hq_uplink.jpg", quantity: 0 },
-            { name: "impact_grenades.jpg", quantity: 0 },
-            { name: "improvised_orders.jpg", quantity: 0 },
-            { name: "inspiring_presence.jpg", quantity: 0 },
-            { name: "into_the_fray.jpg", quantity: 0 },
-            { name: "jedi_mind_trick.jpg", quantity: 0 },
-            { name: "lead_by_example.jpg", quantity: 0 },
-            { name: "linked_targeting_array.jpg", quantity: 0 },
-            { name: "offensive_push.jpg", quantity: 0 },
-            { name: "offensive_stance.jpg", quantity: 0 },
-            { name: "onboard_comms_channel.jpg", quantity: 0 },
-            { name: "on_the_hunt.jpg", quantity: 0 },
-            { name: "overcharged_generator.jpg", quantity: 0 },
-            { name: "overwatch.jpg", quantity: 0 },
-            { name: "portable_scanner.jpg", quantity: 0 },
-            { name: "prepared_supplies.jpg", quantity: 0 },
-            { name: "protector.jpg", quantity: 0 },
-            { name: "recon_intel.jpg", quantity: 0 },
-            { name: "saber_throw.jpg", quantity: 0 },
-            { name: "seize_the_initiative.jpg", quantity: 0 },
-            { name: "situational_awareness.jpg", quantity: 0 },
-            { name: "smoke_grenades.jpg", quantity: 0 },
-            { name: "sonic_imploders.jpg", quantity: 0 },
-            { name: "strict_orders.jpg", quantity: 0 },
-            { name: "targeting_scopes.jpg", quantity: 0 },
-            { name: "tenacity.jpg", quantity: 0 },
-            { name: "underworld_connections.jpg", quantity: 0 },
-            { name: "up_close_and_personal.jpg", quantity: 0 },
-            { name: "vigilance.jpg", quantity: 0 }
+            { name: 'anger.jpg', quantity: 0 },
+            { name: 'armor-piercing shells.jpg', quantity: 0 },
+            { name: 'ascension_cables.jpg', quantity: 0 },
+            { name: 'attack_protocols.jpg', quantity: 0 },
+            { name: 'barrage_generator.jpg', quantity: 0 },
+            { name: 'bunker_buster_shells.jpg', quantity: 0 },
+            { name: 'burst_of_speed.jpg', quantity: 0 },
+            { name: 'command_control_array.jpg', quantity: 0 },
+            { name: 'comms_jammer.jpg', quantity: 0 },
+            { name: 'concussion_grenades.jpg', quantity: 0 },
+            { name: 'defense_protocols.jpg', quantity: 0 },
+            { name: 'defensive_stance.jpg', quantity: 0 },
+            { name: 'duck_and_cover.jpg', quantity: 0 },
+            { name: 'electrobinoculars.jpg', quantity: 0 },
+            { name: 'emergency transponder.jpg', quantity: 0 },
+            { name: 'emergency_stims.jpg', quantity: 0 },
+            { name: 'emp_droid_poppers.jpg', quantity: 0 },
+            { name: 'endurance.jpg', quantity: 0 },
+            { name: 'engagement_protocols.jpg', quantity: 0 },
+            { name: 'environmental_gear.jpg', quantity: 0 },
+            { name: 'fear.jpg', quantity: 0 },
+            { name: 'force_barrier.jpg', quantity: 0 },
+            { name: 'force_choke.jpg', quantity: 0 },
+            { name: 'force_guidance.jpg', quantity: 0 },
+            { name: 'force_push.jpg', quantity: 0 },
+            { name: 'force_reflexes.jpg', quantity: 0 },
+            { name: 'fragmentation_grenades.jpg', quantity: 0 },
+            { name: 'grappling_hooks.jpg', quantity: 0 },
+            { name: 'hacked comms unit.jpg', quantity: 0 },
+            { name: 'high-energy_shells.jpg', quantity: 0 },
+            { name: 'hope.jpg', quantity: 0 },
+            { name: 'hq_uplink.jpg', quantity: 0 },
+            { name: 'impact_grenades.jpg', quantity: 0 },
+            { name: 'improvised_orders.jpg', quantity: 0 },
+            { name: 'inspiring_presence.jpg', quantity: 0 },
+            { name: 'into_the_fray.jpg', quantity: 0 },
+            { name: 'jedi_mind_trick.jpg', quantity: 0 },
+            { name: 'lead_by_example.jpg', quantity: 0 },
+            { name: 'linked_targeting_array.jpg', quantity: 0 },
+            { name: 'offensive_push.jpg', quantity: 0 },
+            { name: 'offensive_stance.jpg', quantity: 0 },
+            { name: 'onboard_comms_channel.jpg', quantity: 0 },
+            { name: 'on_the_hunt.jpg', quantity: 0 },
+            { name: 'overcharged_generator.jpg', quantity: 0 },
+            { name: 'overwatch.jpg', quantity: 0 },
+            { name: 'portable_scanner.jpg', quantity: 0 },
+            { name: 'prepared_supplies.jpg', quantity: 0 },
+            { name: 'protector.jpg', quantity: 0 },
+            { name: 'recon_intel.jpg', quantity: 0 },
+            { name: 'saber_throw.jpg', quantity: 0 },
+            { name: 'seize_the_initiative.jpg', quantity: 0 },
+            { name: 'situational_awareness.jpg', quantity: 0 },
+            { name: 'smoke_grenades.jpg', quantity: 0 },
+            { name: 'sonic_imploders.jpg', quantity: 0 },
+            { name: 'strict_orders.jpg', quantity: 0 },
+            { name: 'targeting_scopes.jpg', quantity: 0 },
+            { name: 'tenacity.jpg', quantity: 0 },
+            { name: 'underworld_connections.jpg', quantity: 0 },
+            { name: 'up_close_and_personal.jpg', quantity: 0 },
+            { name: 'vigilance.jpg', quantity: 0 }
           ]
         };
       },
       methods: {
-        cleanName(filename) {
-          return filename
-            .replace(/\.[^/.]+$/, "")
-            .replace(/_/g, " ")
-            .trim();
+        formatFileName(name) {
+          // Remove extension and replace underscores with spaces, capitalize words
+          const noExt = name.replace(/\.[^/.]+$/, "");
+          return noExt
+            .split(/[\s_]+/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
         },
-        async getBase64ImageFromUrl(url) {
+        getBase64ImageFromUrl(url) {
           return new Promise((resolve, reject) => {
             const img = new Image();
-            img.crossOrigin = 'Anonymous';
+            img.setAttribute('crossOrigin', 'anonymous');
             img.onload = function () {
-              const canvas = document.createElement("canvas");
-              canvas.width = img.width;
-              canvas.height = img.height;
-              const ctx = canvas.getContext("2d");
-              ctx.drawImage(img, 0, 0);
-              const dataURL = canvas.toDataURL("image/jpeg");
-              resolve(dataURL);
+              const canvas = document.createElement('canvas');
+              canvas.width = this.naturalWidth;
+              canvas.height = this.naturalHeight;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(this, 0, 0);
+              try {
+                const dataURL = canvas.toDataURL('image/jpeg');
+                resolve(dataURL);
+              } catch (e) {
+                reject(e);
+              }
             };
             img.onerror = function () {
-              reject(new Error("Could not load image at " + url));
+              reject(new Error('Failed to load image: ' + url));
             };
             img.src = url;
           });
         },
         async generatePDF() {
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "pt",
-    format: "a4"
-  });
-
-  // Prepare cards list with repeated images by quantity
-  const cardsToPrint = [];
-  this.images.forEach(img => {
-    for (let i = 0; i < img.quantity; i++) {
-      cardsToPrint.push(img.name);
-    }
-  });
-
-  if(cardsToPrint.length === 0) {
-    alert("No cards selected to print!");
-    return;
-  }
-
-  const cardsPerRow = 3;
-  const cardWidth = 180; // ~2.5 inches @ 72pt per inch
-  const cardHeight = 252; // ~3.5 inches
-  const gap = 10;
-  const margin = 20;
-
-  let x = margin;
-  let y = margin;
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-
-  for (let i = 0; i < cardsToPrint.length; i++) {
-    const imgName = cardsToPrint[i];
-    try {
-      const base64 = await this.getBase64ImageFromUrl(
-        './Generic_Upgrades/' + encodeURIComponent(imgName)
-      );
-
-      // Add the image on the PDF page at (x,y)
-      pdf.addImage(base64, 'JPEG', x, y, cardWidth, cardHeight);
-
-      // Move x to next card position
-      x += cardWidth + gap;
-
-      // If reached end of row, reset x and move down y
-      if ((i + 1) % cardsPerRow === 0) {
-        x = margin;
-        y += cardHeight + gap;
-
-        // Check if we need new page
-        if (y + cardHeight + margin > pageHeight) {
-          pdf.addPage();
-          y = margin;
-        }
-      }
-    } catch (err) {
-      console.error('Error loading image:', imgName, err);
-    }
-  }
-
-  pdf.save("Generic_Upgrade_Cards.pdf");
-}
-
           const pdf = new jsPDF({
             orientation: "portrait",
             unit: "pt",
-            format: [313, 445] // MTG card size in points (approx 2.125"x3.5" * 144 dpi)
+            format: "a4"
           });
 
-          // Filter images with quantity > 0
+          // Prepare cards list with repeated images by quantity
           const cardsToPrint = [];
           this.images.forEach(img => {
             for (let i = 0; i < img.quantity; i++) {
@@ -269,16 +226,15 @@
           }
 
           const cardsPerRow = 3;
-          const cardWidth = 313;
-          const cardHeight = 445;
+          const cardWidth = 180; // ~2.5 inches @ 72pt per inch
+          const cardHeight = 252; // ~3.5 inches
           const gap = 10;
-          const pageWidth = cardsPerRow * (cardWidth + gap) - gap;
-          const pageHeight = 842; // A4 height approx for PDF size
+          const margin = 20;
 
-          // Calculate pages and layout manually since jsPDF default page size differs
-          let x = 0;
-          let y = 0;
-          let rowCount = 0;
+          let x = margin;
+          let y = margin;
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
 
           for (let i = 0; i < cardsToPrint.length; i++) {
             const imgName = cardsToPrint[i];
@@ -287,19 +243,23 @@
                 './Generic_Upgrades/' + encodeURIComponent(imgName)
               );
 
-              if (i > 0 && i % cardsPerRow === 0) {
+              // Add the image on the PDF page at (x,y)
+              pdf.addImage(base64, 'JPEG', x, y, cardWidth, cardHeight);
+
+              // Move x to next card position
+              x += cardWidth + gap;
+
+              // If reached end of row, reset x and move down y
+              if ((i + 1) % cardsPerRow === 0) {
+                x = margin;
                 y += cardHeight + gap;
-                x = 0;
-                rowCount++;
-                // New page if needed
-                if (y + cardHeight > pageHeight) {
+
+                // Check if we need new page
+                if (y + cardHeight + margin > pageHeight) {
                   pdf.addPage();
-                  y = 0;
+                  y = margin;
                 }
               }
-
-              pdf.addImage(base64, 'JPEG', x, y, cardWidth, cardHeight);
-              x += cardWidth + gap;
             } catch (err) {
               console.error('Error loading image:', imgName, err);
             }
@@ -308,7 +268,7 @@
           pdf.save("Generic_Upgrade_Cards.pdf");
         }
       }
-    }).mount("#app");
+    }).mount('#app');
   </script>
 </body>
 </html>
