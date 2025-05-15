@@ -187,6 +187,68 @@
           });
         },
         async generatePDF() {
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "pt",
+    format: "a4"
+  });
+
+  // Prepare cards list with repeated images by quantity
+  const cardsToPrint = [];
+  this.images.forEach(img => {
+    for (let i = 0; i < img.quantity; i++) {
+      cardsToPrint.push(img.name);
+    }
+  });
+
+  if(cardsToPrint.length === 0) {
+    alert("No cards selected to print!");
+    return;
+  }
+
+  const cardsPerRow = 3;
+  const cardWidth = 180; // ~2.5 inches @ 72pt per inch
+  const cardHeight = 252; // ~3.5 inches
+  const gap = 10;
+  const margin = 20;
+
+  let x = margin;
+  let y = margin;
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  for (let i = 0; i < cardsToPrint.length; i++) {
+    const imgName = cardsToPrint[i];
+    try {
+      const base64 = await this.getBase64ImageFromUrl(
+        './Generic_Upgrades/' + encodeURIComponent(imgName)
+      );
+
+      // Add the image on the PDF page at (x,y)
+      pdf.addImage(base64, 'JPEG', x, y, cardWidth, cardHeight);
+
+      // Move x to next card position
+      x += cardWidth + gap;
+
+      // If reached end of row, reset x and move down y
+      if ((i + 1) % cardsPerRow === 0) {
+        x = margin;
+        y += cardHeight + gap;
+
+        // Check if we need new page
+        if (y + cardHeight + margin > pageHeight) {
+          pdf.addPage();
+          y = margin;
+        }
+      }
+    } catch (err) {
+      console.error('Error loading image:', imgName, err);
+    }
+  }
+
+  pdf.save("Generic_Upgrade_Cards.pdf");
+}
+
           const pdf = new jsPDF({
             orientation: "portrait",
             unit: "pt",
