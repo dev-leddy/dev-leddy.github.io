@@ -1,200 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Generic Upgrade Cards with PDF Export</title>
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    font-family: Arial, sans-serif;
-  }
-  #app {
-    padding: 1rem;
-    padding-bottom: 60px; /* space for footer */
-    background: #fff;
-  }
-  h1 {
-    margin-bottom: 1rem;
-  }
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: black;
-  }
-  .card {
-    background: white;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  .card img {
-    width: 100%;
-    aspect-ratio: 63 / 88;
-    object-fit: cover;
-    display: block;
-  }
-  .card input {
-    width: 100%;
-    padding: 0.25rem;
-    margin-top: 0.25rem;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
-  footer.footer {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: #f9f9f9;
-    border-top: 1px solid #ddd;
-    height: 50px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 0 1rem;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    z-index: 1000;
-  }
-  footer.footer button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generic Upgrade Cards</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-bottom: 60px; /* space for footer */
+    }
+    #app {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      margin-bottom: 24px;
+    }
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .card {
+      flex: 1 1 150px;
+      max-width: 150px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      transform: scale(0.5);
+      transform-origin: top center;
+      margin-bottom: 8px;
+      border: 1px solid #000; /* subtle border */
+      box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    }
+    .card-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 1rem;
+      text-transform: capitalize;
+    }
+    .card input[type="number"] {
+      width: 60px;
+      margin-top: 4px;
+      padding: 4px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      padding: 12px 20px;
+      background: #fff;
+      border-top: 1px solid #ccc;
+      display: flex;
+      justify-content: flex-end;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+    .footer button {
+      padding: 10px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<div id="app">
-  <h1>Generic Upgrade Cards</h1>
-  <div class="cards-grid">
-    <div class="card" v-for="image in images" :key="image.name">
-      <img :src="`./Generic_Upgrades/${encodeURIComponent(image.name)}`" :alt="image.name" />
-      <input type="number" min="0" v-model.number="image.quantity" placeholder="Quantity" />
+  <div id="app">
+    <h1>Generic Upgrade Cards</h1>
+    <div class="cards-container">
+      <div class="card" v-for="(image, index) in images" :key="index">
+        <h3 class="card-title">{{ cleanName(image.name) }}</h3>
+        <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" alt="" />
+        <input type="number" min="0" v-model.number="image.quantity" placeholder="Quantity" />
+      </div>
+    </div>
+    <div class="footer">
+      <button @click="generatePDF">Generate PDF</button>
     </div>
   </div>
-</div>
 
-<footer class="footer">
-  <button @click="generatePDF">Generate PDF</button>
-</footer>
+  <script>
+    const { jsPDF } = window.jspdf;
 
-<script>
-const { jsPDF } = window.jspdf;
+    Vue.createApp({
+      data() {
+        return {
+          images: [
+            { name: "anger.jpg", quantity: 0 },
+            { name: "armor-piercing shells.jpg", quantity: 0 },
+            { name: "ascension_cables.jpg", quantity: 0 },
+            { name: "attack_protocols.jpg", quantity: 0 },
+            { name: "barrage_generator.jpg", quantity: 0 },
+            { name: "bunker_buster_shells.jpg", quantity: 0 },
+            { name: "burst_of_speed.jpg", quantity: 0 },
+            { name: "command_control_array.jpg", quantity: 0 },
+            { name: "comms_jammer.jpg", quantity: 0 },
+            { name: "concussion_grenades.jpg", quantity: 0 },
+            { name: "defense_protocols.jpg", quantity: 0 },
+            { name: "defensive_stance.jpg", quantity: 0 },
+            { name: "duck_and_cover.jpg", quantity: 0 },
+            { name: "electrobinoculars.jpg", quantity: 0 },
+            { name: "emergency transponder.jpg", quantity: 0 },
+            { name: "emergency_stims.jpg", quantity: 0 },
+            { name: "emp_droid_poppers.jpg", quantity: 0 },
+            { name: "endurance.jpg", quantity: 0 },
+            { name: "engagement_protocols.jpg", quantity: 0 },
+            { name: "environmental_gear.jpg", quantity: 0 },
+            { name: "fear.jpg", quantity: 0 },
+            { name: "force_barrier.jpg", quantity: 0 },
+            { name: "force_choke.jpg", quantity: 0 },
+            { name: "force_guidance.jpg", quantity: 0 },
+            { name: "force_push.jpg", quantity: 0 },
+            { name: "force_reflexes.jpg", quantity: 0 },
+            { name: "fragmentation_grenades.jpg", quantity: 0 },
+            { name: "grappling_hooks.jpg", quantity: 0 },
+            { name: "hacked comms unit.jpg", quantity: 0 },
+            { name: "high-energy_shells.jpg", quantity: 0 },
+            { name: "hope.jpg", quantity: 0 },
+            { name: "hq_uplink.jpg", quantity: 0 },
+            { name: "impact_grenades.jpg", quantity: 0 },
+            { name: "improvised_orders.jpg", quantity: 0 },
+            { name: "inspiring_presence.jpg", quantity: 0 },
+            { name: "into_the_fray.jpg", quantity: 0 },
+            { name: "jedi_mind_trick.jpg", quantity: 0 },
+            { name: "lead_by_example.jpg", quantity: 0 },
+            { name: "linked_targeting_array.jpg", quantity: 0 },
+            { name: "offensive_push.jpg", quantity: 0 },
+            { name: "offensive_stance.jpg", quantity: 0 },
+            { name: "onboard_comms_channel.jpg", quantity: 0 },
+            { name: "on_the_hunt.jpg", quantity: 0 },
+            { name: "overcharged_generator.jpg", quantity: 0 },
+            { name: "overwatch.jpg", quantity: 0 },
+            { name: "portable_scanner.jpg", quantity: 0 },
+            { name: "prepared_supplies.jpg", quantity: 0 },
+            { name: "protector.jpg", quantity: 0 },
+            { name: "recon_intel.jpg", quantity: 0 },
+            { name: "saber_throw.jpg", quantity: 0 },
+            { name: "seize_the_initiative.jpg", quantity: 0 },
+            { name: "situational_awareness.jpg", quantity: 0 },
+            { name: "smoke_grenades.jpg", quantity: 0 },
+            { name: "sonic_imploders.jpg", quantity: 0 },
+            { name: "strict_orders.jpg", quantity: 0 },
+            { name: "targeting_scopes.jpg", quantity: 0 },
+            { name: "tenacity.jpg", quantity: 0 },
+            { name: "underworld_connections.jpg", quantity: 0 },
+            { name: "up_close_and_personal.jpg", quantity: 0 },
+            { name: "vigilance.jpg", quantity: 0 }
+          ]
+        };
+      },
+      methods: {
+        cleanName(filename) {
+          return filename
+            .replace(/\.[^/.]+$/, "")
+            .replace(/_/g, " ")
+            .trim();
+        },
+        async getBase64ImageFromUrl(url) {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function () {
+              const canvas = document.createElement("canvas");
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0);
+              const dataURL = canvas.toDataURL("image/jpeg");
+              resolve(dataURL);
+            };
+            img.onerror = function () {
+              reject(new Error("Could not load image at " + url));
+            };
+            img.src = url;
+          });
+        },
+        async generatePDF() {
+          const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "pt",
+            format: [313, 445] // MTG card size in points (approx 2.125"x3.5" * 144 dpi)
+          });
 
-const app = Vue.createApp({
-  data() {
-    return {
-      images: []
-    };
-  },
-  mounted() {
-    fetch('./Generic_Upgrades/filelist.json')
-      .then(res => res.json())
-      .then(fileNames => {
-        this.images = fileNames
-          .filter(name => name.toLowerCase().endsWith('.jpg')) // only jpg files
-          .map(name => ({ name, quantity: 0 }));
-      })
-      .catch(err => {
-        alert('Failed to load image list JSON: ' + err.message);
-      });
-  },
-  methods: {
-    async generatePDF() {
-      const pdf = new jsPDF({
-        unit: 'mm',
-        format: 'a4',
-        compress: true,
-      });
+          // Filter images with quantity > 0
+          const cardsToPrint = [];
+          this.images.forEach(img => {
+            for (let i = 0; i < img.quantity; i++) {
+              cardsToPrint.push(img.name);
+            }
+          });
 
-      const cardWidth = 63;   // mm approx MTG card width
-      const cardHeight = 88;  // mm approx MTG card height
-      const bleed = 1.5;      // black bleed between cards
-
-      const marginLeft = 10;
-      const marginTop = 10;
-      const cardsPerRow = 3;
-
-      let x = marginLeft;
-      let y = marginTop;
-      let cardCountInPage = 0;
-
-      // Filter images with quantity > 0, expand each by quantity
-      const cardsToPrint = [];
-      this.images.forEach(image => {
-        for (let i = 0; i < image.quantity; i++) {
-          cardsToPrint.push(image.name);
-        }
-      });
-
-      if(cardsToPrint.length === 0){
-        alert('Please select quantity for at least one card.');
-        return;
-      }
-
-      for(let i = 0; i < cardsToPrint.length; i++) {
-        const imgName = cardsToPrint[i];
-        const imgPath = `./Generic_Upgrades/${encodeURIComponent(imgName)}`;
-
-        try {
-          const imgData = await this.getBase64ImageFromUrl(imgPath);
-
-          // Draw black bleed rectangle behind the card
-          pdf.setFillColor(0, 0, 0);
-          pdf.rect(x - bleed/2, y - bleed/2, cardWidth + bleed, cardHeight + bleed, 'F');
-
-          // Draw the card image on top
-          pdf.addImage(imgData, 'JPEG', x, y, cardWidth, cardHeight);
-
-          cardCountInPage++;
-          if(cardCountInPage % cardsPerRow === 0){
-            x = marginLeft;
-            y += cardHeight + bleed + 2; // row height + bleed + small gap
-          } else {
-            x += cardWidth + bleed;
+          if(cardsToPrint.length === 0) {
+            alert("No cards selected to print!");
+            return;
           }
 
-          // Add page break if next row won't fit
-          if(y + cardHeight + bleed > pdf.internal.pageSize.height - marginTop) {
-            pdf.addPage();
-            x = marginLeft;
-            y = marginTop;
+          const cardsPerRow = 3;
+          const cardWidth = 313;
+          const cardHeight = 445;
+          const gap = 10;
+          const pageWidth = cardsPerRow * (cardWidth + gap) - gap;
+          const pageHeight = 842; // A4 height approx for PDF size
+
+          // Calculate pages and layout manually since jsPDF default page size differs
+          let x = 0;
+          let y = 0;
+          let rowCount = 0;
+
+          for (let i = 0; i < cardsToPrint.length; i++) {
+            const imgName = cardsToPrint[i];
+            try {
+              const base64 = await this.getBase64ImageFromUrl(
+                './Generic_Upgrades/' + encodeURIComponent(imgName)
+              );
+
+              if (i > 0 && i % cardsPerRow === 0) {
+                y += cardHeight + gap;
+                x = 0;
+                rowCount++;
+                // New page if needed
+                if (y + cardHeight > pageHeight) {
+                  pdf.addPage();
+                  y = 0;
+                }
+              }
+
+              pdf.addImage(base64, 'JPEG', x, y, cardWidth, cardHeight);
+              x += cardWidth + gap;
+            } catch (err) {
+              console.error('Error loading image:', imgName, err);
+            }
           }
-        } catch(e) {
-          console.error('Error loading image for PDF:', imgName, e);
-          alert('Failed to load image for PDF: ' + imgName);
-          return;
+
+          pdf.save("Generic_Upgrade_Cards.pdf");
         }
       }
-
-      pdf.save('Generic_Upgrade_Cards.pdf');
-    },
-
-    // helper to load image from url and convert to base64
-    getBase64ImageFromUrl(url) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = 'Anonymous'; // needed to avoid tainted canvas error when on server
-        img.onload = function () {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          const dataURL = canvas.toDataURL('image/jpeg');
-          resolve(dataURL);
-        };
-        img.onerror = function () {
-          reject(new Error('Could not load image at ' + url));
-        };
-        img.src = url;
-      });
-    }
-  }
-});
-
-app.mount('#app');
-</script>
+    }).mount("#app");
+  </script>
 </body>
 </html>
