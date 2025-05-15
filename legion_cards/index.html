@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Generic Upgrade Cards</title>
+<title>Generic Upgrade Cards with PDF Export</title>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   body, html {
     margin: 0; padding: 0; height: 100%;
@@ -12,48 +13,37 @@
   }
   #app {
     padding: 1rem;
-    padding-bottom: 60px; /* space for fixed footer */
+    padding-bottom: 60px; /* space for footer */
     background: #fff;
   }
-
   h1 {
     margin-bottom: 1rem;
   }
-
-  /* Grid container for cards */
   .cards-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2px; /* small black bleed */
-    background: black; /* black bleed lines */
+    gap: 2px;
+    background: black;
   }
-
-  /* Each card container */
   .card {
     background: white;
     padding: 0;
-    border: none;
     box-sizing: border-box;
   }
-
   .card img {
     width: 100%;
-    height: auto;
-    display: block;
-    aspect-ratio: 63 / 88; /* MTG card approx ratio */
+    aspect-ratio: 63 / 88;
     object-fit: cover;
+    display: block;
   }
-
   .card input {
     width: 100%;
-    box-sizing: border-box;
     padding: 0.25rem;
-    border: 1px solid #ccc;
     margin-top: 0.25rem;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
     text-align: center;
   }
-
-  /* Fixed footer bar */
   footer.footer {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -67,7 +57,6 @@
     box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     z-index: 1000;
   }
-
   footer.footer button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
@@ -80,7 +69,7 @@
   <h1>Generic Upgrade Cards</h1>
   <div class="cards-grid">
     <div class="card" v-for="image in images" :key="image.name">
-      <img :src="image.url" :alt="image.name" />
+      <img :src="`./Generic_Upgrades/${encodeURIComponent(image.name)}`" :alt="image.name" />
       <input type="number" min="0" v-model.number="image.quantity" placeholder="Quantity" />
     </div>
   </div>
@@ -91,21 +80,116 @@
 </footer>
 
 <script>
+const { jsPDF } = window.jspdf;
+
 const app = Vue.createApp({
   data() {
     return {
-      images: [
-        { name: 'anger.jpg', url: './Generic_Upgrades/anger.jpg', quantity: 0 },
-        { name: 'armor-piercing shells.jpg', url: './Generic_Upgrades/armor-piercing%20shells.jpg', quantity: 0 },
-        { name: 'ascension_cables.jpg', url: './Generic_Upgrades/ascension_cables.jpg', quantity: 0 },
-        // add rest or load dynamically
-      ]
-    }
+      images: []
+    };
+  },
+  mounted() {
+    fetch('./Generic_Upgrades/filelist.json')
+      .then(res => res.json())
+      .then(fileNames => {
+        this.images = fileNames
+          .filter(name => name.toLowerCase().endsWith('.jpg')) // only jpg files
+          .map(name => ({ name, quantity: 0 }));
+      })
+      .catch(err => {
+        alert('Failed to load image list JSON: ' + err.message);
+      });
   },
   methods: {
-    generatePDF() {
-      alert('Your PDF generation logic goes here!');
-      // Implement your PDF logic here
+    async generatePDF() {
+      const pdf = new jsPDF({
+        unit: 'mm',
+        format: 'a4',
+        compress: true,
+      });
+
+      const cardWidth = 63;   // mm approx MTG card width
+      const cardHeight = 88;  // mm approx MTG card height
+      const bleed = 1.5;      // black bleed between cards
+
+      const marginLeft = 10;
+      const marginTop = 10;
+      const cardsPerRow = 3;
+
+      let x = marginLeft;
+      let y = marginTop;
+      let cardCountInPage = 0;
+
+      // Filter images with quantity > 0, expand each by quantity
+      const cardsToPrint = [];
+      this.images.forEach(image => {
+        for (let i = 0; i < image.quantity; i++) {
+          cardsToPrint.push(image.name);
+        }
+      });
+
+      if(cardsToPrint.length === 0){
+        alert('Please select quantity for at least one card.');
+        return;
+      }
+
+      for(let i = 0; i < cardsToPrint.length; i++) {
+        const imgName = cardsToPrint[i];
+        const imgPath = `./Generic_Upgrades/${encodeURIComponent(imgName)}`;
+
+        try {
+          const imgData = await this.getBase64ImageFromUrl(imgPath);
+
+          // Draw black bleed rectangle behind the card
+          pdf.setFillColor(0, 0, 0);
+          pdf.rect(x - bleed/2, y - bleed/2, cardWidth + bleed, cardHeight + bleed, 'F');
+
+          // Draw the card image on top
+          pdf.addImage(imgData, 'JPEG', x, y, cardWidth, cardHeight);
+
+          cardCountInPage++;
+          if(cardCountInPage % cardsPerRow === 0){
+            x = marginLeft;
+            y += cardHeight + bleed + 2; // row height + bleed + small gap
+          } else {
+            x += cardWidth + bleed;
+          }
+
+          // Add page break if next row won't fit
+          if(y + cardHeight + bleed > pdf.internal.pageSize.height - marginTop) {
+            pdf.addPage();
+            x = marginLeft;
+            y = marginTop;
+          }
+        } catch(e) {
+          console.error('Error loading image for PDF:', imgName, e);
+          alert('Failed to load image for PDF: ' + imgName);
+          return;
+        }
+      }
+
+      pdf.save('Generic_Upgrade_Cards.pdf');
+    },
+
+    // helper to load image from url and convert to base64
+    getBase64ImageFromUrl(url) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; // needed to avoid tainted canvas error when on server
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL('image/jpeg');
+          resolve(dataURL);
+        };
+        img.onerror = function () {
+          reject(new Error('Could not load image at ' + url));
+        };
+        img.src = url;
+      });
     }
   }
 });
