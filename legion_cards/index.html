@@ -332,13 +332,13 @@
       var app = createApp({
         data() {
           return {
-            imageFolder: ["Empire_Upgrades", "Generic_Upgrades"],
+            imageFolder: ["Empire_Upgrades", "Generic_Upgrades", "Mercenary_Upgrades"],
             images: [],
             searchQuery: "",
             modalVisible: false,
             selectedImageFolder: null,
             selectedImageName: null,
-            selectedFolders: [], // Holds the selected folder filters
+            selectedFolders: [], // Initialize as empty
           };
         },
         computed: {
@@ -359,6 +359,15 @@
         mounted() {
           this.modalVisible = false;
           this.loadAllImages();
+        },
+        watch: {
+          images: {
+            immediate: true,
+            handler(newImages) {
+              // Clear selectedFolders when images are loaded
+              this.selectedFolders = [];
+            },
+          },
         },
         methods: {
           async loadAllImages() {
