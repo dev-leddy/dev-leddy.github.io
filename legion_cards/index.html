@@ -278,15 +278,16 @@
                 {{ folder }}
               </button>
             </div>
-            <input
-              v-model="searchQuery"
-              placeholder="Search cards..."
-              type="text"
-            />
-            <button @click="generatePDF" class="generate-btn">
-              Generate PDF
-            </button>
           </div>
+          <input
+            v-model="searchQuery"
+            placeholder="Search cards..."
+            type="text"
+            class="search-input"
+          />
+          <button @click="generatePDF" class="generate-btn">
+            Generate PDF
+          </button>
         </div>
       </header>
       <div class="image-list" style="padding-top:25px;background-color:lightgrey">
@@ -404,7 +405,7 @@
                     folder,
                     name: filename,
                     quantity: 0,
-                    normalizedName: encodeURIComponent(filename).replace(/-/g, '%2D'),
+                    normalizedName: encodeURIComponent(filename.replace(/-/g, "_")), // Replace dashes with underscores
                   }));
                 this.images.push(...imageObjs);
               });
