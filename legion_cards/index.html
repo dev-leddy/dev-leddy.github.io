@@ -285,7 +285,11 @@
               class="search-input"
             />
             <div style="overflow:auto">
-              {{images}}
+              <ul>
+                <li v-for="image in images" v-if="image.quantity > 1" :key="image.name">
+                  {{ image.name }} (Qty: {{ image.quantity }})
+                </li>
+              </ul>
             </div>
             <button @click="generatePDF" class="generate-btn" style="margin-left: auto;">
               Generate PDF
