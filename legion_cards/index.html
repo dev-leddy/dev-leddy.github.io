@@ -411,8 +411,8 @@
                   .map((filename) => ({
                     folder,
                     name: filename,
-                    quantity: 0,
-                    normalizedName: encodeURIComponent(filename), // Encode filename without replacing dashes
+                    quantity: 0, // Ensure quantity is initialized to 0
+                    normalizedName: encodeURIComponent(filename),
                   }));
                 this.images.push(...imageObjs);
               });
@@ -561,3 +561,4 @@
     </script>
   </body>
 </html>
+``` 
