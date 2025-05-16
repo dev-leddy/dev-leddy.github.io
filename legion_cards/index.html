@@ -1,463 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Generic Upgrade Cards</title>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet" />
-  <style>
-    body, h1, h3, button {
-    font-family: 'Orbitron', Arial, sans-serif;
-  }
-    body {
-  font-family: Arial, sans-serif;
-  margin: 0 0 60px; /* Bottom space for sticky footer */
-}
-h1 {
-  margin: 20px;
-}
-.image-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  padding: 0 20px 20px;
-}
-.card {
-  border: 1px solid #222;
-  padding: 8px;
-  width: 180px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #2c2c2c; /* darkish background */
-  border-radius: 12px;  /* nice rounded corners */
-  color: #eee; /* lighter text for contrast */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-
-
-.card h3 {
-  height: 48px; /* taller header */
-  line-height: 1.2em;
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  text-align: center;
-  user-select: none;
-  white-space: normal;
-  word-break: break-word;
-    color: #eee;
-}
-.card img {
-  width: 100%;
-  height: auto;
-  border: 1px solid black;
-  box-sizing: border-box;
-  margin-bottom: 8px;
-}
-.quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-}
-.quantity-control button {
-  width: 28px;
-  height: 28px;
-  font-size: 18px;
-  line-height: 1;
-  text-align: center;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
-  user-select: none;
-  border-radius: 4px;
-}
-.quantity-control button:hover {
-  background-color: #ddd;
-}
-.quantity-input {
-  width: 60px; /* kept your original width */
-  text-align: center;
-  font-size: 14px;
-  padding: 4px;
-  border-radius: 4px;
-  border: 1px solid #555;
-  background: #444;
-  color: #eee;
-}
-footer {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  height: 60px;
-  width: 100%;
-  background: #f5f5f5;
-  border-top: 1px solid #ccc;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 20px;
-  box-sizing: border-box;
-  z-index: 999;
-}
-button#generate-pdf-btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  background: #007bff;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button#generate-pdf-btn:hover {
-  background: #0056b3;
-}
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-}
-
-.modal-content {
-  background: #222;
-  padding: 20px 20px 10px; /* more top & side padding */
-  border-radius: 10px;
-  position: relative;
-  display: inline-block;
-}
-
-.modal-content img {
-  width: 280px;   /* slightly larger */
-  height: 392px;  /* keeping MTG card ratio */
-  display: block;
-  border-radius: 8px;
-  box-shadow: 0 0 15px #000;
-}
-
-.close-btn {
-  position: absolute;
-  top: -4px;        /* lifted above image */
-  right: -2px;     /* moved a little right */
-  background: transparent;
-  border: none;
-  color: transparent;
-  font-size: 28px;
-  cursor: pointer;
-  font-weight: bold;
-  line-height: 1;
-  user-select: none;
-  z-index: 10;
-}
-
-.search-input {
-  margin: 10px 20px;
-  padding: 8px 12px;
-  font-size: 16px;
-  width: calc(100% - 60px);
-  max-width: 400px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-.header-bar {
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 1000;
-  padding: 10px 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-.top-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-}
-
-.top-controls h3 {
-  margin: 0;
-}
-
-.bottom-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.bottom-row input {
-  flex: 1;
-  max-width: 300px;
-}
-
-.generate-btn {
-  white-space: nowrap;
-}
-
-.generate-btn {
-  padding: 8px 16px;
-  background-color: #007bff;
-  border: none;
-  color: white;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background-color 0.3s ease;
-}
-
-.generate-btn:hover {
-  background-color: #0056b3;
-}
-
-
-
-  </style>
-</head>
-<body>
-  <div id="app">
-<header class="header-bar">
-  <div class="top-controls">
-    <h3>Upgrade PDF Generator</h3>
-    <div class="bottom-row">
-      <input v-model="searchQuery" placeholder="Search cards..." type="text" />
-      <button @click="generatePDF" class="generate-btn">Generate PDF</button>
-    </div>
-  </div>
-</header>
-
-   <div class="image-list">
-<div class="card" v-for="image in filteredImages" :key="image.name" >
-  <!-- <h3 class="card-header">{{ formatFileName(image.name) }}</h3> -->
-
-  <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" :alt="image.name" @click="openModal(image.name)" style="cursor: pointer;"/>
-
-  <div class="quantity-control">
-    <button @click="decrementQuantity(image)">−</button>
-    <input
-      class="quantity-input"
-      type="number"
-      min="0"
-      v-model.number="image.quantity"
-      placeholder="Qty"
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Generic Upgrade Cards</title>
+      <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+      <style>
+         body, h1, h3, button {
+         font-family: 'Orbitron', Arial, sans-serif;
+         }
+         body {
+         font-family: Arial, sans-serif;
+         margin: 0 0 60px; /* Bottom space for sticky footer */
+         }
+         h1 {
+         margin: 20px;
+         }
+         .image-list {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 15px;
+         padding: 0 20px 20px;
+         }
+         .card {
+         border: 1px solid #222;
+         padding: 8px;
+         width: 180px;
+         box-sizing: border-box;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         background: #2c2c2c; /* darkish background */
+         border-radius: 12px;  /* nice rounded corners */
+         color: #eee; /* lighter text for contrast */
+         box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+         }
+         .card h3 {
+         height: 48px; /* taller header */
+         line-height: 1.2em;
+         margin: 0 0 8px 0;
+         font-size: 14px;
+         text-align: center;
+         user-select: none;
+         white-space: normal;
+         word-break: break-word;
+         color: #eee;
+         }
+         .card img {
+         width: 100%;
+         height: auto;
+         border: 1px solid black;
+         box-sizing: border-box;
+         margin-bottom: 8px;
+         }
+         .quantity-control {
+         display: flex;
+         align-items: center;
+         gap: 8px;
+         margin-top: 6px;
+         }
+         .quantity-control button {
+         width: 28px;
+         height: 28px;
+         font-size: 18px;
+         line-height: 1;
+         text-align: center;
+         cursor: pointer;
+         border: 1px solid #ccc;
+         background-color: #f0f0f0;
+         user-select: none;
+         border-radius: 4px;
+         }
+         .quantity-control button:hover {
+         background-color: #ddd;
+         }
+         .quantity-input {
+         width: 60px; /* kept your original width */
+         text-align: center;
+         font-size: 14px;
+         padding: 4px;
+         border-radius: 4px;
+         border: 1px solid #555;
+         background: #444;
+         color: #eee;
+         }
+         footer {
+         position: fixed;
+         bottom: 0;
+         right: 0;
+         height: 60px;
+         width: 100%;
+         background: #f5f5f5;
+         border-top: 1px solid #ccc;
+         display: flex;
+         justify-content: flex-end;
+         align-items: center;
+         padding: 0 20px;
+         box-sizing: border-box;
+         z-index: 999;
+         }
+         button#generate-pdf-btn {
+         padding: 10px 20px;
+         font-size: 16px;
+         background: #007bff;
+         border: none;
+         color: white;
+         border-radius: 4px;
+         cursor: pointer;
+         }
+         button#generate-pdf-btn:hover {
+         background: #0056b3;
+         }
+         .modal-overlay {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100vw;
+         height: 100vh;
+         background: rgba(0,0,0,0.8);
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         z-index: 10000;
+         }
+         .modal-content {
+         background: #222;
+         padding: 20px 20px 10px; /* more top & side padding */
+         border-radius: 10px;
+         position: relative;
+         display: inline-block;
+         }
+         .modal-content img {
+         width: 280px;   /* slightly larger */
+         height: 392px;  /* keeping MTG card ratio */
+         display: block;
+         border-radius: 8px;
+         box-shadow: 0 0 15px #000;
+         }
+         .close-btn {
+         position: absolute;
+         top: -4px;        /* lifted above image */
+         right: -2px;     /* moved a little right */
+         background: transparent;
+         border: none;
+         color: transparent;
+         font-size: 28px;
+         cursor: pointer;
+         font-weight: bold;
+         line-height: 1;
+         user-select: none;
+         z-index: 10;
+         }
+         .search-input {
+         margin: 10px 20px;
+         padding: 8px 12px;
+         font-size: 16px;
+         width: calc(100% - 60px);
+         max-width: 400px;
+         border-radius: 6px;
+         border: 1px solid #ccc;
+         }
+         .header-bar {
+         position: sticky;
+         top: 0;
+         background: white;
+         z-index: 1000;
+         padding: 10px 20px;
+         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+         }
+         .top-controls {
+         display: flex;
+         flex-direction: column;
+         gap: 8px;
+         padding: 10px;
+         }
+         .top-controls h3 {
+         margin: 0;
+         }
+         .bottom-row {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         gap: 8px;
+         }
+         .bottom-row input {
+         flex: 1;
+         max-width: 300px;
+         }
+         .generate-btn {
+         white-space: nowrap;
+         }
+         .generate-btn {
+         padding: 8px 16px;
+         background-color: #007bff;
+         border: none;
+         color: white;
+         font-weight: 600;
+         border-radius: 4px;
+         cursor: pointer;
+         white-space: nowrap;
+         transition: background-color 0.3s ease;
+         }
+         .generate-btn:hover {
+         background-color: #0056b3;
+         }
+      </style>
+   </head>
+   <body>
+      <div id="app">
+         <header class="header-bar">
+            <div class="top-controls">
+               <h3>Upgrade PDF Generator</h3>
+               <div class="bottom-row">
+                  <input v-model="searchQuery" placeholder="Search cards..." type="text" />
+                  <button @click="generatePDF" class="generate-btn">Generate PDF</button>
+               </div>
+            </div>
+         </header>
+         <div class="image-list" style="padding-top:25px;background-color:lightgrey">
+  <div class="card" v-for="image in filteredImages" :key="image.folder + '/' + image.name" >
+    <img
+      :src="`${image.folder}/${encodeURIComponent(image.name)}`"
+      :alt="image.name"
+      @click="openModal(image.folder, image.name)"
+      style="cursor: pointer;"
     />
-    <button @click="incrementQuantity(image)">+</button>
+    <div class="quantity-control">
+      <button @click="decrementQuantity(image)">−</button>
+      <input
+        class="quantity-input"
+        type="number"
+        min="0"
+        v-model.number="image.quantity"
+        placeholder="Qty"
+      />
+      <button @click="incrementQuantity(image)">+</button>
+    </div>
   </div>
 </div>
-    </div>
-	  <div v-if="modalVisible" class="modal-overlay" @click.self="closeModal">
+
+            <div class="card" v-for="image in filteredImages" :key="image.name" >
+               <!-- <h3 class="card-header">{{ formatFileName(image.name) }}</h3> -->
+               <img :src="'./Generic_Upgrades/' + encodeURIComponent(image.name)" :alt="image.name" @click="openModal(image.name)" style="cursor: pointer;"/>
+               <div class="quantity-control">
+                  <button @click="decrementQuantity(image)">−</button>
+                  <input
+                     class="quantity-input"
+                     type="number"
+                     min="0"
+                     v-model.number="image.quantity"
+                     placeholder="Qty"
+                     />
+                  <button @click="incrementQuantity(image)">+</button>
+               </div>
+            </div>
+         </div>
+<div v-if="modalVisible" class="modal-overlay" @click.self="closeModal">
   <div class="modal-content">
     <button class="close-btn" @click="closeModal">×</button>
-    <img :src="'./Generic_Upgrades/' + encodeURIComponent(selectedImage)" alt="Card Preview" />
+    <img :src="`${selectedImageFolder}/${encodeURIComponent(selectedImageName)}`" alt="Card Preview" />
   </div>
 </div>
 
-  </div>
-
-
-
-  <script>
-    const { createApp } = Vue;
-    const { jsPDF } = window.jspdf;
-
-    createApp({
-      data() {
-        return {
-			searchQuery: '',
-		    modalVisible: false,
-			selectedImage: null,
-          images: [
-            { name: 'anger.jpg', quantity: 0 },
-            { name: 'armor-piercing shells.jpg', quantity: 0 },
-            { name: 'ascension_cables.jpg', quantity: 0 },
-            { name: 'attack_protocols.jpg', quantity: 0 },
-            { name: 'barrage_generator.jpg', quantity: 0 },
-            { name: 'bunker_buster_shells.jpg', quantity: 0 },
-            { name: 'burst_of_speed.jpg', quantity: 0 },
-            { name: 'command_control_array.jpg', quantity: 0 },
-            { name: 'comms_jammer.jpg', quantity: 0 },
-            { name: 'concussion_grenades.jpg', quantity: 0 },
-            { name: 'defense_protocols.jpg', quantity: 0 },
-            { name: 'defensive_stance.jpg', quantity: 0 },
-            { name: 'duck_and_cover.jpg', quantity: 0 },
-            { name: 'electrobinoculars.jpg', quantity: 0 },
-            { name: 'emergency transponder.jpg', quantity: 0 },
-            { name: 'emergency_stims.jpg', quantity: 0 },
-            { name: 'emp_droid_poppers.jpg', quantity: 0 },
-            { name: 'endurance.jpg', quantity: 0 },
-            { name: 'engagement_protocols.jpg', quantity: 0 },
-            { name: 'environmental_gear.jpg', quantity: 0 },
-            { name: 'fear.jpg', quantity: 0 },
-            { name: 'force_barrier.jpg', quantity: 0 },
-            { name: 'force_choke.jpg', quantity: 0 },
-            { name: 'force_guidance.jpg', quantity: 0 },
-            { name: 'force_push.jpg', quantity: 0 },
-            { name: 'force_reflexes.jpg', quantity: 0 },
-            { name: 'fragmentation_grenades.jpg', quantity: 0 },
-            { name: 'grappling_hooks.jpg', quantity: 0 },
-            { name: 'hacked comms unit.jpg', quantity: 0 },
-            { name: 'high-energy_shells.jpg', quantity: 0 },
-            { name: 'hope.jpg', quantity: 0 },
-            { name: 'hq_uplink.jpg', quantity: 0 },
-            { name: 'impact_grenades.jpg', quantity: 0 },
-            { name: 'improvised_orders.jpg', quantity: 0 },
-            { name: 'inspiring_presence.jpg', quantity: 0 },
-            { name: 'into_the_fray.jpg', quantity: 0 },
-            { name: 'jedi_mind_trick.jpg', quantity: 0 },
-            { name: 'lead_by_example.jpg', quantity: 0 },
-            { name: 'linked_targeting_array.jpg', quantity: 0 },
-            { name: 'offensive_push.jpg', quantity: 0 },
-            { name: 'offensive_stance.jpg', quantity: 0 },
-            { name: 'onboard_comms_channel.jpg', quantity: 0 },
-            { name: 'on_the_hunt.jpg', quantity: 0 },
-            { name: 'overcharged_generator.jpg', quantity: 0 },
-            { name: 'overwatch.jpg', quantity: 0 },
-            { name: 'portable_scanner.jpg', quantity: 0 },
-            { name: 'prepared_supplies.jpg', quantity: 0 },
-            { name: 'protector.jpg', quantity: 0 },
-            { name: 'recon_intel.jpg', quantity: 0 },
-            { name: 'saber_throw.jpg', quantity: 0 },
-            { name: 'seize_the_initiative.jpg', quantity: 0 },
-            { name: 'situational_awareness.jpg', quantity: 0 },
-            { name: 'smoke_grenades.jpg', quantity: 0 },
-            { name: 'sonic_imploders.jpg', quantity: 0 },
-            { name: 'strict_orders.jpg', quantity: 0 },
-            { name: 'targeting_scopes.jpg', quantity: 0 },
-            { name: 'tenacity.jpg', quantity: 0 },
-            { name: 'underworld_connections.jpg', quantity: 0 },
-            { name: 'up_close_and_personal.jpg', quantity: 0 },
-            { name: 'vigilance.jpg', quantity: 0 }
-          ]
-        };
-      },
-	  computed: {
-  filteredImages() {
-    const q = this.searchQuery.trim().toLowerCase();
-    if (!q) return this.images;
-    return this.images.filter(img => img.name.toLowerCase().includes(q));
-  }
-},
-      methods: {
-	    openModal(imageName) {
-    this.selectedImage = imageName;
-    this.modalVisible = true;
-  },
-  closeModal() {
-    this.modalVisible = false;
-    this.selectedImage = null;
-  },
-        formatFileName(name) {
-          // Remove extension and replace underscores with spaces, capitalize words
-          const noExt = name.replace(/\.[^/.]+$/, "");
-          return noExt
-            .split(/[\s_]+/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ");
-        }, 
-  incrementQuantity(image) {
-    image.quantity = (image.quantity || 0) + 1;
-  },
-  decrementQuantity(image) {
-    if (image.quantity > 0) {
-      image.quantity--;
-    }
-  },
-        getBase64ImageFromUrl(url) {
-          return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.setAttribute('crossOrigin', 'anonymous');
-            img.onload = function () {
-              const canvas = document.createElement('canvas');
-              canvas.width = this.naturalWidth;
-              canvas.height = this.naturalHeight;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(this, 0, 0);
-              try {
-                const dataURL = canvas.toDataURL('image/jpeg');
-                resolve(dataURL);
-              } catch (e) {
-                reject(e);
-              }
-            };
-            img.onerror = function () {
-              reject(new Error('Failed to load image: ' + url));
-            };
-            img.src = url;
-          });
-        },
-        async generatePDF() {
-          const pdf = new jsPDF({
-            orientation: "portrait",
-            unit: "pt",
-            format: "a4"
-          });
-
-          // Prepare cards list with repeated images by quantity
-          const cardsToPrint = [];
-          this.images.forEach(img => {
-            for (let i = 0; i < img.quantity; i++) {
-              cardsToPrint.push(img.name);
-            }
-          });
-
-          if(cardsToPrint.length === 0) {
-            alert("No cards selected to print!");
-            return;
-          }
-
-          const cardsPerRow = 3;
-          const cardWidth = 180; // ~2.5 inches @ 72pt per inch
-          const cardHeight = 252; // ~3.5 inches
-          const gap = 10;
-          const margin = 20;
-
-          let x = margin;
-          let y = margin;
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const pageHeight = pdf.internal.pageSize.getHeight();
-
-          for (let i = 0; i < cardsToPrint.length; i++) {
-            const imgName = cardsToPrint[i];
-            try {
-              const base64 = await this.getBase64ImageFromUrl(
-                './Generic_Upgrades/' + encodeURIComponent(imgName)
-              );
-
-              // Add the image on the PDF page at (x,y)
-              pdf.addImage(base64, 'JPEG', x, y, cardWidth, cardHeight);
-
-              // Move x to next card position
-              x += cardWidth + gap;
-
-              // If reached end of row, reset x and move down y
-              if ((i + 1) % cardsPerRow === 0) {
-                x = margin;
-                y += cardHeight + gap;
-
-                // Check if we need new page
-                if (y + cardHeight + margin > pageHeight) {
-                  pdf.addPage();
-                  y = margin;
-                }
-              }
-            } catch (err) {
-              console.error('Error loading image:', imgName, err);
-            }
-          }
-
-          pdf.save("Generic_Upgrade_Cards.pdf");
-        }
-      }
-    }).mount('#app');
-  </script>
-</body>
+      </div>
+      <script>
+         const { createApp } = Vue;
+         const { jsPDF } = window.jspdf;
+         
+         createApp({
+           data() {
+             return {
+         imageFolder: ['Empire_Upgrades', 'Generic_Upgrades'],
+         images: [],
+         searchQuery: '',
+           modalVisible: false,
+         selectedImage: null,
+               
+             };
+           },
+         computed: {
+         filteredImages() {
+         const q = this.searchQuery.trim().toLowerCase();
+         if (!q) return this.images;
+         return this.images.filter(img => img.name.toLowerCase().includes(q));
+         }
+         },
+         mounted(){
+         this.loadAllImages();
+         },
+           methods: {
+         async loadAllImages() {
+           for (const folder of this.imageFolder) {
+             try {
+               const res = await fetch(`${folder}/images.json`);
+               const imageList = await res.json();
+               const imageObjs = imageList.map(filename => ({
+                 folder,
+                 filename
+               }));
+               this.images.push(...imageObjs);
+             } catch (err) {
+               console.error(`Could not load images from ${folder}`, err);
+             }
+           }
+         },
+         imageSrc(image) {
+           return `${image.folder}/${image.filename}`;
+         },
+          openModal(imageName) {
+         this.selectedImage = imageName;
+         this.modalVisible = true;
+         },
+         closeModal() {
+         this.modalVisible = false;
+         this.selectedImage = null;
+         },
+             formatFileName(name) {
+               // Remove extension and replace underscores with spaces, capitalize words
+               const noExt = name.replace(/\.[^/.]+$/, "");
+               return noExt
+                 .split(/[\s_]+/)
+                 .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                 .join(" ");
+             }, 
+         incrementQuantity(image) {
+         image.quantity = (image.quantity || 0) + 1;
+         },
+         decrementQuantity(image) {
+         if (image.quantity > 0) {
+           image.quantity--;
+         }
+         },
+             getBase64ImageFromUrl(url) {
+               return new Promise((resolve, reject) => {
+                 const img = new Image();
+                 img.setAttribute('crossOrigin', 'anonymous');
+                 img.onload = function () {
+                   const canvas = document.createElement('canvas');
+                   canvas.width = this.naturalWidth;
+                   canvas.height = this.naturalHeight;
+                   const ctx = canvas.getContext('2d');
+                   ctx.drawImage(this, 0, 0);
+                   try {
+                     const dataURL = canvas.toDataURL('image/jpeg');
+                     resolve(dataURL);
+                   } catch (e) {
+                     reject(e);
+                   }
+                 };
+                 img.onerror = function () {
+                   reject(new Error('Failed to load image: ' + url));
+                 };
+                 img.src = url;
+               });
+             },
+             async generatePDF() {
+               const pdf = new jsPDF({
+                 orientation: "portrait",
+                 unit: "pt",
+                 format: "a4"
+               });
+         
+               // Prepare cards list with repeated images by quantity
+               const cardsToPrint = [];
+               this.images.forEach(img => {
+                 for (let i = 0; i < img.quantity; i++) {
+                   cardsToPrint.push(img.name);
+                 }
+               });
+         
+               if(cardsToPrint.length === 0) {
+                 alert("No cards selected to print!");
+                 return;
+               }
+         
+               const cardsPerRow = 3;
+               const cardWidth = 180; // ~2.5 inches @ 72pt per inch
+               const cardHeight = 252; // ~3.5 inches
+               const gap = 10;
+               const margin = 20;
+         
+               let x = margin;
+               let y = margin;
+               const pageWidth = pdf.internal.pageSize.getWidth();
+               const pageHeight = pdf.internal.pageSize.getHeight();
+         
+               for (let i = 0; i < cardsToPrint.length; i++) {
+                 const imgName = cardsToPrint[i];
+                 try {
+                   const base64 = await this.getBase64ImageFromUrl(
+                     './Generic_Upgrades/' + encodeURIComponent(imgName)
+                   );
+         
+                   // Add the image on the PDF page at (x,y)
+                   pdf.addImage(base64, 'JPEG', x, y, cardWidth, cardHeight);
+         
+                   // Move x to next card position
+                   x += cardWidth + gap;
+         
+                   // If reached end of row, reset x and move down y
+                   if ((i + 1) % cardsPerRow === 0) {
+                     x = margin;
+                     y += cardHeight + gap;
+         
+                     // Check if we need new page
+                     if (y + cardHeight + margin > pageHeight) {
+                       pdf.addPage();
+                       y = margin;
+                     }
+                   }
+                 } catch (err) {
+                   console.error('Error loading image:', imgName, err);
+                 }
+               }
+         
+               pdf.save("Generic_Upgrade_Cards.pdf");
+             }
+           }
+         }).mount('#app');
+      </script>
+   </body>
 </html>
