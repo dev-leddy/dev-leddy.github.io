@@ -341,12 +341,12 @@
                       /\.(jpg|jpeg|png|gif)$/i.test(filename) // Only include image files
                   )
                   .map((filename) => ({
-                    folder, // Ensure the correct folder is assigned
+                    folder, // Explicitly assign the correct folder
                     name: filename,
                     quantity: 0,
                     normalizedName: encodeURIComponent(filename).replace(/-/g, '%2D'),
                   }));
-                this.images.push(...imageObjs.filter((img) => img.folder === folder));
+                this.images.push(...imageObjs); // Add images to the main list
               } catch (err) {
                 console.error(
                   `Could not load images from folder "${folder}":`,
