@@ -321,6 +321,7 @@
           async loadAllImages() {
             this.images = [];
             for (const folder of this.imageFolder) {
+              console.log(`Loading images from folder: ${folder}`); // Debugging log
               try {
                 const res = await fetch(`${folder}/images.json`);
                 if (!res.ok) {
@@ -346,6 +347,7 @@
                     quantity: 0,
                     normalizedName: encodeURIComponent(filename).replace(/-/g, '%2D'),
                   }));
+                console.log(`Images loaded from ${folder}:`, imageObjs); // Debugging log
                 this.images.push(...imageObjs); // Add images to the main list
               } catch (err) {
                 console.error(
@@ -354,6 +356,7 @@
                 );
               }
             }
+            console.log("Final images array:", this.images); // Debugging log
           },
           imageSrc(image) {
             if (!image || !image.name) {
