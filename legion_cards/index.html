@@ -260,7 +260,11 @@
 <div v-if="modalVisible" class="modal-overlay" @click.self="closeModal">
   <div class="modal-content">
     <button class="close-btn" @click="closeModal">×</button>
-    <img :src="`${selectedImageFolder}/${encodeURIComponent(selectedImageName)}`" alt="Card Preview" />
+    <img 
+      :src="`${selectedImageFolder}/${encodeURIComponent(selectedImageName)}`" 
+      alt="Card Preview" 
+      @error="handleImageError"
+    />
   </div>
 </div>
 
@@ -269,14 +273,15 @@
          const { createApp } = Vue;
          const { jsPDF } = window.jspdf;
          
-         createApp({
+         var app = createApp({
            data() {
              return {
          imageFolder: ['Empire_Upgrades', 'Generic_Upgrades'],
          images: [],
          searchQuery: '',
            modalVisible: false,
-         selectedImage: null,
+         selectedImageFolder: null,
+         selectedImageName: null,
                
              };
            },
@@ -288,34 +293,55 @@
          }
          },
          mounted(){
+         this.modalVisible = false; // Ensure modal is not open by default
          this.loadAllImages();
          },
            methods: {
          async loadAllImages() {
+           this.images = []; // Clear images to ensure no leftovers
            for (const folder of this.imageFolder) {
              try {
                const res = await fetch(`${folder}/images.json`);
+               if (!res.ok) {
+                 throw new Error(`HTTP error! status: ${res.status}`);
+               }
                const imageList = await res.json();
-               const imageObjs = imageList.map(filename => ({
-                 folder,
-                 filename
-               }));
+               if (!Array.isArray(imageList)) {
+                 throw new Error(`Invalid JSON format in ${folder}/images.json. Expected an array.`);
+               }
+               const imageObjs = imageList
+                 .filter(filename => typeof filename === 'string' && filename.trim() !== '') // Ensure valid filenames
+                 .map(filename => ({
+                   folder,
+                   name: filename,
+                   quantity: 0 // Initialize quantity to 0
+                 }));
                this.images.push(...imageObjs);
              } catch (err) {
-               console.error(`Could not load images from ${folder}`, err);
+               console.error(`Could not load images from folder "${folder}":`, err.message);
              }
            }
          },
          imageSrc(image) {
-           return `${image.folder}/${image.filename}`;
+           if (!image || !image.name) {
+             console.warn('Invalid image object:', image);
+             return ''; // Return an empty string for invalid images
+           }
+           return `${image.folder}/${encodeURIComponent(image.name)}`;
          },
-          openModal(imageName) {
-         this.selectedImage = imageName;
-         this.modalVisible = true;
+         openModal(folder, name) {
+           if (!folder || !name) {
+             console.warn('Invalid folder or name passed to openModal:', { folder, name });
+             return; // Do not open the modal if data is invalid
+           }
+           this.selectedImageFolder = folder;
+           this.selectedImageName = name;
+           this.modalVisible = true;
          },
          closeModal() {
          this.modalVisible = false;
-         this.selectedImage = null;
+         this.selectedImageFolder = null;
+         this.selectedImageName = null;
          },
              formatFileName(name) {
                // Remove extension and replace underscores with spaces, capitalize words
@@ -417,6 +443,10 @@
                }
          
                pdf.save("Generic_Upgrade_Cards.pdf");
+             },
+             handleImageError(event) {
+               console.warn('Image failed to load:', event.target.src);
+               event.target.src = 'path/to/placeholder-image.jpg'; // Replace with a valid placeholder image path
              }
            }
          }).mount('#app');
