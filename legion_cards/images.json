@@ -230,5 +230,45 @@
       "wedge_antilles.jpg",
       "z-6_trooper.jpg"
     ]
+  },
+  {
+    "folder": "Separatist_Upgrades",
+    "images": [
+      "b1_battle_droid.jpg",
+      "b1_battle_droid_squad.jpg",
+      "b1_security_droid.jpg",
+      "b2-acm_battle_droid.jpg",
+      "b2-ha_battle_droid.jpg",
+      "b2_battle_droid.jpg",
+      "b2_super_battle_droid_squad.jpg",
+      "bx-series_droid_sniper.jpg",
+      "bx_deflector_shields.jpg",
+      "bx_vibroswords.jpg",
+      "dioxis_mine_saboteur.jpg",
+      "e-5c_b1_battle_droid.jpg",
+      "e-5s_b1_battle_droid.jpg",
+      "e-60r_b1_battle_droid.jpg",
+      "electro-whip_magnaguard.jpg",
+      "ev-series_medical_droid.jpg",
+      "filelist.txt",
+      "force_pike_warrior2.jpg",
+      "force_pike_warrior_1.jpg",
+      "genosian_warrior.jpg",
+      "genosian_warrior_squad.jpg",
+      "ig-100_magnaguard.jpg",
+      "lok_durd.jpg",
+      "nose-mounted_flamethrower.jpg",
+      "nose-mounted_ion_blaster.jpg",
+      "nose-mounted_laser_cannon.jpg",
+      "oom-series_battle_droid.jpg",
+      "oom-series_droid_pilot.jpg",
+      "pk-series_worker_droid.jpg",
+      "radiation_cannon_b1_battle_droid.jpg",
+      "rps-6_magnaguard.jpg",
+      "sonic_cannon_warrior.jpg",
+      "t-series_tactical_droid.jpg",
+      "t-series_tactical_droid_pilot.jpg",
+      "viper_recon_droid.jpg"
+    ]
   }
 ]
