@@ -320,21 +320,22 @@
         methods: {
           async loadAllImages() {
             this.images = [];
-            for (const folder of this.imageFolder) {
-              console.log(`Loading images from folder: ${folder}`); // Debugging log
-              try {
-                const res = await fetch(`${folder}/images.json`);
-                if (!res.ok) {
-                  console.error(`Failed to fetch images from folder: ${folder}`);
-                  continue; // Skip to the next folder if fetch fails
+            try {
+              const res = await fetch("images.json");
+              if (!res.ok) {
+                throw new Error(`Failed to fetch images.json`);
+              }
+              const folders = await res.json();
+              if (!Array.isArray(folders)) {
+                throw new Error(`Invalid JSON format in images.json. Expected an array.`);
+              }
+              folders.forEach((folderObj) => {
+                const { folder, images } = folderObj;
+                if (!folder || !Array.isArray(images)) {
+                  console.warn(`Invalid folder entry:`, folderObj);
+                  return;
                 }
-                const imageList = await res.json();
-                if (!Array.isArray(imageList)) {
-                  throw new Error(
-                    `Invalid JSON format in ${folder}/images.json. Expected an array.`
-                  );
-                }
-                const imageObjs = imageList
+                const imageObjs = images
                   .filter(
                     (filename) =>
                       typeof filename === "string" &&
@@ -342,21 +343,17 @@
                       /\.(jpg|jpeg|png|gif)$/i.test(filename) // Only include image files
                   )
                   .map((filename) => ({
-                    folder, // Explicitly assign the correct folder
+                    folder,
                     name: filename,
                     quantity: 0,
                     normalizedName: encodeURIComponent(filename).replace(/-/g, '%2D'),
                   }));
-                console.log(`Images loaded from ${folder}:`, imageObjs); // Debugging log
-                this.images.push(...imageObjs); // Add images to the main list
-              } catch (err) {
-                console.error(
-                  `Could not load images from folder "${folder}":`,
-                  err.message
-                );
-              }
+                this.images.push(...imageObjs);
+              });
+              console.log("Final images array:", this.images); // Debugging log
+            } catch (err) {
+              console.error(`Could not load images:`, err.message);
             }
-            console.log("Final images array:", this.images); // Debugging log
           },
           imageSrc(image) {
             if (!image || !image.name) {
