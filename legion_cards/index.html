@@ -286,7 +286,11 @@
             />
             <div style="overflow:auto">
               <ul>
-                <li v-for="image in images" v-if="image.quantity > 1" :key="image.name">
+                <li 
+                  v-for="image in images" 
+                  v-if="image && image.quantity > 1" 
+                  :key="image.name"
+                >
                   {{ image.name }} (Qty: {{ image.quantity }})
                 </li>
               </ul>
@@ -561,4 +565,3 @@
     </script>
   </body>
 </html>
-``` 
