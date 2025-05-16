@@ -234,6 +234,19 @@
       .generate-btn:hover {
         background-color: #0056b3;
       }
+
+      .folder-checkboxes {
+        display: flex;
+        gap: 10px;
+        margin-right: 10px;
+      }
+
+      .folder-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
@@ -242,6 +255,16 @@
         <div class="top-controls">
           <h3>Upgrade PDF Generator</h3>
           <div class="bottom-row">
+            <div class="folder-checkboxes">
+              <label v-for="folder in uniqueFolders" :key="folder" class="folder-label">
+                <input
+                  type="checkbox"
+                  :value="folder"
+                  v-model="selectedFolders"
+                />
+                {{ folder }}
+              </label>
+            </div>
             <input
               v-model="searchQuery"
               placeholder="Search cards..."
@@ -302,15 +325,22 @@
             modalVisible: false,
             selectedImageFolder: null,
             selectedImageName: null,
+            selectedFolders: [], // Holds the selected folder filters
           };
         },
         computed: {
           filteredImages() {
             const q = this.searchQuery.trim().toLowerCase();
-            if (!q) return this.images;
-            return this.images.filter((img) =>
-              img.name.toLowerCase().includes(q)
-            );
+            const folderFilters = this.selectedFolders;
+            return this.images.filter((img) => {
+              const matchesSearch = !q || img.name.toLowerCase().includes(q);
+              const matchesFolder =
+                folderFilters.length === 0 || folderFilters.includes(img.folder.split("_")[0]);
+              return matchesSearch && matchesFolder;
+            });
+          },
+          uniqueFolders() {
+            return [...new Set(this.images.map((img) => img.folder.split("_")[0]))];
           },
         },
         mounted() {
