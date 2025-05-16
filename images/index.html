@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Legion Card PDF Generator</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      h1,
+      h3,
+      button {
+        font-family: "Orbitron", Arial, sans-serif;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0 0 60px;
+      }
+
+      h1 {
+        margin: 20px;
+      }
+
+      .image-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 0 20px 20px;
+      }
+
+      .card {
+        border: 1px solid #222;
+        padding: 8px;
+        width: 180px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #2c2c2c;
+        border-radius: 12px;
+        color: #eee;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+      }
+
+      .card h3 {
+        height: 48px;
+        line-height: 1.2em;
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        text-align: center;
+        user-select: none;
+        white-space: normal;
+        word-break: break-word;
+        color: #eee;
+      }
+
+      .card img {
+        width: 100%;
+        height: auto;
+        border: 1px solid black;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+      }
+
+      .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .quantity-control button {
+        width: 28px;
+        height: 28px;
+        font-size: 18px;
+        line-height: 1;
+        text-align: center;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        background-color: #f0f0f0;
+        user-select: none;
+        border-radius: 4px;
+      }
+
+      .quantity-control button:hover {
+        background-color: #ddd;
+      }
+
+      .quantity-input {
+        width: 60px;
+        text-align: center;
+        font-size: 14px;
+        padding: 4px;
+        border-radius: 4px;
+        border: 1px solid #555;
+        background: #444;
+        color: #eee;
+      }
+
+      footer {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        height: 60px;
+        width: 100%;
+        background: #f5f5f5;
+        border-top: 1px solid #ccc;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 20px;
+        box-sizing: border-box;
+        z-index: 999;
+      }
+
+      button#generate-pdf-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #007bff;
+        border: none;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button#generate-pdf-btn:hover {
+        background: #0056b3;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+      }
+
+      .modal-content {
+        background: #222;
+        padding: 20px 20px 10px;
+        border-radius: 10px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .modal-content img {
+        width: 280px;
+        height: 392px;
+        display: block;
+        border-radius: 8px;
+        box-shadow: 0 0 15px #000;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: -4px;
+        right: -2px;
+        background: transparent;
+        border: none;
+        color: transparent;
+        font-size: 28px;
+        cursor: pointer;
+        font-weight: bold;
+        line-height: 1;
+        user-select: none;
+        z-index: 10;
+      }
+
+      .search-input {
+        margin: 10px 20px;
+        padding: 8px 12px;
+        font-size: 16px;
+        width: calc(100% - 60px);
+        max-width: 400px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+
+      .header-bar {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1000;
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .top-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .top-controls h3 {
+        margin: 0;
+      }
+
+      .bottom-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .bottom-row input {
+        flex: 1;
+        max-width: 300px;
+      }
+
+      .generate-btn {
+        padding: 8px 16px;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 4px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 0.3s ease;
+      }
+
+      .generate-btn:hover {
+        background-color: #0056b3;
+      }
+
+      .folder-buttons {
+        display: flex;
+        gap: 10px;
+        margin-right: 10px;
+      }
+
+      .folder-button {
+        padding: 8px 12px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background-color: #f0f0f0;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .folder-button.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #0056b3;
+      }
+
+      .folder-button:hover {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header class="header-bar">
+        <div class="top-controls">
+          <h3>Upgrade PDF Generator</h3>
+          <div class="bottom-row">
+            <div class="folder-buttons">
+              <button
+                v-for="folder in uniqueFolders"
+                :key="folder"
+                :class="['folder-button', { active: selectedFolders.includes(folder) }]"
+                @click="toggleFolder(folder)"
+              >
+                {{ folder }}
+              </button>
+            </div>
+            <input
+              v-model="searchQuery"
+              placeholder="Search cards..."
+              type="text"
+            />
+            <button @click="generatePDF" class="generate-btn">
+              Generate PDF
+            </button>
+          </div>
+        </div>
+      </header>
+      <div class="image-list" style="padding-top:25px;background-color:lightgrey">
+        <div
+          class="card"
+          v-for="image in filteredImages"
+          :key="image.folder + '/' + image.name"
+        >
+          <img
+            :src="`${image.folder}/${image.normalizedName}`"
+            :alt="image.name"
+            @click="openModal(image.folder, image.normalizedName)"
+            style="cursor: pointer;"
+          />
+          <div class="quantity-control">
+            <button @click="decrementQuantity(image)">−</button>
+            <input
+              class="quantity-input"
+              type="number"
+              min="0"
+              v-model.number="image.quantity"
+              placeholder="Qty"
+            />
+            <button @click="incrementQuantity(image)">+</button>
+          </div>
+        </div>
+      </div>
+      <div v-if="modalVisible" class="modal-overlay" @click.self="closeModal">
+        <div class="modal-content">
+          <button class="close-btn" @click="closeModal">×</button>
+          <img
+            :src="`${selectedImageFolder}/${encodeURIComponent(selectedImageName)}`"
+            alt="Card Preview"
+            @error="handleImageError"
+          />
+        </div>
+      </div>
+    </div>
+    <script>
+      const { createApp } = Vue;
+      const { jsPDF } = window.jspdf;
+
+      var app = createApp({
+        data() {
+          return {
+            imageFolder: ["Empire_Upgrades", "Generic_Upgrades"],
+            images: [],
+            searchQuery: "",
+            modalVisible: false,
+            selectedImageFolder: null,
+            selectedImageName: null,
+            selectedFolders: [], // Holds the selected folder filters
+          };
+        },
+        computed: {
+          filteredImages() {
+            const q = this.searchQuery.trim().toLowerCase();
+            const folderFilters = this.selectedFolders;
+            return this.images.filter((img) => {
+              const matchesSearch = !q || img.name.toLowerCase().includes(q);
+              const matchesFolder =
+                folderFilters.length === 0 || folderFilters.includes(img.folder.split("_")[0]);
+              return matchesSearch && matchesFolder;
+            });
+          },
+          uniqueFolders() {
+            return [...new Set(this.images.map((img) => img.folder.split("_")[0]))];
+          },
+        },
+        mounted() {
+          this.modalVisible = false;
+          this.loadAllImages();
+        },
+        methods: {
+          async loadAllImages() {
+            this.images = [];
+            try {
+              const res = await fetch("images.json");
+              if (!res.ok) {
+                throw new Error(`Failed to fetch images.json`);
+              }
+              const folders = await res.json();
+              if (!Array.isArray(folders)) {
+                throw new Error(`Invalid JSON format in images.json. Expected an array.`);
+              }
+              folders.forEach((folderObj) => {
+                const { folder, images } = folderObj;
+                if (!folder || !Array.isArray(images)) {
+                  console.warn(`Invalid folder entry:`, folderObj);
+                  return;
+                }
+                const imageObjs = images
+                  .filter(
+                    (filename) =>
+                      typeof filename === "string" &&
+                      filename.trim() !== "" &&
+                      /\.(jpg|jpeg|png|gif)$/i.test(filename) // Only include image files
+                  )
+                  .map((filename) => ({
+                    folder,
+                    name: filename,
+                    quantity: 0,
+                    normalizedName: encodeURIComponent(filename).replace(/-/g, '%2D'),
+                  }));
+                this.images.push(...imageObjs);
+              });
+              console.log("Final images array:", this.images); // Debugging log
+            } catch (err) {
+              console.error(`Could not load images:`, err.message);
+            }
+          },
+          imageSrc(image) {
+            if (!image || !image.name) {
+              console.warn("Invalid image object:", image);
+              return "";
+            }
+            return `${image.folder}/${encodeURIComponent(image.normalizedName)}`;
+          },
+          openModal(folder, name) {
+            if (!folder || !name) {
+              console.warn("Invalid folder or name passed to openModal:", {
+                folder,
+                name,
+              });
+              return;
+            }
+            this.selectedImageFolder = folder;
+            this.selectedImageName = name.replace(/\.[^/.]+$/, (ext) =>
+              ext.toLowerCase()
+            );
+            this.modalVisible = true;
+          },
+          closeModal() {
+            this.modalVisible = false;
+            this.selectedImageFolder = null;
+            this.selectedImageName = null;
+          },
+          formatFileName(name) {
+            const noExt = name.replace(/\.[^/.]+$/, "");
+            return noExt
+              .split(/[\s_]+/)
+              .map(
+                (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              )
+              .join(" ");
+          },
+          incrementQuantity(image) {
+            image.quantity = (image.quantity || 0) + 1;
+          },
+          decrementQuantity(image) {
+            if (image.quantity > 0) {
+              image.quantity--;
+            }
+          },
+          getBase64ImageFromUrl(url) {
+            return new Promise((resolve, reject) => {
+              const img = new Image();
+              img.setAttribute("crossOrigin", "anonymous");
+              img.onload = function () {
+                const canvas = document.createElement("canvas");
+                canvas.width = this.naturalWidth;
+                canvas.height = this.naturalHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(this, 0, 0);
+                try {
+                  const dataURL = canvas.toDataURL("image/jpeg");
+                  resolve(dataURL);
+                } catch (e) {
+                  reject(e);
+                }
+              };
+              img.onerror = function () {
+                reject(new Error("Failed to load image: " + url));
+              };
+              img.src = url;
+            });
+          },
+          async generatePDF() {
+            const pdf = new jsPDF({
+              orientation: "portrait",
+              unit: "pt",
+              format: "a4",
+            });
+
+            const cardsToPrint = [];
+            this.images.forEach((img) => {
+              for (let i = 0; i < img.quantity; i++) {
+                cardsToPrint.push(img);
+              }
+            });
+
+            if (cardsToPrint.length === 0) {
+              alert("No cards selected to print!");
+              return;
+            }
+
+            const cardsPerRow = 3;
+            const cardWidth = 180;
+            const cardHeight = 252;
+            const gap = 10;
+            const margin = 20;
+
+            let x = margin;
+            let y = margin;
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            for (let i = 0; i < cardsToPrint.length; i++) {
+              const img = cardsToPrint[i];
+              try {
+                const base64 = await this.getBase64ImageFromUrl(
+                  `${img.folder}/${img.normalizedName}`
+                );
+
+                pdf.addImage(base64, "JPEG", x, y, cardWidth, cardHeight);
+
+                x += cardWidth + gap;
+
+                if ((i + 1) % cardsPerRow === 0) {
+                  x = margin;
+                  y += cardHeight + gap;
+
+                  if (y + cardHeight + margin > pageHeight) {
+                    pdf.addPage();
+                    y = margin;
+                  }
+                }
+              } catch (err) {
+                console.error("Error loading image:", img.name, err);
+              }
+            }
+
+            pdf.save("Generic_Upgrade_Cards.pdf");
+          },
+          handleImageError(event) {
+            console.warn("Image failed to load:", event.target.src);
+            event.target.src = "path/to/placeholder-image.jpg";
+          },
+          toggleFolder(folder) {
+            const index = this.selectedFolders.indexOf(folder);
+            if (index === -1) {
+              this.selectedFolders.push(folder); // Add folder if not selected
+            } else {
+              this.selectedFolders.splice(index, 1); // Remove folder if already selected
+            }
+          },
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
