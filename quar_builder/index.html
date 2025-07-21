@@ -1,5 +1,4 @@
 nope
-
 <!-- <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -12,7 +11,7 @@ nope
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css">
 		
-		<!-- DataTables Bootstrap 4 CSS -->
+
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
 		<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 		<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -21,7 +20,7 @@ nope
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 		<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 		<script src="https://https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
-		<!-- DataTables Bootstrap 4 JS -->
+
 		<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 	</head>
@@ -107,10 +106,7 @@ nope
                             </div>
                             <div v-else="" class="unit-stats my-auto">
                                 
-                                <!-- <div class="d-flex flex-column flex-grow-1" style="margin-left: 3px;">
-                                    <div class="font-weight-bold mx-auto">Special Abilities: </div>
-                                    <div class="font-italic font-weight-light mx-auto">No Special Abilities</div>
-                                </div> -->
+
                             </div>
                             <div v-if="unit.equipment &amp;&amp; unit.name != 'PykPyks (3)'" class="unit-stats mt-auto">
                                 <div class="w-100">
@@ -139,7 +135,7 @@ nope
                                                         <div class="d-flex">
                                                             <span class="mr-1 my-auto font-weight-bold">
                                                                 Range:                                                             
-                                                                <!-- <img style="filter: invert(1);" src="images/range.svg" width="20px" height="20px"> -->
+
                                                             </span>
                                                             <span class="my-auto">{{ equipmentData[equip]?.R }}</span>
                                                         </div>
@@ -148,7 +144,7 @@ nope
                                                         <div>
                                                             <span class="mr-1 font-weight-bold">
                                                                 Mt:                                                             
-                                                                <!-- <img style="filter: invert(1);" src="images/might.svg" width="20px" height="20px"> -->
+
                                                             </span>
                                                             <span class="my-auto">{{ equipmentData[equip]?.Mt }}</span>
                                                         </div>
@@ -157,7 +153,7 @@ nope
                                                         <div>
                                                             <span class="mr-1 font-weight-bold">
                                                                 Snap:                                                             
-                                                                <!-- <img style="filter: invert(1);" src="images/snapshot.svg" width="20px" height="20px"> -->
+
                                                             </span>
                                                             <span class="my-auto">{{ equipmentData[equip]?.Sn }}</span>
                                                         </div>
@@ -210,7 +206,7 @@ nope
                                         @click="exportArmy" class="ml-2">Export</b-button>
                                     </div>
                                 </div>
-                                <div class="d-flex flex-column" style="margin-right: 56px;"><!-- hacky AF lmao, fix this -->
+                                <div class="d-flex flex-column" style="margin-right: 56px;">
                                     <div class="no-print mb-2" style="width: 200px">
                                         <input type="range" id="points-slider" class="form-control-range" v-model="selectedPoints" min="100" max="600" step="25">
                                     </div>
@@ -262,7 +258,7 @@ nope
 										</div>										
 										<!-- <div v-if="unit.specialAbilities.length > 0" class="mx-auto font-weight-bold font-italic" style="text-shadow: 0px 0px 0px black !important;" v-for="unitAbility in unit.specialAbilities">
                                         {{unitAbility}}
-                                    </div> -->
+                                    </div>
 									</div>
 									<div class="flex-grow-1">
 										<div class="d-flex flex-column w-100">
@@ -278,7 +274,7 @@ nope
 														<div class="d-flex flex-column mx-auto">
 															<div v-if="equipmentData[item]?.Abilities > 0" class="font-weight-bold mx-auto">Abilities</div>
 															
-															<!-- {{equipmentData[item]?.Abilities.join(', ')}} -->
+
 															<div v-for="(ability, i) in equipmentData[item]?.Abilities">
 																{{ability}}
 															</div>
@@ -312,25 +308,25 @@ nope
 												<div class="d-flex">
 													<div class="w-50 d-flex flex-column">
 														
-														<!-- <img :src="'images/range.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
+														
 														<div class="mx-auto">Skill</div>
 														<div class="mx-auto stat-number">{{unit.sk}}</div>
 													</div>
 													<div class="w-50 d-flex flex-column">
 														
-														<!-- <img :src="'images/movement.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">  -->
+														
 														<div class="mx-auto">Movement</div>
 														<div class="mx-auto stat-number">{{unit.ma}}</div>
 													</div>
 													<div class="w-50 d-flex flex-column">
 														
-														<!-- <img :src="'images/might.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
+													
 														<div class="mx-auto">Might</div>
 														<div class="mx-auto stat-number">{{unit.mt}}</div>
 													</div>
 													<div class="w-50 d-flex flex-column">
 														
-														<!-- <img :src="'images/toughness.svg'" style="object-fit: scale-down; width: 16px; height: 16px; margin-bottom: 5px;">   -->
+													
 														<div class="mx-auto">Toughness</div>
 														<div class="mx-auto stat-number">{{unit.toughness}}</div>
 													</div>
@@ -374,18 +370,10 @@ nope
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> 
 		
-		<!-- <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>
-      kofiWidgetOverlay.draw('thesmarf', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support Me!',
-        'floating-chat.donateButton.background-color': '#ffffff',
-        'floating-chat.donateButton.text-color': '#323842',
-        'floating-chat.display': 'none',
-      });
-    </script> -->
+		-->
+	
 		<script>
         $(document).ready(function() {
                 function renderTable(containerId, data) {
@@ -1023,4 +1011,4 @@ nope
     
 		</script>
 	</body>
-</html> -->
+</html>
