@@ -1,6 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style media="print">
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  @page {
+    size: landscape;
+    margin: 0.5in;
+  }
+
+  h1, #searchInput {
+    display: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+  }
+
+  th, td {
+    border: 1px solid #000;
+    padding: 6px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f0f0f0;
+  }
+
+  tr:hover {
+    background-color: inherit;
+  }
+</style>
+
   <meta charset="UTF-8">
   <title>Skills</title>
   <style>
@@ -101,3 +136,4 @@ function filterTable() {
 
 </body>
 </html>
+
