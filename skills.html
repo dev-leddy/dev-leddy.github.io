@@ -1,139 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style media="print">
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  @page {
-    size: landscape;
-    margin: 0.5in;
-  }
-
-  h1, #searchInput {
-    display: none;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 10pt;
-  }
-
-  th, td {
-    border: 1px solid #000;
-    padding: 6px;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f0f0f0;
-  }
-
-  tr:hover {
-    background-color: inherit;
-  }
-</style>
-
   <meta charset="UTF-8">
-  <title>Skills</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Bowl 2020 Skills</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    h1 {
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      padding: 2rem;
       text-align: center;
     }
+
+    h1 {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      margin-bottom: 1rem;
+    }
+
+    .search-container {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
     #searchInput {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      font-size: 16px;
+      padding: 0.875rem 1rem 0.875rem 3rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 50px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
+
+    #searchInput:focus {
+      outline: none;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #718096;
+      pointer-events: none;
+    }
+
+    .table-container {
+      padding: 2rem;
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
     }
-    th, td {
-      padding: 12px;
-      border: 1px solid #ccc;
-      text-align: left;
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    tr:hover {
-      background-color: #f1f1f1;
-    }
+
     th {
-      background-color: #333;
+      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
       color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.875rem;
+    }
+
+    th:first-child {
+      border-radius: 8px 0 0 0;
+      width: 20%;
+    }
+
+    th:last-child {
+      border-radius: 0 8px 0 0;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      background: white;
+      transition: background-color 0.2s ease;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: #2d3748;
+      width: 20%;
+    }
+
+    tr:hover td {
+      background-color: #f7fafc;
+    }
+
+    tr:last-child td:first-child {
+      border-radius: 0 0 0 8px;
+    }
+
+    tr:last-child td:last-child {
+      border-radius: 0 0 8px 0;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: #718096;
+      font-size: 1.125rem;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem 0.5rem;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      .table-container {
+        padding: 1rem;
+      }
+
+      td, th {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+
+      @page {
+        size: landscape;
+        margin: 0.3in 0.4in;
+      }
+
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      header {
+        background: #2d3748;
+        padding: 0.5rem;
+        page-break-after: avoid;
+      }
+
+      h1 {
+        font-size: 16pt;
+        margin: 0;
+        text-shadow: none;
+      }
+
+      .search-container {
+        display: none;
+      }
+
+      .table-container {
+        padding: 0;
+      }
+
+      table {
+        font-size: 8pt;
+        border-spacing: 0;
+      }
+
+      thead {
+        position: static;
+      }
+
+      th {
+        background: #2d3748 !important;
+        padding: 4px 6px;
+        font-size: 8pt;
+        letter-spacing: 0;
+      }
+
+      td {
+        padding: 4px 6px;
+        border: 1px solid #cbd5e0;
+        line-height: 1.3;
+      }
+
+      td:first-child {
+        width: 15%;
+        font-size: 8pt;
+      }
+
+      tr {
+        page-break-inside: avoid;
+      }
+
+      tr:hover td {
+        background-color: white;
+      }
+
+      tr:nth-child(even) td {
+        background-color: #f7fafc !important;
+      }
+
+      .no-results {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <h1>⚔️ Blood Bowl 2020 Skills ⚔️</h1>
+      <div class="search-container">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search for skills or descriptions..." autocomplete="off">
+      </div>
+    </header>
 
-<h1>Blood Bowl 2020 Skills</h1>
-<input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for skills or descriptions...">
+    <div class="table-container">
+      <table id="skillsTable">
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Block</td><td>Ignore Both Down result during a Block; remain standing.</td></tr>
+          <tr><td>Brawler</td><td>Re-roll one Both Down result when Blocking (not Blitzing).</td></tr>
+          <tr><td>Catch</td><td>Re-roll failed Agility test when catching the ball.</td></tr>
+          <tr><td>Claws</td><td>Armour breaks on 8+ when Blocking, regardless of target's AV.</td></tr>
+          <tr><td>Decay</td><td>If this player suffers a Casualty, roll twice on the Casualty table.</td></tr>
+          <tr><td>Dodge</td><td>Once per turn, re-roll a failed Dodge Agility test. May also be used if targeted by a Block and a Stumble result is applied.</td></tr>
+          <tr><td>Dump-Off</td><td>If targeted while holding the ball, may interrupt to make a Quick Pass. Cannot cause Turnover.</td></tr>
+          <tr><td>Frenzy*</td><td>Must follow-up after a Block if able. If target remains Standing, must Block again (costs 1 MA or Rush). No second Block if a touchdown is scored. Cannot be combined with Grab.</td></tr>
+          <tr><td>Grab</td><td>Prevents target from using Sidestep. When Blocking (not Blitzing), may push target into any adjacent empty square. Cannot be combined with Frenzy.</td></tr>
+          <tr><td>Guard</td><td>Can assist Blocks regardless of being Marked by opponents.</td></tr>
+          <tr><td>Jump Up</td><td>Stand up for free if Prone. May attempt a +1 Agility test to Block when activated while Prone. Fails = remains Prone.</td></tr>
+          <tr><td>Leader</td><td>Grants one extra team re-roll if a Leader is on the pitch. Lost if no Leaders remain. Can carry into extra time. Not affected by Halfling Master Chef.</td></tr>
+          <tr><td>Loner (X+)*</td><td>To use a team re-roll, roll D6. If result ≥ X, re-roll allowed. Otherwise, re-roll lost. Applies even if Prone or no Tackle Zone.</td></tr>
+          <tr><td>Mighty Blow (+1)</td><td>After a Block, may add +1 to either Armour or Injury roll. Not usable with Stab or Chainsaw.</td></tr>
+          <tr><td>Nerves of Steel</td><td>Ignore modifiers for being Marked when passing, catching, or interfering with a pass.</td></tr>
+          <tr><td>Pass</td><td>Re-roll failed Passing Ability test when performing a Pass action.</td></tr>
+          <tr><td>Regeneration</td><td>When this player suffers a Casualty, roll D6. On 4+, they recover and are placed in Reserves.</td></tr>
+          <tr><td>Savage Mauling</td><td>Once per game, when Wilhelm Chaney makes an Injury roll against an opposing player, he may choose to re-roll the result.</td></tr>
+          <tr><td>Sidestep</td><td>When pushed back, choose any adjacent empty square instead of opponent choosing. Cannot use if no empty adjacent squares.</td></tr>
+          <tr><td>Stand Firm</td><td>May choose not to be pushed back. Does not prevent Frenzy second Block.</td></tr>
+          <tr><td>Sure Hands</td><td>Re-roll failed attempts to pick up the ball. Strip Ball cannot be used against this player.</td></tr>
+          <tr><td>Tentacles</td><td>When a marked opponent tries to move away, roll D6 + own ST – opponent ST. 6+ or natural 6 = hold them. 5– or natural 1 = fail. Only one Tentacles user may roll per escape attempt.</td></tr>
+          <tr><td>Thick Skull</td><td>KO only on 9+ (8+ if Stunty). Lower rolls = Stunned. Other results unchanged.</td></tr>
+          <tr><td>Vicious Vines</td><td>(Maple Highgrove) Once per half, Maple may Block a player 2 squares away. Not part of a Blitz. No follow-up.</td></tr>
+          <tr><td>Wrestle</td><td>On Both Down, both players go Prone instead of applying normal result, regardless of other Skills. (not a turnover)</td></tr>
+        </tbody>
+      </table>
+      <div class="no-results" id="noResults">No skills found matching your search.</div>
+    </div>
+  </div>
 
-<table id="skillsTable">
-  <thead>
-    <tr>
-      <th>Skill</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-  <tr><td>Block</td><td>Ignore Both Down result during a Block; remain standing.</td></tr>
-  <tr><td>Brawler</td><td>Re-roll one Both Down result when Blocking (not Blitzing).</td></tr>
-  <tr><td>Catch</td><td>Re-roll failed Agility test when catching the ball.</td></tr>
-  <tr><td>Claws</td><td>Armour breaks on 8+ when Blocking, regardless of target's AV.</td></tr>
-  <tr><td>Decay</td><td>If this player suffers a Casualty, roll twice on the Casualty table.</td></tr>
-  <tr><td>Dump-Off</td><td>If targeted while holding the ball, may interrupt to make a Quick Pass. Cannot cause Turnover.</td></tr>
-  <tr><td>Dodge</td><td>Once per turn, re-roll a failed Dodge Agility test. May also be used if targeted by a Block and a Stumble result is applied.</td></tr>
-  <tr><td>Frenzy*</td><td>Must follow-up after a Block if able. If target remains Standing, must Block again (costs 1 MA or Rush). No second Block if a touchdown is scored. Cannot be combined with Grab.</td></tr>
-  <tr><td>Grab</td><td>Prevents target from using Sidestep. When Blocking (not Blitzing), may push target into any adjacent empty square. Cannot be combined with Frenzy.</td></tr>
-  <tr><td>Guard</td><td>Can assist Blocks regardless of being Marked by opponents.</td></tr>
-  <tr><td>Jump Up</td><td>Stand up for free if Prone. May attempt a +1 Agility test to Block when activated while Prone. Fails = remains Prone.</td></tr>
-  <tr><td>Leader</td><td>Grants one extra team re-roll if a Leader is on the pitch. Lost if no Leaders remain. Can carry into extra time. Not affected by Halfling Master Chef.</td></tr>
-  <tr><td>Loner (X+)*</td><td>To use a team re-roll, roll D6. If result ≥ X, re-roll allowed. Otherwise, re-roll lost. Applies even if Prone or no Tackle Zone.</td></tr>
-  <tr><td>Mighty Blow (+1)</td><td>After a Block, may add +1 to either Armour or Injury roll. Not usable with Stab or Chainsaw.</td></tr>
-  <tr><td>Nerves of Steel</td><td>Ignore modifiers for being Marked when passing, catching, or interfering with a pass.</td></tr>
-  <tr><td>Pass</td><td>Re-roll failed Passing Ability test when performing a Pass action.</td></tr>
-  <tr><td>Regeneration</td><td>When this player suffers a Casualty, roll D6. On 4+, they recover and are placed in Reserves.</td></tr>
-  <tr><td>Sidestep</td><td>When pushed back, choose any adjacent empty square instead of opponent choosing. Cannot use if no empty adjacent squares.</td></tr>
-  <tr><td>Stand Firm</td><td>May choose not to be pushed back. Does not prevent Frenzy second Block.</td></tr>
-  <tr><td>Sure Hands</td><td>Re-roll failed attempts to pick up the ball. Strip Ball cannot be used against this player.</td></tr>
-  <tr><td>Tentacles</td><td>When a marked opponent tries to move away, roll D6 + own ST – opponent ST. 6+ or natural 6 = hold them. 5– or natural 1 = fail. Only one Tentacles user may roll per escape attempt.</td></tr>
-  <tr><td>Thick Skull</td><td>KO only on 9+ (8+ if Stunty). Lower rolls = Stunned. Other results unchanged.</td></tr>
-  <tr><td>Wrestle</td><td>On Both Down, both players go Prone instead of applying normal result, regardless of other Skills. (not a turnover)</td></tr>
-  <tr><td>Vicious Vines</td><td>(Maple Highgrove) Once per half, Maple may Block a player 2 squares away. Not part of a Blitz. No follow-up.</td></tr>
-<tr>
-  <td>Savage Mauling</td>
-  <td>Once per game, when Wilhelm Chaney makes an Injury roll against an opposing player, he may choose to re-roll the result.</td>
-</tr>
-</tbody>
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('skillsTable');
+    const tbody = table.querySelector('tbody');
+    const noResults = document.getElementById('noResults');
 
-</table>
+    function filterTable() {
+      const filter = searchInput.value.toLowerCase();
+      const rows = tbody.getElementsByTagName('tr');
+      let visibleCount = 0;
 
-<script>
-function filterTable() {
-  const input = document.getElementById("searchInput");
-  const filter = input.value.toLowerCase();
-  const table = document.getElementById("skillsTable");
-  const rows = table.getElementsByTagName("tr");
+      for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        const skill = cells[0]?.textContent.toLowerCase() || '';
+        const desc = cells[1]?.textContent.toLowerCase() || '';
+        
+        if (skill.includes(filter) || desc.includes(filter)) {
+          rows[i].style.display = '';
+          visibleCount++;
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
 
-  for (let i = 1; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName("td");
-    const skill = cells[0]?.textContent.toLowerCase() || "";
-    const desc = cells[1]?.textContent.toLowerCase() || "";
-    rows[i].style.display = (skill.includes(filter) || desc.includes(filter)) ? "" : "none";
-  }
-}
-</script>
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
 
+    searchInput.addEventListener('keyup', filterTable);
+    searchInput.addEventListener('search', filterTable);
+  </script>
 </body>
 </html>
-
