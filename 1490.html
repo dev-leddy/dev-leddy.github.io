@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>1490 DOOM — Company Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root {
     --blood: #8B1A1A;
@@ -391,6 +390,9 @@
   .upgrade-card-icon {
     font-size: 1.4rem;
     color: var(--mist);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     display: block;
     margin-bottom: 0.3rem;
     line-height: 1;
@@ -1221,7 +1223,7 @@
   <div class="share-modal">
     <div class="share-modal-title" id="shareModalTitle">Share Company</div>
     <textarea class="share-code-box" id="shareCodeBox" readonly></textarea>
-    <div class="share-modal-note" id="shareModalNote">Copy this code and share it. The recipient can paste it using the Import button.</div>
+    <div class="share-modal-note" id="shareModalNote">Share this link — anyone who opens it will load your company automatically.</div>
     <div class="share-modal-actions" id="shareModalActions">
       <button class="btn btn-primary" onclick="copyShareCode()">Copy Code</button>
       <button class="btn btn-ghost" onclick="closeShareModal()">Close</button>
@@ -1234,7 +1236,7 @@
   <div class="share-modal">
     <div class="share-modal-title">Import Company</div>
     <textarea class="share-code-box" id="importCodeBox" placeholder="Paste a share code here..."></textarea>
-    <div class="share-modal-note">Paste a share code from another player to load their company.</div>
+    <div class="share-modal-note">Paste a share link or code from another player.</div>
     <div class="share-modal-actions">
       <button class="btn btn-primary" onclick="doImport()">Import</button>
       <button class="btn btn-ghost" onclick="document.getElementById('importModalBackdrop').classList.remove('open')">Cancel</button>
@@ -1551,10 +1553,10 @@ function renderSlot(i) {
     const primaryIsTwoHanded = twoHandedWeapons.includes(w.weapon);
 
     const upgradeDefs = [
-      { id: 'weapon2', icon: '<i class="fa-solid fa-swords"></i>', label: w.weapon === 'Polearm (one-handed)' ? 'Shield<br>(Auto)' : 'Second<br>Weapon', locked: primaryIsTwoHanded || w.weapon === 'Polearm (one-handed)' },
-      { id: 'climbing', icon: '<i class="fa-solid fa-mountain"></i>', label: 'Climbing<br>Gear', locked: false },
-      { id: 'consumable', icon: '<i class="fa-solid fa-flask"></i>', label: 'Consumable', locked: false },
-      { id: 'stat', icon: '<i class="fa-solid fa-arrow-up"></i>', label: 'Stat<br>Boost', locked: false },
+      { id: 'weapon2', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M2 2l7 7-1.5 1.5L2 5V2h3l5 5.5L8.5 9 2 2zm20 0v3l-5.5 5.5L15 9l-7-7h3l4.5 5L17 5.5 14.5 3 17 2h3l2 2zM8.5 13.5l-6 6 1 1 6-6-1-1zm7 0l-1 1 6 6 1-1-6-6z"/></svg>', label: w.weapon === 'Polearm (one-handed)' ? 'Shield<br>(Auto)' : 'Second<br>Weapon', locked: primaryIsTwoHanded || w.weapon === 'Polearm (one-handed)' },
+      { id: 'climbing', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg>', label: 'Climbing<br>Gear', locked: false },
+      { id: 'consumable', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M9 3v8L5.5 17c-.83 1.5.17 3 1.5 3h11c1.33 0 2.33-1.5 1.5-3L16 11V3H9zm2 2h2v7.5l2.6 4.5H10.4L13 12.5V5h-2z"/></svg>', label: 'Consumable', locked: false },
+      { id: 'stat', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M12 4l-8 8h5v8h6v-8h5z"/></svg>', label: 'Stat<br>Boost', locked: false },
     ];
 
     const pips = Array.from({length: ipForSlot}).map((_, d) =>
@@ -1587,7 +1589,7 @@ function renderSlot(i) {
       const w2opts = getSecondWeaponOptions(wdata, w.weapon);
       const isDualWield = w.weapon === 'Light Weapon' && w.weapon2 === 'Light Weapon';
       html += `<div class="upgrade-detail">
-        <span class="upgrade-detail-label"><i class="fa-solid fa-swords"></i> Choose Second Weapon</span>
+        <span class="upgrade-detail-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M2 2l7 7-1.5 1.5L2 5V2h3l5 5.5L8.5 9 2 2zm20 0v3l-5.5 5.5L15 9l-7-7h3l4.5 5L17 5.5 14.5 3 17 2h3l2 2zM8.5 13.5l-6 6 1 1 6-6-1-1zm7 0l-1 1 6 6 1-1-6-6z"/></svg> Choose Second Weapon</span>
         <div class="upgrade-choice-grid">
           ${w2opts.map(wn => `<button class="upgrade-choice-btn ${w.weapon2 === wn ? 'active' : ''}"
             onclick="setWarriorProp(${i}, 'weapon2', '${wn}')">${wn}${WEAPONS[wn] && WEAPONS[wn].damage > 0 ? `<br><small style="opacity:0.6">${WEAPONS[wn].range} / Dmg ${WEAPONS[wn].damage}</small>` : ''}</button>`).join('')}
@@ -1599,7 +1601,7 @@ function renderSlot(i) {
     if (w.ipSpent.includes('climbing')) {
       const climbOpts = Object.keys(CLIMBING_ITEMS).filter(c => c !== 'None');
       html += `<div class="upgrade-detail">
-        <span class="upgrade-detail-label"><i class="fa-solid fa-mountain"></i> Choose Climbing Gear</span>
+        <span class="upgrade-detail-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg> Choose Climbing Gear</span>
         <div class="upgrade-choice-grid">
           ${climbOpts.map(c => `<button class="upgrade-choice-btn ${w.climbing === c ? 'active' : ''}"
             onclick="setWarriorProp(${i}, 'climbing', '${c}')">${c}${CLIMBING_ITEMS[c] ? `<br><small style="opacity:0.6">Max ${CLIMBING_ITEMS[c].height}</small>` : ''}</button>`).join('')}
@@ -1611,7 +1613,7 @@ function renderSlot(i) {
     if (w.ipSpent.includes('consumable')) {
       const consOpts = Object.keys(CONSUMABLES).filter(c => c !== 'None');
       html += `<div class="upgrade-detail">
-        <span class="upgrade-detail-label"><i class="fa-solid fa-flask"></i> Choose Consumable</span>
+        <span class="upgrade-detail-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M9 3v8L5.5 17c-.83 1.5.17 3 1.5 3h11c1.33 0 2.33-1.5 1.5-3L16 11V3H9zm2 2h2v7.5l2.6 4.5H10.4L13 12.5V5h-2z"/></svg> Choose Consumable</span>
         <div class="upgrade-choice-grid">
           ${consOpts.map(c => `<button class="upgrade-choice-btn ${w.consumable === c ? 'active' : ''}"
             onclick="setWarriorProp(${i}, 'consumable', '${c}')">${c}</button>`).join('')}
@@ -1623,7 +1625,7 @@ function renderSlot(i) {
     if (w.ipSpent.includes('stat')) {
       const statOpts = Object.entries(STAT_IMPROVEMENT);
       html += `<div class="upgrade-detail">
-        <span class="upgrade-detail-label"><i class="fa-solid fa-arrow-up"></i> Choose Stat to Improve</span>
+        <span class="upgrade-detail-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M12 4l-8 8h5v8h6v-8h5z"/></svg> Choose Stat to Improve</span>
         <div class="upgrade-choice-grid">
           ${statOpts.map(([k, v]) => `<button class="upgrade-choice-btn ${w.statImprove === k ? 'active' : ''}"
             onclick="setWarriorProp(${i}, 'statImprove', '${k}')">${v}</button>`).join('')}
@@ -2101,45 +2103,63 @@ function showValidation(msg) {
 // ============================================================
 // SHARE / IMPORT
 // ============================================================
+// Index lookup tables for compact encoding
+const _ENC = {
+  W: ['','Scout','Assassin','Scavenger','Fighter','Brute','Warrior Priest','Saboteur','Beekeeper','Blacksmith','Doom Hunter'],
+  WP: ['','Light Weapon','Heavy Weapon','Polearm (two-handed)','Polearm (one-handed)','Shield','Crossbow','Bow'],
+  CL: ['None','Ladder','Grappling Hook'],
+  CO: ['None','Canister of Creeping Death','Concentrated Creeping Death Serum','Fog of War Flask'],
+  MK: ['','Graveborn','Tower Born','Ashbound','Doomed Choir','Fog Walkers','Relic Bitten','Silent Pact','Hearth'],
+  ST: ['','MOV','ATK','VIT','SKL','DEF','CMB'],
+  IP: ['stat','weapon2','climbing','consumable'],
+};
+function _idx(arr, val) { const i = arr.indexOf(val); return i < 0 ? 0 : i; }
+
 function encodeCompany(s) {
-  // Compact the state: only store what matters
-  const compact = {
-    n: s.companyName,
-    c: s.captain,
-    m: s.mark,
-    w: s.warriors.map(w => ({
-      t: w.type,
-      wp: w.weapon,
-      wp2: w.weapon2,
-      cl: w.climbing,
-      co: w.consumable,
-      si: w.statImprove,
-      ip: w.ipSpent,
-    }))
-  };
-  return btoa(JSON.stringify(compact)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+  // Format: v1|captainIdx|markIdx|name|w0type,w0wpn,w0wpn2,w0cl,w0co,w0stat,w0ip|w1...|w2...
+  // IP spent encoded as bitmask: stat=1,weapon2=2,climbing=4,consumable=8
+  const ipMask = ip => ip.reduce((acc, x) => acc | (1 << _ENC.IP.indexOf(x)), 0);
+  const parts = ['v1', s.captain, _idx(_ENC.MK, s.mark), encodeURIComponent(s.companyName)];
+  s.warriors.forEach(w => {
+    const ip = ipMask(w.ipSpent || []);
+    parts.push([
+      _idx(_ENC.W, w.type),
+      _idx(_ENC.WP, w.weapon),
+      _idx(_ENC.WP, w.weapon2),
+      _idx(_ENC.CL, w.climbing || 'None'),
+      _idx(_ENC.CO, w.consumable || 'None'),
+      _idx(_ENC.ST, w.statImprove),
+      ip
+    ].join(','));
+  });
+  return btoa(parts.join('|')).replace(/=/g, '');
 }
 
 function decodeCompany(code) {
   try {
-    // Restore base64 padding
-    const b64 = code.replace(/-/g, '+').replace(/_/g, '/');
-    const padded = b64 + '=='.slice(0, (4 - b64.length % 4) % 4);
-    const obj = JSON.parse(atob(padded));
-    return {
-      companyName: obj.n || '',
-      captain: obj.c || 0,
-      mark: obj.m || '',
-      warriors: (obj.w || []).map(w => ({
-        type: w.t || '',
-        weapon: w.wp || '',
-        weapon2: w.wp2 || '',
-        climbing: w.cl || 'None',
-        consumable: w.co || 'None',
-        statImprove: w.si || '',
-        ipSpent: w.ip || [],
-      }))
-    };
+    const raw = atob(code + '=='.slice(0, (4 - code.length % 4) % 4));
+    const parts = raw.split('|');
+    if (parts[0] !== 'v1') return null;
+    const captain = parseInt(parts[1]) || 0;
+    const mark = _ENC.MK[parseInt(parts[2])] || '';
+    const companyName = decodeURIComponent(parts[3] || '');
+    const warriors = parts.slice(4).map(ws => {
+      const [t,wp,wp2,cl,co,si,ip] = ws.split(',').map(Number);
+      const ipMask = ip || 0;
+      const ipSpent = _ENC.IP.filter((_, i) => ipMask & (1 << i));
+      return {
+        type: _ENC.W[t] || '',
+        weapon: _ENC.WP[wp] || '',
+        weapon2: _ENC.WP[wp2] || '',
+        climbing: _ENC.CL[cl] || 'None',
+        consumable: _ENC.CO[co] || 'None',
+        statImprove: _ENC.ST[si] || '',
+        ipSpent,
+      };
+    });
+    // Pad to 3 warriors
+    while (warriors.length < 3) warriors.push({ type:'',weapon:'',weapon2:'',climbing:'None',consumable:'None',statImprove:'',ipSpent:[] });
+    return { companyName, captain, mark, warriors };
   } catch(e) {
     return null;
   }
@@ -2147,7 +2167,8 @@ function decodeCompany(code) {
 
 function openShare() {
   const code = encodeCompany(state);
-  document.getElementById('shareCodeBox').value = code;
+  const url = window.location.href.split('#')[0] + '#' + code;
+  document.getElementById('shareCodeBox').value = url;
   document.getElementById('shareModalBackdrop').classList.add('open');
 }
 
@@ -2174,8 +2195,10 @@ function openImport() {
 }
 
 function doImport() {
-  const code = document.getElementById('importCodeBox').value.trim();
-  if (!code) { showToast('Paste a share code first.'); return; }
+  let code = document.getElementById('importCodeBox').value.trim();
+  if (!code) { showToast('Paste a link or code first.'); return; }
+  // Strip URL if pasted as full link
+  if (code.includes('#')) code = code.split('#').pop();
   const imported = decodeCompany(code);
   if (!imported) { showToast('Invalid share code.'); return; }
   state = imported;
@@ -2193,6 +2216,18 @@ function closeImportModal(e) {
 // ============================================================
 // INIT
 // ============================================================
+(function() {
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    const imported = decodeCompany(hash);
+    if (imported) {
+      state = imported;
+      // Clean the hash from the URL without reloading
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      setTimeout(() => showToast('Company loaded from shared link!'), 300);
+    }
+  }
+})();
 renderAll();
 renderSavedList();
 </script>
