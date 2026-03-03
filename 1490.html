@@ -326,6 +326,53 @@
   }
   .opt-select:focus { border-color: var(--mist); }
 
+  /* COMPANY IP POOL */
+  .ip-pool {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--fog);
+    border: 1px solid var(--dim);
+    border-top: 2px solid var(--gold);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .ip-pool-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .ip-pool-pips {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .ip-pool-pip {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--mist);
+    background: transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .ip-pool-pip.filled { background: var(--gold); border-color: var(--gold); }
+  .ip-pool-pip.captain { border-color: var(--blood); }
+  .ip-pool-pip.captain.filled { background: var(--blood); border-color: var(--blood); }
+  .ip-pool-count {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    color: var(--parchment);
+  }
+  .ip-pool-note {
+    font-size: 0.8rem;
+    color: var(--mist);
+    font-style: italic;
+    margin-left: auto;
+  }
+
   /* UPGRADE TRAY */
   .upgrade-tray {
     margin-top: 1rem;
@@ -339,10 +386,16 @@
   }
   .upgrade-tray-label {
     font-family: 'Oswald', sans-serif;
-    font-size: 0.9rem;
-    letter-spacing: 0.3em;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--gold);
+  }
+  .upgrade-tray-count {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    color: var(--mist);
+    margin-left: auto;
   }
   .upgrade-ip-pips {
     display: flex;
@@ -483,6 +536,15 @@
   }
   .captain-toggle:hover { border-color: var(--gold); color: var(--gold); }
   .captain-toggle.active { background: var(--gold); color: var(--ash); border-color: var(--gold); font-weight: 700; }
+  .captain-note {
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-style: italic;
+    margin-top: 0.4rem;
+    padding: 0.3rem 0.5rem;
+    border-left: 2px solid var(--gold);
+    background: var(--fog);
+  }
 
   /* COMPANY MARK */
   .mark-section {
@@ -1559,21 +1621,17 @@ function renderSlot(i) {
       { id: 'stat', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M12 4l-8 8h5v8h6v-8h5z"/></svg>', label: 'Stat<br>Boost', locked: false },
     ];
 
-    const pips = Array.from({length: ipForSlot}).map((_, d) =>
-      `<div class="upgrade-ip-pip ${d < ipSpent ? 'filled' : ''}"></div>`
-    ).join('');
+    const companyPoolFull = getTotalIPSpent() >= getCompanyIP();
 
     html += `<div class="upgrade-tray">
       <div class="upgrade-tray-header">
         <span class="upgrade-tray-label">Upgrades</span>
-        <div class="upgrade-ip-pips">${pips}</div>
-        <span style="font-family:'Oswald',sans-serif;font-size:0.65rem;color:var(--mist);letter-spacing:0.1em;font-size:0.85rem;color:var(--parchment);">${ipSpent}/${ipForSlot} IP</span>
+        <span class="upgrade-tray-count">${ipSpent} spent on this warrior</span>
       </div>
       <div class="upgrade-cards">
         ${upgradeDefs.map(u => {
           const isSelected = w.ipSpent.includes(u.id);
-          const canSelect = !isSelected && ipSpent < ipForSlot && !u.locked;
-          const isLocked = u.locked || (!isSelected && ipSpent >= ipForSlot);
+          const isLocked = u.locked || (!isSelected && companyPoolFull);
           return `<div class="upgrade-card ${isSelected ? 'selected' : ''} ${isLocked && !isSelected ? 'locked' : ''}"
             onclick="${isLocked && !isSelected ? '' : `toggleIP(${i}, '${u.id}', ${!isSelected})`}">
             <span class="upgrade-card-icon">${u.icon}</span>
@@ -1636,7 +1694,8 @@ function renderSlot(i) {
     // Captain toggle
     html += `<button class="captain-toggle ${isCaptain ? 'active' : ''}" onclick="setCaptain(${i})">
       ${isCaptain ? '★ Company Captain' : 'Set as Captain'}
-    </button>`;
+    </button>
+    ${isCaptain ? `<div class="captain-note">★ Once per game, the Captain may re-roll a single die.</div>` : ''}`;
   }
 
   html += `</div>`;
@@ -1667,10 +1726,30 @@ function getSecondWeaponOptions(wdata, primaryWeapon) {
   return allowed.filter(w => ['Light Weapon', 'Shield'].includes(w));
 }
 
+function renderIPPool() {
+  const total = getCompanyIP();
+  const spent = getTotalIPSpent();
+  const remaining = total - spent;
+  // 2 base pips + 1 captain pip
+  const pipsEl = document.getElementById('ipPoolPips');
+  const countEl = document.getElementById('ipPoolCount');
+  if (!pipsEl) return;
+  let pipsHtml = '';
+  for (let d = 0; d < 2; d++) {
+    pipsHtml += `<div class="ip-pool-pip ${d < spent ? 'filled' : ''}"></div>`;
+  }
+  // Captain pip
+  const captainSpent = spent > 2;
+  pipsHtml += `<div class="ip-pool-pip captain ${captainSpent ? 'filled' : ''}" title="Captain bonus IP"></div>`;
+  pipsEl.innerHTML = pipsHtml;
+  countEl.textContent = `${spent}/${total} spent — ${remaining} remaining`;
+}
+
 function renderAll() {
   const grid = document.getElementById('warriorsGrid');
   grid.innerHTML = state.warriors.map((_, i) => renderSlot(i)).join('');
   renderMarkDesc();
+  renderIPPool();
   document.getElementById('companyName').value = state.companyName;
   document.getElementById('markSelect').value = state.mark;
 }
@@ -1736,9 +1815,8 @@ function setWarriorProp(slotIndex, prop, value) {
     } else if (value === 'Polearm (one-handed)') {
       // One-handed polearm: auto-spend IP on weapon2 and lock to Shield
       const w = state.warriors[slotIndex];
-      const ipForSlot = slotIndex === state.captain ? 2 : 1;
       if (!w.ipSpent.includes('weapon2')) {
-        if (w.ipSpent.length < ipForSlot) {
+        if (getTotalIPSpent() < getCompanyIP()) {
           w.ipSpent.push('weapon2');
         }
       }
@@ -1755,16 +1833,26 @@ function setWarriorProp(slotIndex, prop, value) {
   renderAll();
 }
 
+function getCompanyIP() {
+  // 2 base + 1 for captain = 3 total
+  return 3;
+}
+
+function getTotalIPSpent() {
+  return state.warriors.reduce((sum, w) => sum + (w.ipSpent || []).length, 0);
+}
+
 function toggleIP(slotIndex, optId, checked) {
   const w = state.warriors[slotIndex];
-  const ipForSlot = slotIndex === state.captain ? 2 : 1;
   if (checked) {
-    if (w.ipSpent.length < ipForSlot) {
-      w.ipSpent.push(optId);
+    // Check company pool has room
+    if (getTotalIPSpent() < getCompanyIP()) {
+      if (!w.ipSpent.includes(optId)) {
+        w.ipSpent.push(optId);
+      }
     }
   } else {
     w.ipSpent = w.ipSpent.filter(x => x !== optId);
-    // Clear related data
     if (optId === 'stat') w.statImprove = '';
     if (optId === 'weapon2') w.weapon2 = '';
     if (optId === 'climbing') w.climbing = 'None';
@@ -1775,12 +1863,7 @@ function toggleIP(slotIndex, optId, checked) {
 
 function setCaptain(slotIndex) {
   if (!state.warriors[slotIndex].type) return;
-  const prev = state.captain;
   state.captain = slotIndex;
-  // Adjust IP — if prev captain had 2 spent, trim to 1
-  if (state.warriors[prev] && state.warriors[prev].ipSpent.length > 1) {
-    state.warriors[prev].ipSpent = state.warriors[prev].ipSpent.slice(0, 1);
-  }
   renderAll();
 }
 
