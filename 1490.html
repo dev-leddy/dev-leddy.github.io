@@ -72,11 +72,46 @@
     opacity: 0.8;
   }
 
+  /* NAVBAR */
+  .navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--ash);
+    border-top: 2px solid var(--gold);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+  }
+  .navbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .navbar-btns {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .navbar .btn {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+  }
+  .navbar .validation-msg {
+    font-size: 0.8rem;
+  }
+
   /* LAYOUT */
   .app {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.5rem 6rem;
   }
 
   /* SAVED COMPANIES */
@@ -155,11 +190,12 @@
   }
 
   /* COMPANY NAME */
+
   .company-name-row {
     display: flex;
     gap: 1rem;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     flex-wrap: wrap;
   }
   .company-name-row label {
@@ -625,6 +661,13 @@
     color: var(--mist);
   }
   .btn-ghost:hover { border-color: var(--mist); color: var(--bone); }
+  .btn-gold {
+    background: var(--gold);
+    border: 1px solid var(--gold);
+    color: var(--ash);
+    font-weight: 700;
+  }
+  .btn-gold:hover { background: var(--bone); border-color: var(--bone); }
 
   /* VALIDATION */
   .validation-msg {
@@ -1111,6 +1154,68 @@
   }
 
   /* TOAST */
+  /* ARCHETYPE REVEAL */
+  .archetype-banner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--ash);
+    border: 2px solid var(--gold);
+    padding: 2rem 2.5rem;
+    z-index: 300;
+    text-align: center;
+    min-width: 320px;
+    max-width: 480px;
+    animation: fadeIn 0.2s ease;
+  }
+  .archetype-banner.show { display: block; }
+  .archetype-banner-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 299;
+  }
+  .archetype-banner-backdrop.show { display: block; }
+  .archetype-eyebrow {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.5rem;
+  }
+  .archetype-name {
+    font-family: 'UnifrakturMaguntia', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .archetype-tagline {
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+    color: var(--parchment);
+    font-style: italic;
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+  }
+  .archetype-dismiss {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: var(--ash);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .archetype-dismiss:hover { background: var(--bone); }
+
   .toast {
     position: fixed;
     bottom: 2rem;
@@ -1226,6 +1331,21 @@
   <div class="title-sub">Doom Company Builder</div>
 </header>
 
+<!-- STICKY NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+  <div class="navbar-btns">
+    <button class="btn btn-primary" onclick="saveCompany()">Save</button>
+    <button class="btn btn-secondary" onclick="printCompany()">Print</button>
+    <button class="btn btn-secondary" onclick="openShare()">Share</button>
+    <button class="btn btn-gold" onclick="rollRandomCompany()">&#9780; Random</button>
+    <button class="btn btn-ghost" onclick="openImport()">Import</button>
+    <button class="btn btn-ghost" onclick="clearBuilder()">Clear</button>
+    <span class="validation-msg" id="validationMsg"></span>
+  </div>
+  </div>
+</nav>
+
 <div class="app">
 
   <!-- SAVED COMPANIES -->
@@ -1241,16 +1361,14 @@
 
   <!-- BUILDER -->
   <div class="builder">
+
+    <!-- COMPANY NAME -->
     <div class="company-name-row">
       <label>Company Name</label>
       <input class="name-input" id="companyName" type="text" placeholder="Name your Doom Company..." maxlength="40">
     </div>
 
-    <div class="warriors-grid" id="warriorsGrid">
-      <!-- slots injected by JS -->
-    </div>
-
-    <!-- COMPANY MARK -->
+    <!-- COMPANY MARK — now above warriors -->
     <div class="mark-section">
       <div class="mark-header">Company Mark</div>
       <select class="mark-select" id="markSelect">
@@ -1267,15 +1385,19 @@
       <div class="mark-desc" id="markDesc"></div>
     </div>
 
-    <!-- ACTIONS -->
-    <div class="actions-row">
-      <button class="btn btn-primary" onclick="saveCompany()">Save Company</button>
-      <button class="btn btn-secondary" onclick="printCompany()">Print Roster</button>
-      <button class="btn btn-secondary" onclick="openShare()">Share</button>
-      <button class="btn btn-ghost" onclick="openImport()">Import</button>
-      <button class="btn btn-ghost" onclick="clearBuilder()">Clear</button>
-      <span class="validation-msg" id="validationMsg"></span>
+    <!-- IP POOL -->
+    <div class="ip-pool" id="ipPool">
+      <span class="ip-pool-label">Company IP</span>
+      <div class="ip-pool-pips" id="ipPoolPips"></div>
+      <span class="ip-pool-count" id="ipPoolCount"></span>
+      <span class="ip-pool-note">2 base + 1 captain bonus &nbsp;·&nbsp; max 1 per category per warrior</span>
     </div>
+
+    <!-- WARRIORS -->
+    <div class="warriors-grid" id="warriorsGrid">
+      <!-- slots injected by JS -->
+    </div>
+
   </div>
 
 </div>
@@ -1308,6 +1430,15 @@
 
 <!-- PRINT ROSTER (hidden on screen, shown on print) -->
 <div id="print-roster"></div>
+
+<!-- ARCHETYPE BANNER -->
+<div class="archetype-banner-backdrop" id="archetypeBackdrop" onclick="dismissArchetype()"></div>
+<div class="archetype-banner" id="archetypeBanner">
+  <div class="archetype-eyebrow">Company Archetype</div>
+  <div class="archetype-name" id="archetypeName"></div>
+  <div class="archetype-tagline" id="archetypeTagline"></div>
+  <button class="archetype-dismiss" onclick="dismissArchetype()">Let Them Suffer</button>
+</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -2294,6 +2425,194 @@ function closeImportModal(e) {
   if (!e || e.target === document.getElementById('importModalBackdrop')) {
     document.getElementById('importModalBackdrop').classList.remove('open');
   }
+}
+
+// ============================================================
+// RANDOM COMPANY GENERATOR
+// ============================================================
+const ARCHETYPES = [
+  {
+    name: "Up and Over, Cowards",
+    tagline: "You don't fight anyone. You just get there first and watch them struggle.",
+    mark: "Tower Born",
+    captain: 0,
+    warriors: [
+      { type: "Scout",    weapon: "Grappling Hook builds", ip: ["climbing","stat"], climbing: "Grappling Hook", statImprove: "MOV", weapon2: "", consumable: "None" },
+      { type: "Assassin", weapon: "Grappling Hook builds", ip: ["climbing","consumable"], climbing: "Grappling Hook", consumable: "Canister of Creeping Death", weapon2: "", statImprove: "" },
+      { type: "Beekeeper", weapon: "fixed", ip: ["climbing"], climbing: "Ladder", weapon2: "", consumable: "None", statImprove: "" },
+    ],
+    weaponOverrides: ["Bow", "Light Weapon", null],
+  },
+  {
+    name: "The Meat Grinder",
+    tagline: "Three big idiots. One goal. Everything dies.",
+    mark: "Graveborn",
+    captain: 1,
+    warriors: [
+      { type: "Brute",    weapon: "Heavy Weapon", ip: ["stat"],    statImprove: "ATK", climbing: "None", consumable: "None", weapon2: "" },
+      { type: "Fighter",  weapon: "Heavy Weapon", ip: ["stat","consumable"], statImprove: "VIT", climbing: "None", consumable: "Concentrated Creeping Death Serum", weapon2: "" },
+      { type: "Blacksmith", weapon: "Heavy Weapon", ip: ["stat"], statImprove: "CMB", climbing: "None", consumable: "None", weapon2: "" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "Don't Touch Anything",
+    tagline: "Traps everywhere. Caches rigged. Pray you remember where you stepped.",
+    mark: "Silent Pact",
+    captain: 2,
+    warriors: [
+      { type: "Saboteur",  weapon: "Light Weapon", ip: ["consumable","climbing"], consumable: "Canister of Creeping Death", climbing: "Grappling Hook", weapon2: "", statImprove: "" },
+      { type: "Scavenger", weapon: "Light Weapon", ip: ["climbing","stat"], climbing: "Grappling Hook", statImprove: "SKL", weapon2: "", consumable: "None" },
+      { type: "Scout",     weapon: "Bow",          ip: ["stat"],  statImprove: "MOV", climbing: "None", weapon2: "", consumable: "None" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "Pin, Breach, Repeat",
+    tagline: "Immobilize, crack the mask, then let the mist finish the job.",
+    mark: "Fog Walkers",
+    captain: 0,
+    warriors: [
+      { type: "Doom Hunter", weapon: "Crossbow",     ip: ["stat"],    statImprove: "CMB", climbing: "None", weapon2: "", consumable: "None" },
+      { type: "Blacksmith",  weapon: "Light Weapon", ip: ["stat","climbing"], statImprove: "CMB", climbing: "Grappling Hook", weapon2: "", consumable: "None" },
+      { type: "Fighter",     weapon: "Light Weapon", ip: ["weapon2"], weapon2: "Light Weapon", climbing: "None", consumable: "None", statImprove: "" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "Nobody Ever Dies Here",
+    tagline: "Unkillable. Unfun to play against. Deeply smug.",
+    mark: "Ashbound",
+    captain: 1,
+    warriors: [
+      { type: "Warrior Priest", weapon: "Light Weapon", ip: ["weapon2","stat"], weapon2: "Shield", statImprove: "VIT", climbing: "None", consumable: "None" },
+      { type: "Fighter",        weapon: "Light Weapon", ip: ["stat"],    statImprove: "VIT", climbing: "None", weapon2: "", consumable: "None" },
+      { type: "Blacksmith",     weapon: "Light Weapon", ip: ["stat"],    statImprove: "VIT", climbing: "None", weapon2: "", consumable: "None" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "The Angry Beekeeper Situation",
+    tagline: "One man. His bees. Your problem.",
+    mark: "Relic Bitten",
+    captain: 0,
+    warriors: [
+      { type: "Beekeeper",  weapon: null, ip: ["climbing","consumable"], climbing: "Grappling Hook", consumable: "Fog of War Flask", weapon2: "", statImprove: "" },
+      { type: "Scout",      weapon: "Bow", ip: ["stat"],  statImprove: "MOV", climbing: "None", weapon2: "", consumable: "None" },
+      { type: "Saboteur",   weapon: "Light Weapon", ip: ["stat"], statImprove: "SKL", climbing: "None", weapon2: "", consumable: "None" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "Shove Them Off and Run",
+    tagline: "Height is a weapon. You are the delivery system.",
+    mark: "Doomed Choir",
+    captain: 2,
+    warriors: [
+      { type: "Brute",     weapon: "Heavy Weapon", ip: ["climbing"], climbing: "Ladder", weapon2: "", consumable: "None", statImprove: "" },
+      { type: "Fighter",   weapon: "Heavy Weapon", ip: ["climbing","stat"], climbing: "Grappling Hook", statImprove: "CMB", weapon2: "", consumable: "None" },
+      { type: "Scout",     weapon: "Bow",          ip: ["stat"],    statImprove: "MOV", climbing: "None", weapon2: "", consumable: "None" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "Cache Me If You Can",
+    tagline: "You're not here to fight. You're here to loot, and leave everyone else confused.",
+    mark: "Relic Bitten",
+    captain: 0,
+    warriors: [
+      { type: "Scavenger", weapon: "Light Weapon", ip: ["climbing","stat"], climbing: "Grappling Hook", statImprove: "SKL", weapon2: "", consumable: "None" },
+      { type: "Scout",     weapon: "Crossbow",    ip: ["stat"],   statImprove: "SKL", climbing: "None", weapon2: "", consumable: "None" },
+      { type: "Saboteur",  weapon: "Light Weapon", ip: ["consumable"], consumable: "Canister of Creeping Death", climbing: "None", weapon2: "", statImprove: "" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "Fog of What Now",
+    tagline: "You can't shoot what you can't see. Unfortunately, neither can you.",
+    mark: "Fog Walkers",
+    captain: 1,
+    warriors: [
+      { type: "Saboteur",    weapon: "Light Weapon", ip: ["consumable","stat"], consumable: "Fog of War Flask", statImprove: "SKL", climbing: "None", weapon2: "" },
+      { type: "Assassin",    weapon: "Light Weapon", ip: ["climbing"],  climbing: "Grappling Hook", weapon2: "", consumable: "None", statImprove: "" },
+      { type: "Doom Hunter", weapon: "Crossbow",     ip: ["stat"],     statImprove: "CMB", climbing: "None", weapon2: "", consumable: "None" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+  {
+    name: "God's Unholy Wrecking Crew",
+    tagline: "The Priest heals. The Brute smashes. Nobody questions the theology.",
+    mark: "Graveborn",
+    captain: 0,
+    warriors: [
+      { type: "Warrior Priest", weapon: "Light Weapon", ip: ["stat","weapon2"], statImprove: "VIT", weapon2: "Shield", climbing: "None", consumable: "None" },
+      { type: "Brute",          weapon: "Heavy Weapon", ip: ["stat"],   statImprove: "VIT", climbing: "None", weapon2: "", consumable: "None" },
+      { type: "Fighter",        weapon: "Light Weapon", ip: ["weapon2"], weapon2: "Light Weapon", climbing: "None", consumable: "None", statImprove: "" },
+    ],
+    weaponOverrides: [null, null, null],
+  },
+];
+
+function rollRandomCompany() {
+  const archetype = ARCHETYPES[Math.floor(Math.random() * ARCHETYPES.length)];
+
+  // Build state from archetype
+  const newWarriors = archetype.warriors.map((aw, idx) => {
+    const wdata = WARRIORS[aw.type];
+    let weapon = archetype.weaponOverrides[idx] || aw.weapon;
+    // Fallback to first allowed weapon if override invalid
+    if (!weapon || weapon === 'null' || !wdata.allowedWeapons.includes(weapon)) {
+      weapon = getAllowedWeapons(wdata)[0];
+    }
+    // Beekeeper always gets fixed weapon
+    if (wdata.fixedWeapon) weapon = wdata.fixedWeapon;
+
+    // Validate IP — check pool doesn't exceed 3
+    const ipSpent = aw.ip || [];
+
+    return {
+      type: aw.type,
+      weapon: weapon,
+      weapon2: aw.weapon2 || '',
+      climbing: aw.climbing || 'None',
+      consumable: aw.consumable || 'None',
+      statImprove: aw.statImprove || '',
+      ipSpent: ipSpent,
+    };
+  });
+
+  // Validate total IP <= 3
+  const totalIP = newWarriors.reduce((s, w) => s + w.ipSpent.length, 0);
+  if (totalIP > 3) {
+    // Trim excess from last warriors
+    let excess = totalIP - 3;
+    for (let i = newWarriors.length - 1; i >= 0 && excess > 0; i--) {
+      while (newWarriors[i].ipSpent.length > 0 && excess > 0) {
+        newWarriors[i].ipSpent.pop();
+        excess--;
+      }
+    }
+  }
+
+  state = {
+    companyName: archetype.name,
+    captain: archetype.captain,
+    mark: archetype.mark,
+    warriors: newWarriors,
+  };
+
+  renderAll();
+
+  // Show reveal banner
+  document.getElementById('archetypeName').textContent = archetype.name;
+  document.getElementById('archetypeTagline').textContent = archetype.tagline;
+  document.getElementById('archetypeBanner').classList.add('show');
+  document.getElementById('archetypeBackdrop').classList.add('show');
+}
+
+function dismissArchetype() {
+  document.getElementById('archetypeBanner').classList.remove('show');
+  document.getElementById('archetypeBackdrop').classList.remove('show');
 }
 
 // ============================================================
