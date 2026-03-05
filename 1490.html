@@ -229,7 +229,47 @@
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
-  @media (max-width: 800px) { .warriors-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 800px) {
+    .warriors-grid { grid-template-columns: 1fr; }
+
+    header { padding: 1.5rem 1rem 1.25rem; }
+    .title-main { font-size: clamp(2rem, 10vw, 3.5rem); }
+
+    .app { padding: 1rem 0.75rem 5rem; }
+
+    .builder { padding: 1rem; }
+
+    .navbar-inner { padding: 0.4rem 0.75rem; }
+    .navbar-btns { gap: 0.4rem; flex-wrap: wrap; }
+    .navbar .btn { padding: 0.35rem 0.6rem; font-size: 0.72rem; letter-spacing: 0.12em; }
+
+    .company-name-row { gap: 0.5rem; margin-bottom: 1rem; }
+    .name-input { font-size: 1.1rem; }
+
+    .mark-section { padding: 0.85rem; margin-bottom: 1.25rem; }
+
+    .ip-pool { padding: 0.6rem 0.75rem; margin-bottom: 1rem; }
+    .ip-limit-btn { width: 36px; height: 36px; font-size: 1.2rem; }
+
+    .warrior-slot { padding: 0.85rem; }
+
+    .stats-row { gap: 0.25rem; }
+    .stat-box { padding: 0.25rem 0.3rem; min-width: 32px; }
+    .stat-label { font-size: 0.65rem; }
+    .stat-val { font-size: 0.9rem; }
+
+    .upgrade-cards { grid-template-columns: repeat(2, 1fr); }
+    .upgrade-choice-grid { grid-template-columns: 1fr; }
+    .upgrade-choice-btn { font-size: 0.95rem; padding: 0.5rem 0.6rem; }
+
+    .captain-toggle { padding: 0.55rem; font-size: 0.75rem; }
+
+    .abilities-list { margin-bottom: 0.75rem; }
+    .ability-item { font-size: 0.95rem; }
+
+    .saved-list { gap: 0.5rem; }
+    .saved-chip { font-size: 0.9rem; padding: 0.4rem 0.75rem; }
+  }
 
   .warrior-slot {
     background: var(--ash);
@@ -364,14 +404,25 @@
 
   /* COMPANY IP POOL */
   .ip-pool {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
     background: var(--fog);
     border: 1px solid var(--dim);
     border-top: 2px solid var(--gold);
     padding: 0.75rem 1rem;
     margin-bottom: 1.5rem;
+  }
+  .ip-pool-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .ip-pool-bottom {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
   .ip-pool-label {
     font-family: 'Oswald', sans-serif;
@@ -381,10 +432,41 @@
     color: var(--gold);
     white-space: nowrap;
   }
+  .ip-limit-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .ip-limit-btn {
+    background: var(--ash);
+    border: 1px solid var(--mist);
+    color: var(--parchment);
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    font-family: 'Oswald', sans-serif;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .ip-limit-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .ip-limit-display {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    color: var(--bone);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+  .ip-limit-display strong {
+    color: var(--gold);
+    font-size: 1rem;
+  }
   .ip-pool-pips {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.35rem;
     align-items: center;
+    flex-wrap: wrap;
   }
   .ip-pool-pip {
     width: 16px;
@@ -393,20 +475,14 @@
     border: 1.5px solid var(--mist);
     background: transparent;
     transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
   }
   .ip-pool-pip.filled { background: var(--gold); border-color: var(--gold); }
-  .ip-pool-pip.captain { border-color: var(--blood); }
-  .ip-pool-pip.captain.filled { background: var(--blood); border-color: var(--blood); }
+  .ip-pool-pip.over { background: var(--blood); border-color: var(--blood); }
   .ip-pool-count {
     font-family: 'Oswald', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--parchment);
-  }
-  .ip-pool-note {
-    font-size: 0.8rem;
-    color: var(--mist);
-    font-style: italic;
-    margin-left: auto;
   }
 
   /* UPGRADE TRAY */
@@ -526,7 +602,7 @@
   }
   .upgrade-choice-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 0.4rem;
   }
   .upgrade-choice-btn {
@@ -784,17 +860,18 @@
     }
     .pr-header-mark-name {
       font-family: 'Oswald', sans-serif;
-      font-size: 9pt;
+      font-size: 11pt;
       font-weight: 700;
       text-transform: uppercase;
       line-height: 1;
       margin-bottom: 2pt;
+      color: #000;
     }
     .pr-header-mark-rule {
-      font-size: 6pt;
-      line-height: 1.35;
+      font-size: 7.5pt;
+      line-height: 1.4;
       font-style: italic;
-      color: #333;
+      color: #000;
     }
 
     /* WARRIORS ROW */
@@ -862,6 +939,18 @@
       white-space: nowrap;
     }
 
+    /* WEAPON ROW ICON */
+    .pr-wpn-row-icon {
+      width: 9pt;
+      height: 9pt;
+      flex-shrink: 0;
+      filter: brightness(0);
+      opacity: 0.8;
+      vertical-align: middle;
+      margin-right: 1.5pt;
+      display: inline-block;
+    }
+
     /* STATS STRIP */
     .pr-stats {
       display: grid;
@@ -918,12 +1007,83 @@
     .pr-equip-tag.climbing { background: white; border-color: #333; }
     .pr-equip-tag.consumable { background: white; border-color: #333; }
 
+    /* UPGRADES */
+    .pr-upgrades {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3pt;
+      margin-bottom: 4pt;
+      padding: 2.5pt 4pt;
+      border-left: 2pt solid #888;
+      background: #f0f0f0;
+    }
+    .pr-upgrades-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 6pt;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #666;
+      margin-right: 2pt;
+      white-space: nowrap;
+    }
+    .pr-upgrade-tag {
+      background: #444;
+      color: #fff;
+      border-radius: 2pt;
+      padding: 1pt 4pt;
+      font-family: 'Oswald', sans-serif;
+      font-size: 6.5pt;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .pr-upgrade-none-text {
+      font-size: 6.5pt;
+      color: #999;
+      font-style: italic;
+    }
+
     /* WEAPON SPECIALS */
     .pr-wpn-specials {
       margin-bottom: 4pt;
       padding: 3pt 4pt;
       border-left: 2pt solid #333;
       background: #f7f7f7;
+    }
+    .pr-wpn-stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 3pt;
+      flex-wrap: wrap;
+      margin-bottom: 2pt;
+      font-size: 7pt;
+      line-height: 1.35;
+    }
+    .pr-wpn-stat-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .pr-wpn-pill {
+      background: #222;
+      color: #fff;
+      border-radius: 1pt;
+      padding: 0.5pt 3.5pt;
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      font-family: 'Oswald', sans-serif;
+    }
+    .pr-wpn-note {
+      color: #555;
+      font-size: 6.5pt;
+      font-style: italic;
     }
     .pr-wpn-special {
       font-size: 7pt;
@@ -1075,14 +1235,20 @@
       margin-top: 1pt;
     }
     .pr-fall-table td {
-      padding: 0.5pt 2pt;
-      border: 0.5pt solid #ccc;
-      text-align: center;
+      padding: 1.5pt 3pt;
+      border: 0.5pt solid #bbb;
     }
     .pr-fall-table td:first-child {
       font-family: 'Oswald', sans-serif;
       font-weight: 700;
-      background: #f5f5f5;
+      background: #222;
+      color: #fff;
+      text-align: center;
+      white-space: nowrap;
+      width: 20%;
+    }
+    .pr-fall-table td:last-child {
+      text-align: left;
     }
     .pr-cache-item {
       font-size: 6pt;
@@ -1339,8 +1505,9 @@
     <button class="btn btn-secondary" onclick="printCompany()">Print</button>
     <button class="btn btn-secondary" onclick="openShare()">Share</button>
     <button class="btn btn-gold" onclick="rollRandomCompany()">&#9780; Random</button>
-    <button class="btn btn-ghost" onclick="openImport()">Import</button>
+    <button class="btn btn-secondary" onclick="openImport()">Import</button>
     <button class="btn btn-ghost" onclick="clearBuilder()">Clear</button>
+    <button class="btn btn-gold" onclick="openTracker()" style="margin-left:auto;">⚔ Play</button>
     <span class="validation-msg" id="validationMsg"></span>
   </div>
   </div>
@@ -1387,10 +1554,18 @@
 
     <!-- IP POOL -->
     <div class="ip-pool" id="ipPool">
-      <span class="ip-pool-label">Company IP</span>
-      <div class="ip-pool-pips" id="ipPoolPips"></div>
-      <span class="ip-pool-count" id="ipPoolCount"></span>
-      <span class="ip-pool-note">2 base + 1 captain bonus &nbsp;·&nbsp; max 1 per category per warrior</span>
+      <div class="ip-pool-top">
+        <span class="ip-pool-label">Company IP</span>
+        <div class="ip-limit-ctrl">
+          <button class="ip-limit-btn" onclick="changeIPLimit(-1)">−</button>
+          <span class="ip-limit-display">Limit: <strong id="ipLimitDisplay">3</strong></span>
+          <button class="ip-limit-btn" onclick="changeIPLimit(1)">+</button>
+        </div>
+      </div>
+      <div class="ip-pool-bottom">
+        <div class="ip-pool-pips" id="ipPoolPips"></div>
+        <span class="ip-pool-count" id="ipPoolCount"></span>
+      </div>
     </div>
 
     <!-- WARRIORS -->
@@ -1472,88 +1647,23 @@ const MARK_IMAGES = {
 };
 
 const WARRIORS = {
-  Scout: {
-    stats: { MOV: 6, ATK: 1, VIT: 4, SKL: '4+', DEF: '5+', CMB: '4+' },
-    abilities: [
-      { name: 'EARLY BIRD', desc: 'Deploy up to 4" from board edge on Ground Level (not on a Structure).' },
-      { name: 'I CAN SMELL IT', desc: 'After all deployment, place an extra resource cache within 6" of center on a Structure. Reliquary cannot restore this.' },
-      { name: 'TAKE THE INITIATIVE', desc: 'Once per game, claim initiative after losing the roll. Also wins all ties while Scout is alive.' },
-    ],
-    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
-    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Polearm (one-handed)', 'Shield'],
-    cantHave: ['Heavy Weapon'],
-  },
   Assassin: {
-    stats: { MOV: 5, ATK: 1, VIT: 5, SKL: '5+', DEF: '4+', CMB: '5+' },
+    stats: { MOV: 5, ATK: 1, VIT: 5, SKL: '5+', COM: '4+', DEF: '5+' },
     abilities: [
-      { name: 'NIGHT STALKER', desc: 'Cannot be attacked until after they Attack, Push, or Round 4 begins. Enemies may move over them while hidden.' },
-      { name: 'KILLSHOT', desc: 'Once per game after a successful Combat Check: deals 4 damage, ignores Defense. Target must be unactivated this round and within 3".' },
-      { name: 'CAMOUFLAGED CLIMBER', desc: 'Only requires a 3+ on Skill Checks while using the Climb action.' },
-    ],
-    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
-    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
-    cantHave: ['Heavy Weapon', 'Polearm'],
-  },
-  Scavenger: {
-    stats: { MOV: 5, ATK: 1, VIT: 6, SKL: '3+', DEF: '5+', CMB: '4+' },
-    abilities: [
-      { name: 'DETERMINATION', desc: 'Once per round, when a Scavenger fails a Skill Check, they may re-roll it. Must take the next result.' },
-      { name: 'DIRTY DAGGER', desc: 'Once per game: spend an action, opponent in contact takes 1 damage and is Stunned. Ignores Defense.' },
-    ],
-    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
-    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
-    cantHave: ['Heavy Weapon', 'Polearm'],
-  },
-  Fighter: {
-    stats: { MOV: 4, ATK: 1, VIT: 6, SKL: '5+', DEF: '4+', CMB: '4+' },
-    abilities: [
-      { name: 'FURY', desc: 'If in melee range with multiple enemies, spend one action to make a full Attack on each. Dual light weapon bonus applies to each enemy.' },
-      { name: 'DEVASTATING BLOW', desc: 'Once per game after a successful Combat Check: +2 damage and ignores Defense rolls.' },
-      { name: "OPPORTUNIST'S CLEAVE", desc: 'Gains a bonus Attack die when targeting an opponent that has not yet activated this round.' },
-    ],
-    restrictions: 'Cannot equip Ranged Weapons.',
-    allowedWeapons: ['Light Weapon', 'Heavy Weapon', 'Polearm (two-handed)', 'Polearm (one-handed)', 'Shield'],
-    cantHave: ['Bow', 'Crossbow'],
-  },
-  Brute: {
-    stats: { MOV: 3, ATK: 2, VIT: 7, SKL: '6+', DEF: '4+', CMB: '3+' },
-    abilities: [
-      { name: 'RAGE', desc: 'Once per game: move up to twice Movement and Attack with an additional die. Requires all actions. Cannot combine with Throw.' },
-      { name: 'SMASH', desc: 'Once per game: destroy a door, ladder, bridge, or resource cache in base contact. Remove from play. Models on it fall.' },
-      { name: 'THROW', desc: 'Once per game after a successful Combat Check: throw an adjacent enemy model 2" in any direction (ignores Barriers). Enemy is Stunned. Roll fall damage. Cannot use with Rage.' },
-    ],
-    restrictions: 'Can ONLY equip Heavy Weapons and Polearms.',
-    allowedWeapons: ['Heavy Weapon', 'Polearm (two-handed)'],
-    cantHave: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
-  },
-  'Warrior Priest': {
-    stats: { MOV: 4, ATK: 1, VIT: 5, SKL: '4+', DEF: '5+', CMB: '5+' },
-    abilities: [
-      { name: 'HEAL THE FLOCK', desc: 'Spend one action per turn to heal a friendly model in base contact for 2 Vitality, or heal itself for 1 Vitality.' },
-      { name: 'LAST RITES', desc: 'Once per game: within 6" of where a friendly model perished, after the Priest\'s last activation, revive that model with 1 Vitality. Free action.' },
-      { name: 'FEAR OF GOD', desc: 'Once per game: push an enemy within 1" exactly 2" directly away, ignoring Barriers. If they hit an edge, they fall — no Skill Check allowed.' },
-    ],
-    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
-    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
-    cantHave: ['Heavy Weapon', 'Polearm'],
-  },
-  Saboteur: {
-    stats: { MOV: 5, ATK: 1, VIT: 4, SKL: '4+', DEF: '5+', CMB: '5+' },
-    abilities: [
-      { name: 'BOOBY TRAP', desc: 'First time an enemy rolls 1 or 2 on a Resource Cache, the Cache explodes dealing 2 damage (ignores Defense). Active even after Saboteur perishes.' },
-      { name: 'SET TRAP', desc: 'Twice per game: set a Trap within 2" (at least 2" from any model). 2" diameter. Any model ending an action in the area loses 1 Vitality (no Defense), becomes Hindered, and ends their action.' },
-      { name: 'IMPROVED CANISTER', desc: 'Once per game: throw a gas canister (Vitality +2) inches. 2" diameter toxic cloud on one level. All models roll Skill Check — fail = 2 damage + Immobilized until end of next activation.' },
+      { name: 'NIGHT STALKER', desc: 'The Assassin cannot be attacked until after they ATTACK, PUSH, or Round 4 begins. Until NIGHT STALKER has been expended, enemy models may move over the Assassin as long as they do not land on top of them, and may SCALE climbing items the Assassin occupies.' },
+      { name: 'KILLSHOT', desc: 'Once per game after a successful COMBAT Check, the Assassin may perform a KILL SHOT that does 4 damage. The Assassin may only use KILL SHOT on a model that has not activated this round and is within 3 inches. This attack ignores DEFENSE rolls.' },
+      { name: 'CAMOUFLAGED CLIMBER', desc: 'An Assassin only requires a 3+ on SKILL Checks while using the CLIMB action.' },
     ],
     restrictions: 'Cannot equip Heavy Weapons or Polearms.',
     allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
     cantHave: ['Heavy Weapon', 'Polearm'],
   },
   Beekeeper: {
-    stats: { MOV: 6, ATK: 1, VIT: 4, SKL: '4+', DEF: '4+', CMB: '5+' },
+    stats: { MOV: 6, ATK: 1, VIT: 4, SKL: '4+', COM: '4+', DEF: '5+' },
     abilities: [
-      { name: 'BECKON THE SWARM', desc: 'Once per activation: spend an action to target an enemy within 3" and line of sight. They roll Defense — fail = Hindered.' },
-      { name: 'STINGING CLOUD', desc: 'Whenever an enemy within 2" causes the Beekeeper to lose Vitality, that enemy must pass a Skill Check or lose 1 Vitality.' },
-      { name: 'BUZZING MANTLE', desc: 'Enemy models within 1" of the Beekeeper suffer -1 to all Combat Checks.' },
+      { name: 'BECKON THE SWARM', desc: 'Once per activation, the Beekeeper may spend an action to BECKON THE SWARM onto an enemy model within 3 inches and within light of sight. That model must roll a DEFENSE Check. If they pass, nothing happens. If they fail, that model becomes Hindered.' },
+      { name: 'STINGING CLOUD', desc: 'Whenever an enemy model within 2 inches of the Beekeeper causes the Beekeeper to lose VITALITY, that enemy model must pass a SKILL Check or lose 1 VITALITY.' },
+      { name: 'BUZZING MANTLE', desc: 'Enemy models within 1 inch of the Beekeeper suffer -1 to all COMBAT Checks.' },
     ],
     restrictions: 'Only comes equipped with a two-handed Polearm. No substitution.',
     allowedWeapons: ['Polearm (two-handed)'],
@@ -1561,27 +1671,145 @@ const WARRIORS = {
     fixedWeapon: 'Polearm (two-handed)',
   },
   Blacksmith: {
-    stats: { MOV: 4, ATK: 1, VIT: 5, SKL: '3+', DEF: '4+', CMB: '5+' },
+    stats: { MOV: 4, ATK: 1, VIT: 5, SKL: '3+', COM: '4+', DEF: '5+' },
     abilities: [
-      { name: 'PUNCTURING PRECISION', desc: 'Once per game after a successful Combat Check: the enemy model becomes Breached.' },
-      { name: 'FORGE MASTER', desc: 'Once per game: spend one action to remove the Breached or Sundered status from a friendly model in base contact (including itself).' },
-      { name: 'SUNDERING BLOW', desc: 'Once per game after a successful Combat Check: forgo dealing damage — that enemy\'s weapon becomes Sundered (-1 Combat for rest of game).' },
+      { name: 'PUNCTURING PRECISION', desc: 'Once per game, after a successful COMBAT Check, the Blacksmith may use PUNCTURING PRECISION. When they do, the enemy model becomes Breached.' },
+      { name: 'FORGE MASTER', desc: 'Once per game, the Blacksmith can spend one action to remove the Breached or Sundered status from a friendly model in base contact (including itself).' },
+      { name: 'SUNDERING BLOW', desc: 'Once per game, after a successful COMBAT Check, the Blacksmith may forgo dealing damage and instead that enemy\'s weapon becomes Sundered.' },
     ],
     restrictions: 'Cannot equip Ranged Weapons.',
     allowedWeapons: ['Light Weapon', 'Heavy Weapon', 'Polearm (two-handed)', 'Polearm (one-handed)', 'Shield'],
     cantHave: ['Bow', 'Crossbow'],
   },
-  'Doom Hunter': {
-    stats: { MOV: 5, ATK: 1, VIT: 4, SKL: '4+', DEF: '4+', CMB: '6+' },
+  Brute: {
+    stats: { MOV: 3, ATK: 2, VIT: 7, SKL: '6+', COM: '4+', DEF: '3+' },
     abilities: [
-      { name: "EAGLE'S EYE", desc: 'Adds +1 to Combat stat when targeting models further than 4" away.' },
-      { name: "MARKSMAN'S FOCUS", desc: 'Once per activation: Attack with an additional die. Requires all actions this turn.' },
-      { name: 'PINNING SHOT', desc: 'Once per game after a successful Combat Check: forgo damage — the enemy model becomes Immobilized until end of their next activation.' },
+      { name: 'RAGE', desc: 'Once per game a Brute may move up to twice their Movement value and ATTACK with an additional die. This ability requires all of the Brute\'s actions this turn.' },
+      { name: 'SMASH', desc: 'Once per game a Brute may SMASH a door, a ladder, an improvised bridge, or a resource cache that they are in base contact with. Remove that item from play. Any models scaling or standing on that item fall.' },
+      { name: 'THROW', desc: 'Once per game after any successful COMBAT Check, instead of resolving any of their ATTACKS that turn, a Brute may instead pick up and THROW an opposing model they are in base contact with 2 inches in any direction (ignoring Barriers). The opponent becomes Stunned after thrown. Roll for falling damage as normal. THROW may not be used in the same turn as RAGE.' },
+    ],
+    restrictions: 'Can ONLY equip Heavy Weapons and Polearms.',
+    allowedWeapons: ['Heavy Weapon', 'Polearm (two-handed)'],
+    cantHave: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
+  },
+  'Doom Hunter': {
+    stats: { MOV: 5, ATK: 1, VIT: 4, SKL: '4+', COM: '4+', DEF: '6+' },
+    abilities: [
+      { name: "EAGLE'S EYE", desc: 'The Doom Hunter adds +1 to their Combat stat when targeting models further than 4 inches away.' },
+      { name: "MARKSMAN'S FOCUS", desc: 'Once per activation, a Doom Hunter may use MARKSMAN\'S FOCUS to ATTACK with an additional die. This ability requires all of the Doom Hunter\'s actions this turn.' },
+      { name: 'PINNING SHOT', desc: 'Once per game, after a successful COMBAT Check, the Doom Hunter may forgo dealing damage and instead the enemy model becomes Immobilized until the end of their next activation.' },
     ],
     restrictions: 'Can ONLY equip Ranged Weapons.',
     allowedWeapons: ['Bow', 'Crossbow'],
     cantHave: ['Light Weapon', 'Heavy Weapon', 'Polearm', 'Shield'],
   },
+  Executioner: {
+    stats: { MOV: 4, ATK: 1, VIT: 6, SKL: '5+', COM: '4+', DEF: '5+' },
+    abilities: [
+      { name: "EXECUTIONER'S MARK", desc: 'Whenever an Executioner declares an ATTACK action targeting an opponent with 2 or less VITALITY, they have +1 COMBAT. In addition, if a COMBAT check succeeds in this manner, the enemy model loses 1 VITALITY bypassing DEFENSE before resolving the rest of the ATTACK.' },
+      { name: 'FINALITY', desc: 'Any time an Executioner resolves an ATTACK that reduces a model to 0 VITALITY, the Executioner immediately moves up to 2 inches and restores 1 VITALITY.' },
+      { name: 'AIM FOR THE NECK', desc: 'Any time the Executioner attacks an enemy at full VITALITY, they land a Piercing Blow on both 5s and 6s.' },
+    ],
+    restrictions: 'May only wield Heavy Weapons and Polearms.',
+    allowedWeapons: ['Heavy Weapon', 'Polearm (two-handed)'],
+    cantHave: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
+  },
+  Fighter: {
+    stats: { MOV: 4, ATK: 1, VIT: 6, SKL: '5+', COM: '4+', DEF: '4+' },
+    abilities: [
+      { name: 'FURY', desc: 'If the Fighter is in melee range with multiple enemy models, they may spend one action to make a full ATTACK on each of them. This counts as one action regardless of how many enemies are struck. A fighter with multiple attacks from dual wielded light weapons get their bonus attack on each enemy.' },
+      { name: 'DEVASTATING BLOW', desc: 'Once per game, after a successful COMBAT Check, you may use DEVASTATING BLOW. This attack does 2 additional damage and ignores DEFENSE rolls.' },
+      { name: "OPPORTUNIST'S CLEAVE", desc: 'The Fighter gains a bonus ATTACK die when targeting an opponent that has not yet activated. This ability does not stack with other bonus ATTACK die (such as the bonus gained from Concentrated Creeping Death Serum).' },
+    ],
+    restrictions: 'Cannot equip Ranged Weapons.',
+    allowedWeapons: ['Light Weapon', 'Heavy Weapon', 'Polearm (two-handed)', 'Polearm (one-handed)', 'Shield'],
+    cantHave: ['Bow', 'Crossbow'],
+  },
+  'Hedge Knight': {
+    stats: { MOV: 5, ATK: 1, VIT: 5, SKL: '4+', COM: '4+', DEF: '5+' },
+    abilities: [
+      { name: 'GAUNT GALLOP', desc: 'Anytime the Hedge Knight has performed the DASH Action that brings them in CONTACT with an opposing model, that model makes a SKILL Check. If they fail, they lose 1 VITALITY. If they succeed, the Hedge Knight becomes Hindered.' },
+      { name: 'SQUIRE OF MUD AND ROOT', desc: 'The Hedge Knight cannot be Immobilized. In addition, anytime the Hedge Knight successfully inspects a resource cache, they only find Food.' },
+      { name: 'THE SHATTERED SHIELD', desc: 'Once per game, the Hedge Knight can block all damage from one standard ATTACK. This ability must be declared after a successful COMBAT check, but before damage is dealt. This ability can block a Piercing Blow, but cannot block any other special abilities. After using this ability, the Hedge Knight\'s Shield is destroyed, and wields their Polearm with two hands for the rest of the game.' },
+    ],
+    restrictions: 'Always equipped with a Polearm and Shield at no cost. Still has -1 COMBAT while using both a Shield and Polearm.',
+    allowedWeapons: ['Polearm (one-handed)', 'Shield'],
+    cantHave: ['Light Weapon', 'Heavy Weapon', 'Bow', 'Crossbow'],
+    fixedWeapon: 'Polearm (one-handed)',
+    fixedShield: true,
+  },
+  Knight: {
+    stats: { MOV: 4, ATK: 2, VIT: 5, SKL: '6+', COM: '3+', DEF: '4+' },
+    abilities: [
+      { name: 'SHIELD OF THE REALM', desc: 'Once per game, the Knight can block all damage from one standard ATTACK directed at either them or an ally within 3 inches. This ability must be declared after a successful COMBAT check, but before damage is dealt. It cannot block damage from Special Abilities.' },
+      { name: 'INSPIRING PRESENCE', desc: 'Any friendly models within 4 inches of the Knight gain +1 to COMBAT checks while in line of sight of the Knight.' },
+      { name: "DEFENDER'S PARRY", desc: 'Once per game, when an enemy model fails all COMBAT checks against the Knight during an ATTACK, this Knight may counter them. The enemy model takes 2 damage and becomes Hindered. This ability bypasses DEFENSE.' },
+    ],
+    restrictions: 'Always equipped with a Light Weapon and Shield at no additional cost.',
+    allowedWeapons: ['Light Weapon', 'Shield'],
+    cantHave: ['Heavy Weapon', 'Polearm', 'Bow', 'Crossbow'],
+    fixedWeapon: 'Light Weapon',
+    fixedShield: true,
+  },
+  Saboteur: {
+    stats: { MOV: 5, ATK: 1, VIT: 4, SKL: '4+', COM: '5+', DEF: '5+' },
+    abilities: [
+      { name: 'BOOBY TRAP', desc: 'The first time an enemy model rolls a 1 or 2 while trying to open a Resource Cache, the Cache explodes dealing 2 damage to that model (this ability is active even after the Saboteur has perished).' },
+      { name: 'SET TRAP', desc: 'Twice per game, a Saboteur can set a TRAP within 2 inches of them and at least 2 inches from any other model. The TRAP has a 2-inch diameter. Any model that uses MOVE, DASH, or ends an action within that area (even partially) loses 1 VITALITY without a DEFENSE Check, becomes Hindered, and immediately ends the action. Remove the TRAP from play. The Saboteur is immune to their own traps and may use HANDOFF to retrieve them.' },
+      { name: 'IMPROVED CANISTER', desc: 'Once per game, the Saboteur\'s IMPROVED CANISTER can be thrown a number of inches equal to their current VITALITY +2. When thrown, the gas canister releases a toxic cloud that covers a 2-inch diameter on one level. All models (enemy or friendly) within the cloud must roll a SKILL Check. If failed, they take 2 damage and are immobilized until the end of their next activation.' },
+    ],
+    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
+    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
+    cantHave: ['Heavy Weapon', 'Polearm'],
+  },
+  Scavenger: {
+    stats: { MOV: 5, ATK: 1, VIT: 6, SKL: '3+', COM: '5+', DEF: '4+' },
+    abilities: [
+      { name: 'DETERMINATION', desc: 'Once per round, when a Scavenger fails a SKILL Check, they may choose to re-roll that check. They must take the next result.' },
+      { name: 'DIRTY DAGGER', desc: 'Once per game, the Scavenger may spend an action to use DIRTY DAGGER on an opponent in contact. They take 1 damage and are Stunned. This ability ignores DEFENSE Check.' },
+    ],
+    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
+    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
+    cantHave: ['Heavy Weapon', 'Polearm'],
+  },
+  Scout: {
+    stats: { MOV: 6, ATK: 1, VIT: 4, SKL: '4+', COM: '5+', DEF: '4+' },
+    abilities: [
+      { name: 'EARLY BIRD', desc: 'The Scout may deploy up to 4 inches from the edge of the board on Ground Level. They cannot deploy on a STRUCTURE.' },
+      { name: 'I CAN SMELL IT', desc: 'After deployment of all Doom Companies, the Scout may deploy an additional resource cache anywhere within 6 inches from the center of the board on a STRUCTURE. The Reliquary cache consumable may not restore this ability.' },
+      { name: 'TAKE THE INITIATIVE', desc: 'Once per game a player with a living Scout may claim initiative after losing the initiative roll. In addition, if there is ever a tie, initiative always goes to the player with a living Scout. If each player has a Scout, resolve normally.' },
+    ],
+    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
+    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
+    cantHave: ['Heavy Weapon', 'Polearm'],
+  },
+  'Warrior Priest': {
+    stats: { MOV: 4, ATK: 1, VIT: 5, SKL: '4+', COM: '5+', DEF: '5+' },
+    abilities: [
+      { name: 'HEAL THE FLOCK', desc: 'A Warrior Priest may spend one action per turn to heal a friendly model in base to base contact for 2 VITALITY, or heal itself for 1 VITALITY.' },
+      { name: 'LAST RITES', desc: 'Once per game, a Warrior Priest may perform LAST RITES within 6 inches of where a friendly model Perished after the Warrior Priest\'s last activation. That Perished model is revived with 1 VITALITY. Place them exactly where they Perished. This does not cost an action. (Until your Warrior Priest has used LAST RITES, mark where friendly models have Perished until the Warrior Priest finishes their next activation.)' },
+      { name: 'FEAR OF GOD', desc: 'Once per game, a Warrior Priest may intimidate an enemy within 1 inch instilling the FEAR OF GOD. Push that model 2 inches directly away from the Warrior Priest ignoring Barriers. If that model comes in contact with an edge they fall. They may not make a SKILL Check to prevent themselves from falling. This ability cannot be prevented by a shield.' },
+    ],
+    restrictions: 'Cannot equip Heavy Weapons or Polearms.',
+    allowedWeapons: ['Light Weapon', 'Bow', 'Crossbow', 'Shield'],
+    cantHave: ['Heavy Weapon', 'Polearm'],
+  },
+};
+
+const ITEM_ICONS = {
+  'Light Weapon': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTEyMi4xIDE3LjUyIDE4Ni42IDE2MWwxMDQuNS00NC45LTQ0LjUtOTguNThoLTUxLjFsMzUuOCA4MC43NS0xNi40IDcuMjMtMzktODcuOTh6bTI2NS4yIDc3Ljc1TDExMC40IDIxNS4ybDEyIDI4LjIgMjc4LjEtMTE5Ljh6bS02OS43IDk4LjUzLTIzLjkgMTEuNWMxMi44IDUuNCAyNiAxMy43IDM4LjMgMTUuNiAxOC4xLTEzLjEtNC45LTMwLjUtMTQuNC0yNy4xem0tNjAuNyAxMS4xLTM2LjIgMTYuN2MtMTEuOSAxOC40LTE0LjggNDYtMTguMiA2OS43IDIwLjYgMzAuMSAzMC41IDYyLjQgMzkuNSA5NCAxNy45LTMuNyAzMi4yLTYuOCA0OC43LTExLjUtMjQuNC0zOC43LTQyLjItNzguNC01My42LTExOC45IDAgMCA1LjYtMTAuNSA4LjQtMTUuOCAxMS45IDcuMyAyNC45IDEyLjQgMzYuNiA5LjkgMTAtNC4xIDIxLjUtNy45IDI3LjctMTYuNi0xNy42LTYuOS0zNy4xLTE3LjUtNTIuOS0yNy41em05Mi42IDI2LjZjLTEwLjggNS44LTIzIDExLjItMzEuOSAxOC45LTUuMyA0LjctMTIuMSA4LjgtMjAuNSAxMi4zIDEuMSA3LjMtLjEgMTkuNiA4LjEgMTguOCAyMC41LTYuMiA0MC41LTE1IDU5LjctMjguNC0uMS05LjItOC0yNC4xLTE1LjQtMjEuNnptLTkwLjIgMzQuMmMxMS4zIDM0LjggMjcuNiA2OSA0OS4zIDEwMi42IDQuNy0xLjYgOS4zLTMuMyAxMy41LTUtNy4zLTYuMi0xMS43LTE1LjktMTItMjUuMy0xNi42LTQuMS0yMC44LTI5LjQtMTcuMi00MS42LTkuNS03LTEzLjYtMTguMS0xNC4yLTI4LjctNy4yLjctMTMuNi0uMS0xOS40LTJ6bTEwMy4zIDEwLjRjLTEzLjYgOC4xLTI3LjYgMTQuMy00MS42IDE5LjJsLTkgNC40Yy00LjQgNC42LTQuNSAxNS42IDEgMjAuMyA5LjcgMy41IDUwLjEtMjEuMiA1Ny43LTI3LjkgMS4zLTUuOC0zLjUtMTQuOS04LjEtMTZ6bS0xNzguMSAyMS4yTDE5LjEgMzM1LjhWNDk1Yzk1LjctMjUuMyAxNDYuOS00Ny4xIDIwOS43LTkwLjItMTAuOC0zOC0yMC41LTc0LjgtNDQuMy0xMDcuNXptMTg3LjggMTYuOWMtMTMuNiAxMC4yLTI3LjIgMTYuMi00Mi45IDIxLjQtLjQgNi43IDIuNSAxOC4xIDEyLjEgMTYgMTkuOS00LjMgMzYuMy0xNy41IDM2LjYtMjQuNi4yLTMuNy0yLTEwLjUtNS44LTEyLjh6bS03LjUgNDguNmMtMTQuMyA4LjItMzEuNSAxNS45LTQ2LjcgMjEuNGwxOC43IDMxLjggMzkuMy0xOC44em0yMi4yIDQ5LjFMMzQyLjkgNDMzbDMuMSAyMS45YzE1LjEuNSA0Ni42LTExLjMgNTUuNC0yNi4xdi0uMXoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PC9wYXRoPjwvZz48L3N2Zz4=',
+  'Dual Wield': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0ibTEwNS43IDQxLjE2LTQ3LjAzIDEuMzEgMjkuMyAzNi44NUwxMTYgNjkuMTN6bTMwMC42IDBMMzk2IDY5LjE0bDI4IDEwLjIgMjkuMy0zNi44NnptLTI3OC40IDguMThMMTM5IDc5Ljg3bC0zMC41IDExLjE0TDM3MC43IDIxMy4xbDE5LjQtNDEuNnptMjU2LjIgMC0xMDYuNyA0OS43IDU0LjQgMjUuMzYgNzEuNy0zMy4zOEwzNzMgNzkuODh6TTE4MC4yIDE0NC4zbC01OC4zIDI3LjIgMTkuNCA0MS42IDkzLjMtNDMuNHptMjQxLjEgMi44LTQ5LjIgMTA1LjUgMTMgMTQuOSA1NS45LTEyMHptLTMzMC42My4xLTE5LjYuNCA1NS44MyAxMTkuOCAxMi45LTE0Ljh6bTM0OS40MyA0NC43LTMwLjYgNjUuNi0zNCA4NC43LTU1LjggMzMuM2MtMy4xIDcuMy02LjggMTQtMTEuMiAyMEMyOTUuNyA0MTMuMiAyNzcgNDI1IDI1NiA0MjVzLTM5LjctMTEuOC01Mi41LTI5LjVjLTQuNC02LjEtOC4yLTEyLjgtMTEuMy0yMC4ybC01NS4xLTMzLjItMjcuOS03MC0zNy4xMy03OS43LTI5LjUgMTkuNCA0NS41IDE1MS44IDgxLjIzIDk3LjFWNDg3aDE3NHYtMjYuMmw4MC42LTk3LjEgNDUuNi0xNTEuOXpNMjU2IDI0OWMtMTQuMyAwLTI3LjcgNy45LTM4IDIyLjEtMTAuMyAxNC4xLTE3IDM0LjQtMTcgNTYuOXM2LjcgNDIuOCAxNyA1Ni45YzEwLjMgMTQuMiAyMy43IDIyLjEgMzggMjIuMXMyNy43LTcuOSAzOC0yMi4xYzEwLjMtMTQuMSAxNy0zNC40IDE3LTU2LjlzLTYuNy00Mi44LTE3LTU2LjljLTEwLjMtMTQuMi0yMy43LTIyLjEtMzgtMjIuMXoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PC9wYXRoPjwvZz48L3N2Zz4=',
+  'Heavy Weapon': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTI0MC4wOTQgMTkuNTk0Yy01Ni42OS4zNjQtMTEwLjg4MiAyOS4wNTQtMTUxLjU5NCA3Mi4zNDQtNTMuNDI4IDU2LjgxLTgxLjk0OCAxMzcuOTA3LTYxLjAzIDIxMC4wOTMgMTYuMzMtOC43OTcgMzIuNzU3LTE1Ljk4NyA0OC45MzYtMjEuMzc0LTYuMzI3LTEyMy4xNiA4OS4yNDctMjEwLjkyMiAyMDAuMDMtMjEwLjM0NCA0LjI1NS0xMy4zNjUgMTAuMjY4LTI3LjMwOCAxOC4xMjctNDEuODc0LTE2LjMyMy01LjQzLTMyLjczNi04LjM2LTQ4Ljk3LTguNzgyLTEuODMzLS4wNDctMy42Ny0uMDc0LTUuNS0uMDYyek0yNzEuMjggODguOTdjLTk3LjU1NiAxLjc0NS0xNzkuOTEzIDc3LjEtMTc2LjM3MyAxODYuMzEgMTAuOTg2LTIuNzMgMjEuNzg4LTQuNTgyIDMyLjI4LTUuNDM2IDE0LjU5LTEuMTg3IDI4LjY5LS40NjMgNDEuNzgzIDIuNDM3TDI3OC4zMTIgMTYyLjk0YTExNC44MSAxMTQuODEgMCAwIDEtOS4zNDQtMzguNzVjLS43MTYtMTEuMjU2LjE0LTIyLjk4MyAyLjU5Mi0zNS4yMi0uMDkzLjAwMi0uMTg3IDAtLjI4IDB6bTYwLjg0NSA2MC43MTgtMTYuODc1IDE2Ljg3NUwzNDUuNzUgMTk3bDE2LjgxMy0xNi44MTMtMzAuNDM4LTMwLjV6bS0zNy4xMjUgMjNMMTc1LjYyNSAyOTIuMDYzbDQ0LjYyNSA0NC41NjIgMTE5LjMxMy0xMTkuMzEzTDI5NSAxNzIuNjg4em0xODkuODc1IDQ2LjA5M2MtMTQuNDY2IDcuODA4LTI4LjMxOCAxMy44MDctNDEuNTk0IDE4LjA2NC43NSAxMTEuMDEzLTg3LjI0MyAyMDYuOC0yMTAuNjg2IDIwMC4yOC01LjM5IDE2LjEwNC0xMi41NTIgMzIuNDYyLTIxLjMxMyA0OC43MiA3Mi4xOSAyMC45MjIgMTUzLjMxMy03LjYgMjEwLjEyNi02MS4wMyA1Ny4wNDUtNTMuNjUgODguNTE2LTEzMC43MiA2My40Ny0yMDYuMDMzem0tMTM2IDE1LjY1N0wyNDAuNjg3IDM0Mi42MjVjMy4yMyAxMy41NjMgNC4wODYgMjguMjQ1IDIuODQ0IDQzLjQ3LS44NjIgMTAuNTgtMi43NTIgMjEuNDc2LTUuNTMgMzIuNTYgMTA5LjU4NSAzLjcxOCAxODUuMTI4LTc5LjAwOCAxODYuNTk0LTE3Ni45MDUtMTIuMzQyIDIuNTA2LTI0LjE2IDMuNDAzLTM1LjUgMi42ODgtMTQuMjg3LS45LTI3LjY5OC00LjM0Ny00MC4yMi0xMHpNMTY5LjUgMzEyLjMxMyAyMC4wOTQgNDYxLjcyVjQ5NEg0OC43NWwxNTEuMTg4LTE1MS4xODgtMzAuNDM4LTMwLjV6IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjEiPjwvcGF0aD48L2c+PC9zdmc+',
+  'Bow': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTMzMS43MzQgMjAuNDQzYTQuNDIxIDQuNDIxIDAgMCAwLTEuODAyLjMyN2MtMjcuNzM2IDExLjU0My00Ny4yOTUgNTcuNDk1LTI5Ljg5OSA3Ni42NzEgMzMuNTIgMzguOTQ2IDcyLjgzNSA1NS41NzMgOTAuMTQ3IDEyOC40MzQgMi42MDcgMjAuMTUgMS4yMTggNDAuMDk0IDAgNjAuMjUtMTcuMzEyIDcyLjg2MS01Ni42MjcgODkuNDg4LTkwLjE0NyAxMjguNDM0LTE3LjM5NiAxOS4xNzYgMi4xNjMgNjUuMTI4IDI5Ljg5OSA3Ni42NzEgOS4wMzggMy43NjIgMjguMDI1LTI2LjE2NSAyMS43NTItMjUuMjA5LTE2LjM0IDIuNDkxLTM3LjgtMjAuOTQxLTI4LjM4Ny0yOC45MyAzOC40Ny0zMi42NSAxMDUuNDktMTAwLjA1NSAxMDAuMjc3LTEzNS41NTItMi4yMTEtMTUuMDU3LTkuMzUtMzAuMzYtMTUuNTc0LTQ1LjUzOSA2LjIyNS0xNS4xOCAxMy4zNjMtMzAuNDgyIDE1LjU3NC00NS41NCA1LjIxNC0zNS40OTYtNjEuODA2LTEwMi45MDEtMTAwLjI3Ny0xMzUuNTUyLTkuNDEyLTcuOTg4IDEyLjA0Ny0zMS40MiAyOC4zODctMjguOTMgNS44ODEuODk3LTEwLjQ0LTI1LjM1LTE5Ljk1LTI1LjUzNXpNMTUyIDI0LjIzbC0yMS40NDEgNTMuNjAyTDE1MiA5OS4yNzNsMjEuNDQxLTIxLjQ0MXptLTkgOTEuNDk3djI5Ni41NDZsOS05IDkgOVYxMTUuNzI3bC0yLjYzNyAyLjYzNi02LjM2MyA2LjM2NHptMTYwIDkuODQ3djI2MC44MjRsMTgtMTcuNTNWMTQzLjEwNHpNMTUyIDQyOC43MjdsLTIzIDIzdjM4LjU0NmwyMy0yMyAyMyAyM3YtMzguNTQ2eiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIxIj48L3BhdGg+PC9nPjwvc3ZnPg==',
+  'Crossbow': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0ibTg5LjU5NCAxOC4wOTQtMTAuNzUgMTAuNzUuMDMuMDMgMjcuNTMyIDMzMy41NjMtODMuMDMgOTIuOTM4IDMzLjI1IDMzLjI1IDkwLjE1NS04MC41NjMgMzM2LjE5IDI0LjkwN2MuMDYuMDYyLjEyNC4xMjQuMTg2LjE4NmwuMTU2LS4xNTZoLjAzMnYtLjAzbDEwLjU2Mi0xMC41NjRjLTEuNjc2LTEuNjc2LTMuMTIyLTMuNDM3LTQuNjg3LTUuMTU2LTIxLjMzMi0yNS41NS0yNS40MTYtNjMuMjQtMzUuNDctMTA5LjEyNS04LjMyMy0zNy45OS0yMS4yMjUtODEuMDQyLTUzLjA5NC0xMjUuMDNsLTM4LjA2MiA1MC44MWMuMDA1LjAwOC0uMDA1LjAyNiAwIC4wMzIgMjguOTg4IDM2LjA3NCA0Ni4wMjcgNjcuNzY2IDU5LjcyIDk2LjI1IDE1LjAxNyAzMS4yNDcgMjYuMTIyIDU5IDQ0LjQ2NyA4My42ODhMMTY1LjMxNCAzOTEuNSAzMzcuNTMgMjM3LjU5NGw2NC4zNzYtODUuOTctNDEuNTMtNDEuNTMtODUuOTA3IDY0LjMxMkwxMjIuODEgMzQ0LjA5NCA5OC4xNTYgNDUuMjVjMjQuNjggMTguMzMgNTIuNDI1IDI5LjQyNiA4My42NTYgNDQuNDM4IDI4LjQ5IDEzLjY5MyA2MC4yIDMwLjcyIDk2LjI4MiA1OS43MThsNTAuODEyLTM4LjA2MmMtNDMuOTktMzEuODYtODcuMDQtNDQuNzM2LTEyNS4wMy01My4wNjNDMTU3Ljk4NyA0OC4yMjQgMTIwLjMgNDQuMTEzIDk0Ljc1IDIyLjc4Yy0xLjcyLTEuNTY0LTMuNDgtMy4wMS01LjE1Ni00LjY4NnptMzE3LjAzLjMxMmMtMy4zODUuMDI4LTYuODYyLjQwNi0xMC4yOC45Ny00LjU1OC43NS04Ljk5MiAxLjgzNy0xMi44MTMgMy4wOTMtMy44MiAxLjI1NC02Ljc3NiAyLjMwMi05LjcxNyA0LjYyNGE3LjE4NCA3LjE4NCAwIDAgMC0yLjcyIDYuMTg3bDUuMDMyIDYyLjM0NWE3LjE4NCA3LjE4NCAwIDAgMCAyLjA2MyA0LjUzbDMzLjY1NiAzMy42MjZhNy4xODQgNy4xODQgMCAwIDAgNC41IDIuMDk1bDYyLjM0NCA1LjAzYTcuMTg0IDcuMTg0IDAgMCAwIDYuMjE4LTIuNzE4YzIuMzM1LTIuOTQ0IDMuMzY3LTUuODk1IDQuNjI1LTkuNzE4IDEuMjYtMy44MjQgMi4zNDMtOC4yNTUgMy4wOTUtMTIuODE0Ljc1Mi00LjU2IDEuMTgtOS4xOTguODc1LTEzLjYyNS0uMzA1LTQuNDI1LTEuMDEyLTguOTktNC44NDQtMTIuODFMNDIyLjc4IDIzLjM0M2MtMy44MjItMy44MjQtOC4zODQtNC41NC0xMi44MS00Ljg0NGE0My42NDMgNDMuNjQzIDAgMCAwLTMuMzQ1LS4wOTR6bS4xMjYgMTQuMzc1YTI5LjUgMjkuNSAwIDAgMSAyLjI1LjA2NGMyLjQwNC4xNjUgMy43NC45MTUgMy43Mi43OGw2NS42NTUgNjUuNjU3Yy0uMTM4LS4wMjMuNjE2IDEuMzE4Ljc4IDMuNzIuMTkgMi43NDYtLjA2MiA2LjUyNi0uNjg2IDEwLjMxMy0uNjI2IDMuNzg2LTEuNTk1IDcuNjItMi41OTUgMTAuNjU2LS40MTIgMS4yNS0uNTI0IDEuMjcyLS45MzggMi4xODZsLTU0Ljc4LTQuMzc1LTI5LjkzOC0yOS45MzYtNC4zNzYtNTQuODEzYy45MTMtLjQxLjk0LS40OTUgMi4xODctLjkwNSAzLjAzNy0uOTk4IDYuODcyLTEuOTcgMTAuNjU4LTIuNTk0IDIuODQtLjQ2NiA1LjY2Mi0uNzI4IDguMDYyLS43NXptLTQ3Ljk3IDEyMC40NC0xOC45MzYgMzEuNTkzLTIwNC41IDIwNC40NjgtOC44NDQtLjY1NS0xLjE4OC0xNC41NjMgMjAxLjg3NS0yMDEuOTA2IDMxLjU5NC0xOC45Mzd6IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjEiPjwvcGF0aD48L2c+PC9zdmc+',
+  'Shield': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTI1NiAxNmMyNSAyNCAxMDAgNzIgMTUwIDcydjk2YzAgOTYtNzUgMjQwLTE1MCAzMTItNzUtNzItMTUwLTIxNi0xNTAtMzEyVjg4YzUwIDAgMTI1LTQ4IDE1MC03MnoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PC9wYXRoPjwvZz48L3N2Zz4=',
+  'Polearm (two-handed)': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTE4LjUwNiAxOS44OTV2MzcuNTZMMTM1LjExIDE3NC4wNmwzMy43NTUtMzMuNzU3TDQ4Ljk3IDE5Ljg5NUgxOC41MDd6bTI5Ni45MjQgODEuNjA3Yy04LjM5OCAxNy42OTUtMTcuNTggMzQuNTE0LTI3LjU1NSA1MC40OCA1My4wNTIgNTUuNiAxMDkuMDk0IDE2NS4xNTUgMTQ1LjYwMiAyNzAuODI3bDYuMzMyIDE4LjMyNy0xOC4yOC02LjQ2N2MtMTA0LjY4Ny0zNy4wMzQtMjIwLjYyLTkxLjI2NC0yNzQuMzc0LTE0MS45NjctMTUuOTcyIDkuOTgtMzIuNzkzIDE5LjE2NS01MC40OSAyNy41NjMgNTMuNjkzIDM1LjY4NSAxMjEuNTcgNjkuMjIyIDE4OS40OTYgOTUuMTY2LTE0LjQzNyA3LjE4OC0yOS45MzggMTMuNTktNDYuNTggMTkuMjdsLjAwMi4wMDNjNjguMjY0IDM4LjYzIDE3NS41NyA2NS40NyAyNTQuNDEyIDY0LjEyNyAxLjMzLTc4LjA1Mi0yNy4wOC0xODguOTUtNjQuMTI3LTI1NC40MTYtNS43NiAxNi44Ny0xMi4yNTcgMzIuNTctMTkuNTYgNDcuMTY2LTI2LjQ1OC02OS4yMDUtNjAuMzg3LTEzOC4xODItOTQuODgtMTkwLjA4em0tMTE3Ljg1OCAzNi41MjNMMTM1Ljc5IDE5OS44MWMzNC4yMDcgMzEuNjIgNjcuNzc1IDU2Ljc2MyA5NC43OTggNzEuNTk4IDE0LjQ1NCA3LjkzNSAyNy4wOTQgMTIuOTUgMzYuMzM0IDE0Ljc2MiA5LjI0IDEuODEyIDEzLjc3OC4zNCAxNS41NjQtMS40NDUgMS43ODYtMS43ODYgMy4yNi02LjMyNiAxLjQ0OC0xNS41NjUtMS44MTItOS4yNC02LjgzLTIxLjg4LTE0Ljc2NC0zNi4zMzQtMTQuODM1LTI3LjAyMy0zOS45NzYtNjAuNTktNzEuNTk4LTk0Ljh6bTc5Ljc2MiAzMC4wOGMtNC42NiA2LjgxLTkuNDggMTMuNDUtMTQuNDU3IDE5LjkyNiA4Ljg5MiAxMi41NTcgMTYuNTIgMjQuNTg3IDIyLjY3NiAzNS44MDIgOC41MTUgMTUuNTEgMTQuMzA2IDI5LjQzIDE2LjcxOCA0MS43MyAyLjQxNCAxMi4zIDEuNTI4IDI0LjI4LTYuNTcgMzIuMzc3LTguMDk2IDguMDk2LTIwLjA3NiA4Ljk4Mi0zMi4zNzYgNi41Ny0xMi4zLTIuNDEzLTI2LjIyLTguMjA2LTQxLjczLTE2LjcyLTExLjEtNi4wOTQtMjMtMTMuNjMyLTM1LjQxNC0yMi40MDVhNDQ3Ljc4MiA0NDcuNzgyIDAgMCAxLTIyLjg3NyAxNi43NmM0Ny4yNjMgNDIuMjEgMTQ5LjY2NCA5Mi4zMTcgMjQ1LjU0NSAxMjcuODczLTM1LjE5LTk1Ljc2Ni04Ni4zNDctMTkyLjYwMi0xMzEuNTE0LTI0MS45MTN6IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjEiPjwvcGF0aD48L2c+PC9zdmc+',
+  'Polearm (one-handed)': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTE4LjUwNiAxOS44OTV2MzcuNTZMMTM1LjExIDE3NC4wNmwzMy43NTUtMzMuNzU3TDQ4Ljk3IDE5Ljg5NUgxOC41MDd6bTI5Ni45MjQgODEuNjA3Yy04LjM5OCAxNy42OTUtMTcuNTggMzQuNTE0LTI3LjU1NSA1MC40OCA1My4wNTIgNTUuNiAxMDkuMDk0IDE2NS4xNTUgMTQ1LjYwMiAyNzAuODI3bDYuMzMyIDE4LjMyNy0xOC4yOC02LjQ2N2MtMTA0LjY4Ny0zNy4wMzQtMjIwLjYyLTkxLjI2NC0yNzQuMzc0LTE0MS45NjctMTUuOTcyIDkuOTgtMzIuNzkzIDE5LjE2NS01MC40OSAyNy41NjMgNTMuNjkzIDM1LjY4NSAxMjEuNTcgNjkuMjIyIDE4OS40OTYgOTUuMTY2LTE0LjQzNyA3LjE4OC0yOS45MzggMTMuNTktNDYuNTggMTkuMjdsLjAwMi4wMDNjNjguMjY0IDM4LjYzIDE3NS41NyA2NS40NyAyNTQuNDEyIDY0LjEyNyAxLjMzLTc4LjA1Mi0yNy4wOC0xODguOTUtNjQuMTI3LTI1NC40MTYtNS43NiAxNi44Ny0xMi4yNTcgMzIuNTctMTkuNTYgNDcuMTY2LTI2LjQ1OC02OS4yMDUtNjAuMzg3LTEzOC4xODItOTQuODgtMTkwLjA4em0tMTE3Ljg1OCAzNi41MjNMMTM1Ljc5IDE5OS44MWMzNC4yMDcgMzEuNjIgNjcuNzc1IDU2Ljc2MyA5NC43OTggNzEuNTk4IDE0LjQ1NCA3LjkzNSAyNy4wOTQgMTIuOTUgMzYuMzM0IDE0Ljc2MiA5LjI0IDEuODEyIDEzLjc3OC4zNCAxNS41NjQtMS40NDUgMS43ODYtMS43ODYgMy4yNi02LjMyNiAxLjQ0OC0xNS41NjUtMS44MTItOS4yNC02LjgzLTIxLjg4LTE0Ljc2NC0zNi4zMzQtMTQuODM1LTI3LjAyMy0zOS45NzYtNjAuNTktNzEuNTk4LTk0Ljh6bTc5Ljc2MiAzMC4wOGMtNC42NiA2LjgxLTkuNDggMTMuNDUtMTQuNDU3IDE5LjkyNiA4Ljg5MiAxMi41NTcgMTYuNTIgMjQuNTg3IDIyLjY3NiAzNS44MDIgOC41MTUgMTUuNTEgMTQuMzA2IDI5LjQzIDE2LjcxOCA0MS43MyAyLjQxNCAxMi4zIDEuNTI4IDI0LjI4LTYuNTcgMzIuMzc3LTguMDk2IDguMDk2LTIwLjA3NiA4Ljk4Mi0zMi4zNzYgNi41Ny0xMi4zLTIuNDEzLTI2LjIyLTguMjA2LTQxLjczLTE2LjcyLTExLjEtNi4wOTQtMjMtMTMuNjMyLTM1LjQxNC0yMi40MDVhNDQ3Ljc4MiA0NDcuNzgyIDAgMCAxLTIyLjg3NyAxNi43NmM0Ny4yNjMgNDIuMjEgMTQ5LjY2NCA5Mi4zMTcgMjQ1LjU0NSAxMjcuODczLTM1LjE5LTk1Ljc2Ni04Ni4zNDctMTkyLjYwMi0xMzEuNTE0LTI0MS45MTN6IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjEiPjwvcGF0aD48L2c+PC9zdmc+',
+  'Grappling Hook': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0ibTMzNy42IDI0LjI0LTg2IDg3Ljk2IDYxLjMtMjEuMzJjMi4yIDI3LjIyIDQuNiA1NC40MiA2LjggODEuODJsLTE4LjYgMS42Yy04LjUgOC4zLTE3IDE2LjktMjUuNSAyNS40bDI1LjggMjUuOCAyNS4yLTI1LjEgMi40LTE3LjZjMjkuMiAzLjggNTcuOSA3LjkgODcuMSAxMS41bC0xOS43IDQ0LjUgOTQuOS02OGMtMzguMy04LTc2LjYtMTUuNi0xMTQuOS0yMy4zbDMuNy0xOC4zIDIyLjkgNC42IDE2LjItNTcuMjUtNTMuMyAxOS41NiAzLjMgMjguMDktMTguNiAyLjItMy44LTMyLjk2Yy0zLTIzLjA3LTYuMS00Ni4xMy05LjItNjkuMnptLTEwNiAxMDMuOTZMMTgzLjEgMjExbDY2LTQyLjcgMjQuNCA3IDI1LjYtMjUuNS0uMy0zLTY3LjItMTguNnptMTE3LjUgNzYuMS0xOS4yIDE5LjIgNC41IDExLTQ5LjMgNzMuNiA5MC4zLTU1LjItMTctNDcuNHpNMjcwIDIyMC42Yy0yLjcgNDMuNS0zNy4yIDc3LjQtNzkuMSA3Ny4zLTU0LjMgMC05OC4wOSA0NS44LTk4LjA4IDEwMS42IDAgNDMuNS0zMS43MyA3OC43LTcyLjA3IDgyLjV2MTMuMWgyNS45YzM3Ljg2LTE0LjIgNjQuODUtNTEuOCA2NC44NS05NS42IDAtNDYuMSAzNS42LTgyLjkgNzkuNC04Mi45IDQ2LjkgMCA4NS45LTM0LjIgOTUuNy03OS41LTUuNS01LjUtMTEtMTEtMTYuNi0xNi41eiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIxIj48L3BhdGg+PC9nPjwvc3ZnPg==',
+  'Ladder': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTEyMSAxN3YzMGgyNzBWMTdIMTIxem0xNiA0OHY0NmgzMFY2NWgtMzB6bTIwOCAwdjQ2aDMwVjY1aC0zMHptLTIyNCA2NHYzMGgyNzB2LTMwSDEyMXptMTYgNDh2NDZoMzB2LTQ2aC0zMHptMjA4IDB2NDZoMzB2LTQ2aC0zMHptLTIyNCA2NHYzMGgyNzB2LTMwSDEyMXptMTYgNDh2NDZoMzB2LTQ2aC0zMHptMjA4IDB2NDZoMzB2LTQ2aC0zMHptLTIyNCA2NHYzMGgyNzB2LTMwSDEyMXptMTYgNDh2NDZoMzB2LTQ2aC0zMHptMjA4IDB2NDZoMzB2LTQ2aC0zMHptLTIyNCA2NHYzMGgyNzB2LTMwSDEyMXoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PC9wYXRoPjwvZz48L3N2Zz4=',
+  'Fog of War Flask': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTI4NS4yMTcgMjEuNjkzYy0yMC40MzIgMC0zOS42IDYuNjczLTUyLjc1OCAxOC4xMTZhNTIuNzcgNTIuNzcgMCAwIDAtMjkuOTkyLTkuMzE5Yy0yNy43ODIgMC01MC42MzQgMjEuNTE4LTUyLjc2MiA0OC43NjQtMTcuOTg5IDQuOTU3LTMwLjg0OCAyMS4zNjgtMzAuODQ4IDQwLjYxNSAwIDIuNTQ2LjIzIDUuMDgzLjY4NCA3LjU3OGE0Mi4xMTQgNDIuMTE0IDAgMCAwLTQuNDc1IDE4LjkwN2MwIDIzLjIzOCAxOC45MDcgNDIuMTQ0IDQyLjE0NyA0Mi4xNDRhNDIuNDMgNDIuNDMgMCAwIDAgNy4yMjYtLjYyIDQyLjA3OSA0Mi4wNzkgMCAwIDAgNS4xMjcgOC4xNjljLTE3LjM2NSAzLjMzMS0yNy4wNjggMTcuMTYzLTIzLjM0NSAzNi4wMjMtOS4yOTUgNC42MDctMTYuODY0IDYuMjAxLTE3LjIxNSAxOC4yNjgtLjI4NyA5Ljg2NiA0LjkxNiAxOS4wMSAxMy4yMyAyNS41Ni04LjMxMyA2LjU1MS0xMy4yMyAxNS42ODgtMTMuMjMgMjUuNTU5IDAgMTEuMjkgMTAuMzUyIDIxLjY4MiAxNy41NzggMjguNDMtNy40MTYgOS42OTMtNy45MjcgMjQuOTk4LS4yNiAzOC4xNTRhNDIuMTMyIDQyLjEzMiAwIDAgMCAyLjMxOSAzLjU1bC0xNC42MjIgNDkuMzUgNDguNDEtMzAuMzY1YzcuMTItLjQ0NCAxMy4yNDQtLjkxIDIwLjAzNC4xMzUgOS45MTggMCAxOS4zNzYtNC40IDI2LjU1Ni0xMi4yMiAxLjYyLjE3IDMuMjQ5LjI1NyA0Ljg3NC4yNTcgMjUuNDExIDAgNDYuMDg1LTIwLjY3NSA0Ni4wODUtNDYuMDg2IDAtMi45ODYtLjI4LTUuOTMtLjg0LTguODE2YTQ1Ljk4MiA0NS45ODIgMCAwIDAgMzAuNzY2LTI4LjMwNyA1My4yMDcgNTMuMjA3IDAgMCAwIDIyLjgyNi0xNC4yNjJjMjcuNjY3LS4xNTYgNTEuNjM1LTE5Ljk3OSA1Ny4yMi00Ni43NzcgMTQuOTItMTAuNDI0IDI0LjA1NC0yNi44NzYgMjQuOTk1LTQ1LjA0MyAxNy43ODctNi42NzkgMjkuNzUtMjMuNjIzIDI5Ljc1LTQzLjEwMyAwLTI0LjM3My0xOS4wMi00NC4zODYtNDIuOTk0LTQ1Ljk4NS0zLjYyLTIxLjgyNC0yMi42MjctMzguNTE3LTQ1LjQ2NS0zOC41MTctMS4wNCAwLTIuMDgzLjAzNi0zLjEyNS4xMDctNy40NjItMjMuNDI1LTM1LjA0Ny00MC4yNjYtNjcuODk2LTQwLjI2NnptMCAxNS4zNGMyOC4xMzggMCA1Mi4wMTIgMTUuMTUxIDU0LjM1IDM0LjQ5MmwuMDgzLjY5OGE1MS4zMzggNTEuNzMgNTguMTg1IDAgMC0zNS41NC0xMy45MjggNTEuMzM4IDUxLjczIDU4LjE4NSAwIDAtNDIuNzg4IDIyLjk4MiA1MS4zMzggNTEuNzMgNTguMTg1IDAgMSAzNC43MS0xMy42NzcgNTEuMzM4IDUxLjczIDU4LjE4NSAwIDEgNTEuNjIyIDUxLjA5NSA1MS4zMzggNTEuNzMgNTguMTg1IDAgMS04LjgzNiAyOC44MTMgNTEuMzM4IDUxLjczIDU4LjE4NSAwIDAgMTYuOTEyLTM4LjEyIDUxLjMzOCA1MS43MyA1OC4xODUgMCAwLTEwLjE5My0zMC41MjNjMy41MjYtLjg3MiA2LjkwNy0xLjYwMiAxMC43MDEtMS42NzQgMTYuOTI3IDAgMzAuNzAyIDEzLjc1MSAzMC43NDYgMzAuNjY2bC0uMDA0IDguNzhjMy45NzItLjQwOCA3Ljc4LS45MzQgMTEuNjMtMS4wMyAxNi45NTIgMCAzMC43NDUgMTMuNzkzIDMwLjc0NSAzMC43NDcgMCAxNC4zOS05Ljc4MiAyNi43MDItMjMuNzg5IDI5Ljk0bC02LjI0IDEuNDQ0Yy4xNCAyLjkzLjMyIDUuNzY2LjM2MSA4LjU5NiAwIDE1LjIwOC03Ljc0NyAyOS4wNTQtMjAuNzI4IDM3LjAzN2wtMy4wNTUgMS44OC0uNTE3IDMuNTVjLTMuMDc3IDIxLjE3LTIxLjU1NiAzNy4xMzctNDIuOTg1IDM3LjEzNy0xLjk4NC0uMDM3LTQuMzgyLS4xODItNi41MjUtLjMxOWwtMi40OCAzLjA1Yy01LjU5MyA2LjcwMy0xNS42NDMgMTIuMDg1LTI1Ljc1NiAxNC4wNDItMy42MSAxMy44MjYtMTIuMDUyIDIzLjMwNC0yOC44MzQgMjcuNDE2bC0xMC43MjMuNzIgNC4xNjYgOS45MDdhMzAuNTQ4IDMwLjU0OCAwIDAgMSAyLjM5IDExLjkwOGMwIDE2Ljk1Mi0xMy43OTEgMzAuNzQ0LTMwLjc0NCAzMC43NDQtMy40Mi0uMDE0LTcuNTctLjg2LTExLjI2Ny0xLjcwNS01LjUxNyA3LjUzMy05LjQxNiAxMS45OTctMjAuMTYyIDEzLjY2Ni03Ljc1NS0uMTA0LTE2LjQwNy0xLjc1NS0yNC44ODEuMTM3bC0xNy4zMiAxMC44NjUgMy42Ny0xMi4zOSAyLjA1NC01LjczOWMtMi40NTctMi43MDItNC41NTYtNC44MDgtNi40MDYtNy45MjItNS4yNzQtOS4wNDktNC40ODMtMTkuNzUgMS43MjUtMjMuMzY3YTcuODk1IDcuODk1IDAgMCAwIDMuODU5LTUuOTMzYy40ODItNC4zODItMi4xNjMtNi44MzItNi41NDktMTAuODkzLTMuOTAzLTMuNjEzLTE0LjI2Ny0xMy4yMDgtMTQuMjY3LTE4LjY2NiAwLTcuNzU3IDYuNDQyLTE0LjkzOCAxNi40MTYtMTguMjkxbDIxLjYyNS03LjI3My0yMS42MjctNy4yNjhjLTkuOTczLTMuMzUzLTE2LjQxNi0xMC41MzEtMTYuNDE2LTE4LjI5LjA3My0zLjk1IDEzLjI1LTguMTkxIDE2LjY1OC0xMS45MjMtMy4xMTctMTMuMzE4LjIzNi0yNC4zNzcgMTYuMzc5LTI3Ljc2NiAzLjU0My4wMTcgNy43OTMgMS4wNTkgMTEuNTcyIDIuMDE0IDMuMjgxLTUuMTI5IDYuNTkzLTkuOTQgMTAuNzkxLTE0LjU3bC04Ljc4Ny00LjE4NGEyNi43ODEgMjYuNzgxIDAgMCAxLTE0LjM3MS0xNy4yMTdsLTIuMTktOC4xMTVjLTYuMDE3IDIuMjI4LTEwLjc5IDQuNDYtMTcuMTg3IDQuNTgyLTE0Ljc4IDAtMjYuODA1LTEyLjAyNS0yNi44MDUtMjYuODA0IDAtNC44NyAxLjMxOC05LjYzNiAzLjgxNS0xMy43ODhsMS42NjYtMi43N2MtLjkxMi0zLjQ4Ni0xLjY1NS02LjIxMi0xLjY5Mi05LjkyNyAwLTEzLjcyMiAxMC4yNzMtMjUuMTc2IDIzLjg5My0yNi42NDRsNy4xODMtLjc3NmMtLjE0NS0zLjA1LS4zMzYtNi4wNzYtLjM5LTkuMDM1IDAtMjAuNzIzIDE2Ljg1OS0zNy41ODIgMzcuNTgyLTM3LjU4MiA5LjQxIDAgMTguNDE1IDMuNDk2IDI1LjM1NSA5Ljg0Nmw1LjczIDUuMjQyIDUuMTczLTUuNzk1YzEwLjExLTExLjMyOSAyNy40ODktMTguMDkyIDQ2LjQ5Mi0xOC4wOTJ6TTE5Ny45MTggOTQuNTdhMzIuMTY1IDM2Ljk2IDIzLjQ1OCAwIDAtMzIuNTI3IDIzLjQzNiAzMi4xNjUgMzYuOTYgMjMuNDU4IDAgMCAxNC43OTMgNDYuNzA5IDMyLjE2NSAzNi45NiAyMy40NTggMCAwIDEuODc5LjcyNiAyOS43NjcgMzQuMjA0IDIzLjQ1OCAwIDEtNy44MDEtMzkuNjMyIDI5Ljc2NyAzNC4yMDQgMjMuNDU4IDAgMSA0MC45MjItMTkuNTI4IDI5Ljc2NyAzNC4yMDQgMjMuNDU4IDAgMSAxLjA5LjU1M0EyOC4zMDIgMjQuMjcgOS4yNzYgMCAwIDIwMyAxMjQuNTc4YTI4LjMwMiAyNC4yNyA5LjI3NiAwIDAtLjEyNSAxLjc5NSAzMS4wNzQgMjQuMzA3IDUuNzA4IDAgMSAzMC4wMy0xMS4wNzYgMzEuMDc0IDI0LjMwNyA1LjcwOCAwIDEgMjYuMTIgMTcuMDg2IDI4LjMwMiAyNC4yNyA5LjI3NiAwIDAgLjEwOC0uNjEgMjguMzAyIDI0LjI3IDkuMjc2IDAgMC0yNS4yNzgtMjcuNzEyIDI4LjMwMiAyNC4yNyA5LjI3NiAwIDAtNC44MTItLjI2MiAyOC4zMDIgMjQuMjcgOS4yNzYgMCAwLTguNjUgMS40IDMyLjE2NSAzNi45NiAyMy40NTggMCAwLTEwLjc4NC04LjI5NSAzMi4xNjUgMzYuOTYgMjMuNDU4IDAgMC0xMS42OTEtMi4zMzR6bTQ5LjkzNyAxMzkuMjg3YTQwLjM4NCAzNC45NDEgMTQuODMzIDAgMC0zNy4yMTQgMjQuOTczIDQwLjM4NCAzNC45NDEgMTQuODMzIDAgMC0uOTYgNi45MjIgMzYuNjYgMzEuNzIgMTguMDg3IDAgMSAuMDk4LS4zNDQgMzYuNjYgMzEuNzIgMTguMDg3IDAgMSA0NC42OTgtMTguNzcgMzYuNjYgMzEuNzIgMTguMDg3IDAgMSAyNS4wMDIgNDEuNTM2IDM2LjY2IDMxLjcyIDE4LjA4NyAwIDEtNy4zMjUgMTEuNTI1IDQwLjM4NCAzNC45NDEgMTQuODMzIDAgMCAxNi41NjMtMjAuMTkxIDQwLjM4NCAzNC45NDEgMTQuODMzIDAgMC0zMC4wOTQtNDQuMTE1IDQwLjM4NCAzNC45NDEgMTQuODMzIDAgMC0xMC43NjgtMS41MzZ6bS0xMzIuOTkyIDE2MS4zM2MtMjYuMjY2IDAtNDcuNTYgMjEuMjk1LTQ3LjU2IDQ3LjU2IDAgMjYuMjY3IDIxLjI5NCA0Ny41NiA0Ny41NiA0Ny41NiAyNi4yNjYgMCA0Ny41Ni0yMS4yOTMgNDcuNTYtNDcuNTYgMC02Ljg3My0xLjQ2LTEzLjQwMy00LjA4My0xOS4zMDQtMS40MDQtMy4xNTgtMTguMzY3IDE5LjMwNS0zMy4yMTUgOS4yMDUtNy4wODctNC44Mi0xLjg0OS0xOS44NzcgMS40NzktMjguNzM0IDEuNDUtMy44NjQgMi41MzktNi41NDcgMi4wODItNi42ODVhNDcuNjA3IDQ3LjYwNyAwIDAgMC0xMy44MjMtMi4wNDF6bS0xNS4xMTUgMTYuNTI2YzEuMTQ3LjIxMy05LjAzIDEzLjk5NiAxLjI3NSAzNi44NDYgMi4wNjggNC41ODctLjI3IDEwLjAxLTQuOTk2IDEyLjAxNy00LjcyNSAyLjAwOS0xMC4xNS0uMTE2LTEyLjExNy00Ljc0NC0xLjk2Ny00LjYzMy4wNDMtMzMuMzYyIDE1LjA4NC00My43NDQuMzk2LS4yNzMuNjM1LS4zOTcuNzU0LS4zNzV6IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjEiPjwvcGF0aD48L2c+PC9zdmc+',
+  'Canister of Creeping Death': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTI1Ny42MTcgMjAuNzE3Yy03LjA4My0uMDExLTE0LjI0Mi40NDgtMjEuNDY5IDEuMzQ3LTMxLjIgMy44Ny01OS4wNzcgMTYuMzQ2LTgyLjU2NiAzOS41MS0xOC41OSAxOC4zMjMtMzAuOTMgNDAuNzgzLTMzLjggNjguMjc0LTMuNDA5IDMyLjk5IDYuOTg1IDYxLjE2IDI4LjExOCA4NC4xOTEgNi43OTIgNy4zODYgOS43OTUgMTQuNTgyIDkuNjA4IDI1LjAzLS4yOTcgMTYuNDI4Ljk3NCAzMi44ODIgMS42NSA1MC4zMDggMjEuMDI3LTEyLjQyMSA0MS4yMTQtMjQuMzg0IDYxLjY3NC0zNi40OCAxMi4xNzYgMjEuMzc4IDI0LjA1NSA0Mi4yNyAzNi40NzkgNjMuOTc2IDEyLjE0OC0yMS41MTcgMjMuODk0LTQyLjMgMzUuODI2LTYzLjI0NCAxOS43NTMgMTEuOCAzOS4yNCAyMy40NiA1OS4zNzMgMzUuNTU3LjUxNC0xNi45NCAxLjczMy0zMi43OTkgMS4yNDYtNDguNi0uMzUzLTExLjA3IDEuODEzLTE5LjY3NiAxMC4yNTYtMjYuMjIzIDIuNjc3LTIuMDgzIDQuNzA3LTUuMzU2IDYuODQ1LTguMzA4IDIwLjU2OC0yOC42MDYgMjcuNzEyLTYwLjM0OCAxNy4xNi05NS40OTgtOS43Ny0zMi41MDItMzAuNzcxLTU0LjY5NS01Ny42OTktNzAuMzYyLTIzLjA2Ni0xMy40MDUtNDcuNDAzLTE5LjQ0LTcyLjctMTkuNDc4em04Mi43OTkgMTA1LjIwN2MxNy45NDItLjEzNCAyNi4xNjQgMTEuMDcgMjIuNDA0IDMwLjQ3NC00LjM1MyAyMi4zNzktMjIuOTIgMzguNzIzLTQyLjY3NCAzNy42NjgtMjEuMzgtMS4xMzktMzguNjk1LTE4Ljc1NS00MS4wMjUtNDEuODkyLS4xODYtMS44MTEuNDM1LTQuNTk4IDEuNi01LjU0NyAxMC42NTgtOC42MDUgNDUuNzA0LTIwLjU5MyA1OS42OTUtMjAuNzAzem0tMTY1LjE1NC4wM2MxMy43MTcuODY1IDI5LjQ5NCA3LjU0OCA0NS4wODQgMTQuOTEgMi4yOTcgMS4xMDcgNC40MDggMi43ODUgNi43NjMgMy40NjQgNS44NDcgMS42NTEgNi4wODggNi4xMTMgNS4yNSAxMS4zMS0zLjc2IDIyLjIxNy0yMy4wMDQgMzkuNDg0LTQyLjc4NSAzOC40MDEtMjIuNDMzLTEuMjE4LTM5LjU5Mi0xOS4yNjktNDEuMTYyLTQzLjM1MS0xLjA4My0xNi41OSA2Ljc2Ni0yNC45NTIgMjYuODUtMjQuNzM1em04MC42MTUgNTYuNTU2YzcuNDQgMTguMjE0IDE0LjQyIDM1LjIzNSAyMS42NDYgNTIuOTNoLTQzLjE4N2M3LjE0NC0xNy41ODggMTQuMTUyLTM0LjYzNyAyMS41NC01Mi45M3ptLTE2LjE3MiAxNDEuODRjLS4xNDYuMzE5LS4yOTMuNjMzLS40Mi45NzYtMi44OTQgNy45ODEtNi4xOTcgMTUuODU2LTkuOTg0IDIzLjU0My04LjMzNCAxNi44MzItMTcuMjkzIDMzLjM2NS0yNS43MSA1MC4wOS02LjYzIDEzLjEyNS0xMC4zMzYgMjYuODQ1LTcuNzQgNDEuNzgzIDUuNzEgMzIuNTgyIDM2LjY3IDU0LjgyNyA2OS42MyA0OS44NDQgMzkuODg2LTYuMDMzIDU5LjQ4LTQxLjEwMyA0OC42MDMtNzQuOTAyLTQuMzU3LTEzLjU4Ni0xMS4yODMtMjYuNDY5LTE3Ljk0MS0zOS4xNTktOC40Ni0xNi4wNjItMTYuNTI4LTMyLjI3OS0yMy4wNjEtNDkuMTEtMi4zNDggNC4xNTItNC42OTggOC4zMTEtNy4wNTcgMTIuNDkxbC04LjY1OCAxNS4zMjgtOC43NDItMTUuMjc5YTExMjg0LjggMTEyODQuOCAwIDAgMS04LjkyLTE1LjYwNXptLjA1MyA0MC45N2MzLjcwOS4wMzIgMy43MzUgMjcuNTgzIDEuNjQyIDQwLjAyNi0yLjE2NiAxMi41NTUuMTMgMjQuMDg0IDEwLjQ5NSAzMi42OSAxNS4wMiAxMi40NzUgMzUuNDI2IDkuNjYgNDYuNjU0LTYuMzg2LjUxNC0uNjguOTc1LTEuMzU1IDEuNDktMi4wNi40MDQuMDgzLjc1Ni4xNjQgMS4xNjIuMjE5LS44OSA0Ljc2My0xLjIxNyA5LjYzMy0yLjY1MiAxNC4yNjEtNi4zMyAyMC43MDItMjUuNTE1IDMzLjA2OC00Ny45NzcgMzEuMTc0LTE5LjQwNC0xLjYyNC0zNS44MzMtMTcuNzUzLTM5LjI0LTM3Ljk5Ni0xLjg0MS0xMC41NzkgMS4yMTgtMjAuMDUgNS42NTQtMjkuMTcgNi42MDItMTMuNjEgMTQuMDE4LTI2LjgxNyAyMC42NDctNDAuMzc1LjgxLTEuNjU1IDEuNTE4LTIuMzg4IDIuMTI1LTIuMzgzeiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIxIj48L3BhdGg+PC9nPjwvc3ZnPg==',
+  'Concentrated Creeping Death Serum': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iaGVpZ2h0OiA1MTJweDsgd2lkdGg6IDUxMnB4OyI+PGcgY2xhc3M9IiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSIgc3R5bGU9IiI+PHBhdGggZD0iTTI1NiAyNy4yOGMtMTIuNSAwLTIzLjkgMi42Ny0zMS4yIDYuMzQtNy40IDMuNjctOS40IDcuNDYtOS40IDkuMjkgMCAxLjg0IDIgNS42MyA5LjQgOS4zIDcuMyAzLjY2IDE4LjcgNi4zMyAzMS4yIDYuMzNzMjMuOS0yLjY3IDMxLjItNi4zM2M3LjQtMy42NyA5LjQtNy40NiA5LjQtOS4zIDAtMS44My0yLTUuNjItOS40LTkuMjktNy4zLTMuNjctMTguNy02LjM0LTMxLjItNi4zNHptLTU5LjQgMTQuODFjLTE3LjMuNzgtMzAuOSAzLjc1LTQxLjQgOC40MkMxNDMgNTYgMTM0LjEgNjQuNzkgMTM0LjEgNzYuMjZjMCAxMS40NiA4LjkgMjAuMjEgMjEuMSAyNS43NCAxMi4yIDUuNSAyOSA4LjYgNTAuOCA4LjZWOTEuODljLTE5LjkgMC0zNC40LTMuMTMtNDMuMS03LTguNi0zLjg4LTEwLjEtNy41OS0xMC4xLTguNjMgMC0xLjA1IDEuNS00Ljc2IDEwLjEtOC42NCA4LjUtMy44MSAyMi41LTYuODMgNDEuNi02Ljk4LTQuOC00Ljc4LTcuOS0xMC42OC03LjktMTcuNzN6bTE4LjggMjYuMzR2NDQuMTdjMjggMTcuMiA1My41IDE2LjkgODEuMiAwVjY4LjQzYy0uMy4xOS0uNy4zOC0xIC41NS0xMC44IDUuMzgtMjQuNSA4LjMyLTM5LjYgOC4zMi0xNS4xIDAtMjguOC0yLjk0LTM5LjYtOC4zMi0uMy0uMTctLjctLjM2LTEtLjU1em0tMTQuNiA1Ny4yN2MtNDQuNiAxMy4yLTg0LjggNDQuMy05My4zIDEwMi42IDEuNC0xLjQgMi44LTIuNiA0LjQtMy45IDktNyAyMC43LTEyLjYgMzUtMTcuNCAyOC42LTkuNSA2Ni44LTE1LjEgMTA5LjEtMTUuMXM4MC41IDUuNiAxMDkuMSAxNS4xYzE0LjMgNC44IDI2IDEwLjQgMzUgMTcuNCAxLjYgMS4zIDMgMi41IDQuNCAzLjktOC41LTU4LjMtNDguNy04OS40LTkzLjMtMTAyLjYtMzUuNSAyMy42LTc0LjUgMjQuMS0xMTAuNCAwem01NS4yIDg1Yy00MC42IDAtNzcuMyA1LjUtMTAzLjIgMTQuMS0xMi45IDQuMy0yMyA5LjQtMjkuMiAxNC40LTYuMyA0LjktOC4zIDktOC4zIDEyLjEgMCAzLjEgMiA3LjIgOC4zIDEyLjEgNi4yIDUgMTYuMyAxMC4xIDI5LjIgMTQuNCAyNS45IDguNiA2Mi42IDE0LjEgMTAzLjIgMTQuMXM3Ny4zLTUuNSAxMDMuMi0xNC4xYzEyLjktNC4zIDIzLTkuNCAyOS4yLTE0LjQgNi4zLTQuOSA4LjMtOSA4LjMtMTIuMSAwLTMuMS0yLTcuMi04LjMtMTIuMS02LjItNS0xNi4zLTEwLjEtMjkuMi0xNC40LTI1LjktOC42LTYyLjYtMTQuMS0xMDMuMi0xNC4xem0tMTQ5LjkgNjIuMmMxLjYgMTUwLjkgMjIuNSAyMTEuOCAxNDkuOSAyMTEuOHMxNDguMy02MC45IDE0OS45LTIxMS44Yy0xLjcgMS44LTMuNyAzLjYtNS44IDUuMy05IDctMjAuNyAxMi42LTM1IDE3LjQtMjguNiA5LjUtNjYuOCAxNS4xLTEwOS4xIDE1LjEtMzMuOSAwLTY1LTMuNy05MC45LTkuOS0uNSA1MS45IDMuNiA4MC4yIDkuMiA5Ni43IDUuOSAxNy40IDEyLjcgMjEuNiAyMS43IDMwLjVsLTEzLjQgMTMuNGMtNy43LTcuNy0xOC44LTE2LjgtMjYuMS0zNy45LTctMjAuNS0xMS01Mi4xLTEwLTEwOC0xNC4xLTQuOC0yNS44LTEwLjQtMzQuNi0xNy4zLTIuMS0xLjctNC4xLTMuNS01LjgtNS4zeiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIxIj48L3BhdGg+PC9nPjwvc3ZnPg==',
 };
 
 const WEAPONS = {
@@ -1629,7 +1857,7 @@ const STAT_IMPROVEMENT = {
   VIT: 'Vitality +1',
   SKL: 'Skill +1',
   DEF: 'Defense +1',
-  CMB: 'Combat +1',
+  COM: 'Combat +1',
 };
 
 // IP spend options per warrior slot
@@ -1647,6 +1875,7 @@ let state = {
   companyName: '',
   captain: 0,
   mark: '',
+  ipLimit: 3,
   warriors: [
     { type: '', weapon: '', weapon2: '', climbing: 'None', consumable: 'None', statImprove: '', ipSpent: [] },
     { type: '', weapon: '', weapon2: '', climbing: 'None', consumable: 'None', statImprove: '', ipSpent: [] },
@@ -1659,7 +1888,7 @@ let state = {
 // ============================================================
 function getAvailableWarriorTypes(slotIndex) {
   const used = state.warriors.map((w, i) => i !== slotIndex ? w.type : '').filter(Boolean);
-  return Object.keys(WARRIORS).filter(w => !used.includes(w));
+  return Object.keys(WARRIORS).filter(w => !used.includes(w)).sort();
 }
 
 function getBaseIP(slotIndex) {
@@ -1702,7 +1931,7 @@ function renderSlot(i) {
 
     // Stats
     html += `<div class="stats-row">`;
-    const statKeys = ['MOV', 'ATK', 'VIT', 'SKL', 'DEF', 'CMB'];
+    const statKeys = ['MOV', 'ATK', 'VIT', 'SKL', 'DEF', 'COM'];
     statKeys.forEach(s => {
       const base = wdata.stats[s];
       const improved = w.statImprove === s && w.ipSpent.includes('stat');
@@ -1732,13 +1961,27 @@ function renderSlot(i) {
 
     // Primary weapon selector
     const wpnData = w.weapon ? WEAPONS[w.weapon] : null;
-    const wpnStatLine = wpnData && wpnData.damage > 0 ? ` — Range: ${wpnData.range} / Dmg: ${wpnData.damage}` : '';
-    html += `<div style="margin-bottom:1rem;">
-      <span class="opt-label">Primary Weapon</span>
-      <select class="opt-select" onchange="setWarriorProp(${i}, 'weapon', this.value)">
-        ${getAllowedWeapons(wdata).map(wn => `<option value="${wn}" ${w.weapon === wn ? 'selected' : ''}>${wn}${WEAPONS[wn] && WEAPONS[wn].damage > 0 ? ` — ${WEAPONS[wn].range} / Dmg ${WEAPONS[wn].damage}` : ''}</option>`).join('')}
-      </select>
-      ${wpnData ? `<div class="item-desc">${wpnStatLine ? `<span class="item-desc-stats">${wpnStatLine.slice(3)}</span>` : ''}${wpnData.note}</div>` : ''}
+    const screenDualWield = w.weapon === 'Light Weapon' && w.weapon2 === 'Light Weapon';
+    const allowedWpns = getAllowedWeapons(wdata);
+    html += `<div class="upgrade-detail" style="margin-bottom:0.75rem;margin-top:0;">
+      <span class="upgrade-detail-label">Primary Weapon</span>
+      <div class="upgrade-choice-grid">
+        ${allowedWpns.map(wn => {
+          const ic = ITEM_ICONS[wn] ? `<img src="${ITEM_ICONS[wn]}" style="width:32px;height:32px;filter:sepia(0.3) brightness(0.95);opacity:0.9;flex-shrink:0;">` : '';
+          const wd = WEAPONS[wn];
+          const stats = wd && wd.damage > 0
+            ? `<span style="font-size:0.75rem;opacity:0.6;letter-spacing:0.05em;">${wd.range} &nbsp;·&nbsp; DMG ${wd.damage}</span>`
+            : '';
+          return `<button class="upgrade-choice-btn ${w.weapon === wn ? 'active' : ''}" onclick="setWarriorProp(${i}, 'weapon', '${wn}')" style="display:flex;align-items:center;gap:0.5rem;text-align:left;">
+            ${ic}
+            <span style="display:flex;flex-direction:column;gap:1px;">
+              <span style="font-size:1rem;line-height:1.2;">${wn}</span>
+              ${stats}
+            </span>
+          </button>`;
+        }).join('')}
+      </div>
+      ${wpnData ? `<div class="upgrade-choice-note">${wpnData.note}</div>` : ''}
     </div>`;
 
     // Upgrade tray
@@ -1780,8 +2023,20 @@ function renderSlot(i) {
       html += `<div class="upgrade-detail">
         <span class="upgrade-detail-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M2 2l7 7-1.5 1.5L2 5V2h3l5 5.5L8.5 9 2 2zm20 0v3l-5.5 5.5L15 9l-7-7h3l4.5 5L17 5.5 14.5 3 17 2h3l2 2zM8.5 13.5l-6 6 1 1 6-6-1-1zm7 0l-1 1 6 6 1-1-6-6z"/></svg> Choose Second Weapon</span>
         <div class="upgrade-choice-grid">
-          ${w2opts.map(wn => `<button class="upgrade-choice-btn ${w.weapon2 === wn ? 'active' : ''}"
-            onclick="setWarriorProp(${i}, 'weapon2', '${wn}')">${wn}${WEAPONS[wn] && WEAPONS[wn].damage > 0 ? `<br><small style="opacity:0.6">${WEAPONS[wn].range} / Dmg ${WEAPONS[wn].damage}</small>` : ''}</button>`).join('')}
+          ${w2opts.map(wn => {
+            const ic = ITEM_ICONS[wn] ? `<img src="${ITEM_ICONS[wn]}" style="width:28px;height:28px;filter:sepia(0.3) brightness(0.95);opacity:0.9;flex-shrink:0;">` : '';
+            const wd = WEAPONS[wn];
+            const stats = wd && wd.damage > 0
+              ? `<span style="font-size:0.75rem;opacity:0.6;">${wd.range} &nbsp;·&nbsp; DMG ${wd.damage}</span>`
+              : '';
+            return `<button class="upgrade-choice-btn ${w.weapon2 === wn ? 'active' : ''}" onclick="setWarriorProp(${i}, 'weapon2', '${wn}')" style="display:flex;align-items:center;gap:0.5rem;text-align:left;">
+              ${ic}
+              <span style="display:flex;flex-direction:column;gap:1px;">
+                <span style="font-size:1rem;line-height:1.2;">${wn}</span>
+                ${stats}
+              </span>
+            </button>`;
+          }).join('')}
         </div>
         ${w.weapon2 && WEAPONS[w.weapon2] ? `<div class="upgrade-choice-note">${isDualWield ? '<strong>Dual Wield:</strong> +1 Attack die. ' : ''}${WEAPONS[w.weapon2].note}</div>` : ''}
       </div>`;
@@ -1792,8 +2047,17 @@ function renderSlot(i) {
       html += `<div class="upgrade-detail">
         <span class="upgrade-detail-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg> Choose Climbing Gear</span>
         <div class="upgrade-choice-grid">
-          ${climbOpts.map(c => `<button class="upgrade-choice-btn ${w.climbing === c ? 'active' : ''}"
-            onclick="setWarriorProp(${i}, 'climbing', '${c}')">${c}${CLIMBING_ITEMS[c] ? `<br><small style="opacity:0.6">Max ${CLIMBING_ITEMS[c].height}</small>` : ''}</button>`).join('')}
+          ${climbOpts.map(c => {
+            const ic = ITEM_ICONS[c] ? `<img src="${ITEM_ICONS[c]}" style="width:28px;height:28px;filter:sepia(0.3) brightness(0.95);opacity:0.9;flex-shrink:0;">` : '';
+            const stats = CLIMBING_ITEMS[c] ? `<span style="font-size:0.75rem;opacity:0.6;">Max ${CLIMBING_ITEMS[c].height}</span>` : '';
+            return `<button class="upgrade-choice-btn ${w.climbing === c ? 'active' : ''}" onclick="setWarriorProp(${i}, 'climbing', '${c}')" style="display:flex;align-items:center;gap:0.5rem;text-align:left;">
+              ${ic}
+              <span style="display:flex;flex-direction:column;gap:1px;">
+                <span style="font-size:1rem;line-height:1.2;">${c}</span>
+                ${stats}
+              </span>
+            </button>`;
+          }).join('')}
         </div>
         ${w.climbing && CLIMBING_DESCS[w.climbing] ? `<div class="upgrade-choice-note">${CLIMBING_DESCS[w.climbing]}</div>` : ''}
       </div>`;
@@ -1804,8 +2068,13 @@ function renderSlot(i) {
       html += `<div class="upgrade-detail">
         <span class="upgrade-detail-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1.4em" height="1.4em"><path d="M9 3v8L5.5 17c-.83 1.5.17 3 1.5 3h11c1.33 0 2.33-1.5 1.5-3L16 11V3H9zm2 2h2v7.5l2.6 4.5H10.4L13 12.5V5h-2z"/></svg> Choose Consumable</span>
         <div class="upgrade-choice-grid">
-          ${consOpts.map(c => `<button class="upgrade-choice-btn ${w.consumable === c ? 'active' : ''}"
-            onclick="setWarriorProp(${i}, 'consumable', '${c}')">${c}</button>`).join('')}
+          ${consOpts.map(c => {
+            const ic = ITEM_ICONS[c] ? `<img src="${ITEM_ICONS[c]}" style="width:28px;height:28px;filter:sepia(0.3) brightness(0.95);opacity:0.9;flex-shrink:0;">` : '';
+            return `<button class="upgrade-choice-btn ${w.consumable === c ? 'active' : ''}" onclick="setWarriorProp(${i}, 'consumable', '${c}')" style="display:flex;align-items:center;gap:0.5rem;text-align:left;">
+              ${ic}
+              <span style="font-size:1rem;line-height:1.2;">${c}</span>
+            </button>`;
+          }).join('')}
         </div>
         ${w.consumable && CONSUMABLES[w.consumable] ? `<div class="upgrade-choice-note">${CONSUMABLES[w.consumable]}</div>` : ''}
       </div>`;
@@ -1844,7 +2113,8 @@ function improveStatDisplay(base, stat) {
 
 function getAllowedWeapons(wdata) {
   if (wdata.fixedWeapon) return [wdata.fixedWeapon];
-  return wdata.allowedWeapons || Object.keys(WEAPONS);
+  // Shield is only ever an off-hand item, never a primary weapon
+  return (wdata.allowedWeapons || Object.keys(WEAPONS)).filter(w => w !== 'Shield');
 }
 
 function getSecondWeaponOptions(wdata, primaryWeapon) {
@@ -1853,7 +2123,9 @@ function getSecondWeaponOptions(wdata, primaryWeapon) {
   // Polearm (one-handed) is locked to Shield only
   if (primaryWeapon === 'Polearm (one-handed)') return ['Shield'];
   const allowed = getAllowedWeapons(wdata);
-  // Offhand options: Light Weapon or Shield only (not another polearm)
+  // Light Weapon primary: can only dual wield (another Light Weapon), no shield
+  if (primaryWeapon === 'Light Weapon') return allowed.filter(w => w === 'Light Weapon');
+  // Everything else: Light Weapon or Shield offhand only
   return allowed.filter(w => ['Light Weapon', 'Shield'].includes(w));
 }
 
@@ -1861,19 +2133,26 @@ function renderIPPool() {
   const total = getCompanyIP();
   const spent = getTotalIPSpent();
   const remaining = total - spent;
-  // 2 base pips + 1 captain pip
+  const over = spent > total;
   const pipsEl = document.getElementById('ipPoolPips');
   const countEl = document.getElementById('ipPoolCount');
+  const limitEl = document.getElementById('ipLimitDisplay');
   if (!pipsEl) return;
+
+  // Draw pips up to max(total, spent) so overspend is visible
+  const pipCount = Math.max(total, spent);
   let pipsHtml = '';
-  for (let d = 0; d < 2; d++) {
-    pipsHtml += `<div class="ip-pool-pip ${d < spent ? 'filled' : ''}"></div>`;
+  for (let d = 0; d < pipCount; d++) {
+    const filled = d < spent;
+    const overPip = d >= total && filled;
+    pipsHtml += `<div class="ip-pool-pip ${filled ? 'filled' : ''} ${overPip ? 'over' : ''}"></div>`;
   }
-  // Captain pip
-  const captainSpent = spent > 2;
-  pipsHtml += `<div class="ip-pool-pip captain ${captainSpent ? 'filled' : ''}" title="Captain bonus IP"></div>`;
   pipsEl.innerHTML = pipsHtml;
-  countEl.textContent = `${spent}/${total} spent — ${remaining} remaining`;
+  countEl.textContent = over
+    ? `${spent}/${total} — ${spent - total} over limit!`
+    : `${spent}/${total} — ${remaining} remaining`;
+  countEl.style.color = over ? 'var(--blood)' : '';
+  if (limitEl) limitEl.textContent = total;
 }
 
 function renderAll() {
@@ -1965,12 +2244,35 @@ function setWarriorProp(slotIndex, prop, value) {
 }
 
 function getCompanyIP() {
-  // 2 base + 1 for captain = 3 total
-  return 3;
+  return state.ipLimit ?? 3;
 }
 
 function getTotalIPSpent() {
   return state.warriors.reduce((sum, w) => sum + (w.ipSpent || []).length, 0);
+}
+
+function changeIPLimit(delta) {
+  const current = state.ipLimit ?? 3;
+  const next = Math.max(0, Math.min(9, current + delta));
+  if (next === current) return;
+  state.ipLimit = next;
+  // Strip any IP upgrades over the new limit
+  let spent = 0;
+  state.warriors.forEach(w => {
+    const keep = [];
+    (w.ipSpent || []).forEach(id => {
+      if (spent < next) { keep.push(id); spent++; }
+      else {
+        // Remove associated selections
+        if (id === 'stat') w.statImprove = '';
+        if (id === 'weapon2') w.weapon2 = '';
+        if (id === 'climbing') w.climbing = 'None';
+        if (id === 'consumable') w.consumable = 'None';
+      }
+    });
+    w.ipSpent = keep;
+  });
+  renderAll();
 }
 
 function toggleIP(slotIndex, optId, checked) {
@@ -2062,6 +2364,7 @@ function clearBuilder() {
   state = {
     companyName: '',
     captain: 0,
+    ipLimit: 3,
     mark: '',
     warriors: [
       { type: '', weapon: '', weapon2: '', climbing: 'None', consumable: 'None', statImprove: '', ipSpent: [] },
@@ -2104,7 +2407,7 @@ function buildPrintRoster() {
     if (!w.type) return `<div class="pr-card"><div style="color:#aaa;font-style:italic;font-size:8pt;padding:10pt 0;text-align:center;">Empty Slot</div></div>`;
     const wdata = WARRIORS[w.type];
     const isCap = state.captain === i;
-    const statKeys = ['MOV','ATK','VIT','SKL','DEF','CMB'];
+    const statKeys = ['MOV','ATK','VIT','SKL','DEF','COM'];
 
     // Stats
     const statsHTML = statKeys.map(s => {
@@ -2117,26 +2420,114 @@ function buildPrintRoster() {
       </div>`;
     }).join('');
 
-    // Equipment tags
+    // Equipment tags (remove — replaced by inline rows below)
     const isDualWield = w.weapon === 'Light Weapon' && w.weapon2 === 'Light Weapon';
-    let equipHTML = '';
-    if (w.weapon) equipHTML += `<span class="pr-equip-tag primary">${isDualWield ? 'Dual Light Weapons' : w.weapon}</span>`;
-    if (w.weapon2 && !isDualWield) equipHTML += `<span class="pr-equip-tag secondary">${w.weapon2}</span>`;
-    if (w.climbing && w.climbing !== 'None') equipHTML += `<span class="pr-equip-tag climbing">CLIMB: ${w.climbing}</span>`;
-    if (w.consumable && w.consumable !== 'None') equipHTML += `<span class="pr-equip-tag consumable">ITEM: ${w.consumable.split(' ').slice(0,3).join(' ')}</span>`;
 
-    // Weapon specials
+    // Weapon stats + specials
     const wpn = WEAPONS[w.weapon];
     const wpn2 = w.weapon2 && !isDualWield ? WEAPONS[w.weapon2] : null;
-    let weaponSpecials = [];
-    if (isDualWield) {
-      weaponSpecials.push({ name: 'DUAL WIELD', desc: 'Grants +1 Attack die on all attacks.' });
+
+    function itemRow(label, pills, note, special, iconKey) {
+      const pillsHTML = pills.map(p => `<span class="pr-wpn-pill">${p}</span>`).join('');
+      const desc = [note, special].filter(Boolean).join(' — ');
+      const descHTML = desc ? `<span class="pr-wpn-note">${desc}</span>` : '';
+      const src = ITEM_ICONS[iconKey || label] || '';
+      const iconHTML = src ? `<img src="${src}" style="width:9pt;height:9pt;filter:invert(1);opacity:0.7;flex-shrink:0;vertical-align:middle;">` : '';
+      return `<div class="pr-wpn-stat-row">${iconHTML}<span class="pr-wpn-stat-label">${label}</span>${pillsHTML}${descHTML}</div>`;
     }
-    if (wpn && wpn.special) weaponSpecials.push({ name: w.weapon.toUpperCase(), desc: wpn.special });
-    if (wpn2 && wpn2.special) weaponSpecials.push({ name: w.weapon2.toUpperCase(), desc: wpn2.special });
-    const wpnLine = weaponSpecials.length ? `<div class="pr-wpn-specials">${
-      weaponSpecials.map(s => `<div class="pr-wpn-special"><span class="pr-wpn-special-name">${s.name}:</span> ${s.desc}</div>`).join('')
-    }</div>` : '';
+
+    function wpnStatsRow(label, data, iconKey) {
+      if (!data) return '';
+      const pills = [
+        data.damage > 0 ? `DMG ${data.damage}` : null,
+        (data.range && data.range !== '—') ? `RNG ${data.range}` : null,
+      ].filter(Boolean);
+      return itemRow(label, pills, data.note, data.special, iconKey || label);
+    }
+
+    const equipRows = [
+      isDualWield
+        ? wpnStatsRow('Dual Light Weapons', { range: 'Contact', damage: 1, note: 'Two light weapons — grants +1 Attack die.', special: null }, 'Dual Wield')
+        : wpnStatsRow(w.weapon, wpn, w.weapon),
+      !isDualWield ? wpnStatsRow(w.weapon2, wpn2, w.weapon2) : null,
+    ].filter(Boolean);
+
+    // Climbing item row
+    if (w.climbing && w.climbing !== 'None') {
+      const cdata = CLIMBING_ITEMS[w.climbing];
+      const cdesc = CLIMBING_DESCS[w.climbing] || '';
+      const pills = cdata ? [`HT ${cdata.height}`, `SKILL ${cdata.skillCheck}`] : [];
+      equipRows.push(itemRow(w.climbing, pills, null, cdesc, w.climbing));
+    }
+
+    // Consumable row
+    if (w.consumable && w.consumable !== 'None') {
+      const cdesc = CONSUMABLES[w.consumable] || '';
+      equipRows.push(itemRow(w.consumable, [], null, cdesc, w.consumable));
+    }
+
+    // Weapon rows — icon + bold name + pills + italic note
+    const wpnStripData = isDualWield
+      ? { name: 'Dual Light Weapons', damage: 1, range: 'Contact', special: null, note: 'Two light weapons. Grants +1 Attack die.' }
+      : wpn;
+    const wpnStripName = isDualWield ? 'Dual Light Weapons' : (w.weapon || '');
+    const wpnIconSrc = ITEM_ICONS[isDualWield ? 'Dual Wield' : w.weapon] || '';
+    const wpn2IconSrc = (!isDualWield && w.weapon2) ? (ITEM_ICONS[w.weapon2] || '') : '';
+
+    function wpnRow(iconSrc, name, damage, range, note, special) {
+      const pills = [
+        damage > 0 ? `DMG ${damage}` : null,
+        range && range !== '—' ? `RNG ${range}` : null,
+      ].filter(Boolean);
+      const pillsHTML = pills.map(p => `<span class="pr-wpn-pill">${p}</span>`).join('');
+      const desc = [note, special].filter(Boolean).join(' — ');
+      const descHTML = desc ? `<span class="pr-wpn-note">${desc}</span>` : '';
+      const iconHTML = iconSrc ? `<img src="${iconSrc}" class="pr-wpn-row-icon">` : '';
+      return `<div class="pr-wpn-stat-row">${iconHTML}<span class="pr-wpn-stat-label">${name}</span>${pillsHTML}${descHTML}</div>`;
+    }
+
+    const wpnCards = [];
+    if (wpnStripData) {
+      wpnCards.push(wpnRow(wpnIconSrc, wpnStripName, wpnStripData.damage, wpnStripData.range, wpnStripData.note, wpnStripData.special));
+    }
+    if (!isDualWield && wpn2) {
+      wpnCards.push(wpnRow(wpn2IconSrc, w.weapon2, wpn2.damage, wpn2.range, wpn2.note, wpn2.special));
+    }
+    if (w.climbing && w.climbing !== 'None') {
+      const cdata = CLIMBING_ITEMS[w.climbing];
+      const cdesc = CLIMBING_DESCS[w.climbing] || '';
+      const cIcon = ITEM_ICONS[w.climbing] || '';
+      wpnCards.push(wpnRow(cIcon, w.climbing, 0, null, cdesc, cdata ? `HT ${cdata.height} · SKILL ${cdata.skillCheck}` : null));
+    }
+    if (w.consumable && w.consumable !== 'None') {
+      const cIcon = ITEM_ICONS[w.consumable] || '';
+      const cdesc = CONSUMABLES[w.consumable] || '';
+      wpnCards.push(wpnRow(cIcon, w.consumable, 0, null, cdesc, null));
+    }
+
+    const wpnStatsStripHTML = wpnCards.length
+      ? `<div class="pr-wpn-specials">${wpnCards.join('')}</div>`
+      : '';
+
+    const wpnLine = '';
+
+    // Upgrades section
+    const upgradeLines = [];
+    if (w.ipSpent.includes('stat') && w.statImprove) {
+      upgradeLines.push(`<span class="pr-upgrade-tag">+1 ${w.statImprove}</span>`);
+    }
+    if (w.ipSpent.includes('weapon2') && w.weapon2) {
+      upgradeLines.push(`<span class="pr-upgrade-tag">2nd Weapon: ${w.weapon2}</span>`);
+    }
+    if (w.ipSpent.includes('climbing') && w.climbing && w.climbing !== 'None') {
+      upgradeLines.push(`<span class="pr-upgrade-tag">Climbing: ${w.climbing}</span>`);
+    }
+    if (w.ipSpent.includes('consumable') && w.consumable && w.consumable !== 'None') {
+      upgradeLines.push(`<span class="pr-upgrade-tag">Item: ${w.consumable}</span>`);
+    }
+    const upgradesHTML = upgradeLines.length
+      ? `<div class="pr-upgrades"><span class="pr-upgrades-label">UPGRADES</span>${upgradeLines.join('')}</div>`
+      : `<div class="pr-upgrades pr-upgrades-none"><span class="pr-upgrades-label">UPGRADES</span><span class="pr-upgrade-none-text">None</span></div>`;
 
     // Abilities
     const abilitiesHTML = wdata.abilities.map(ab => {
@@ -2160,8 +2551,9 @@ function buildPrintRoster() {
         </div>
       </div>
       <div class="pr-stats">${statsHTML}</div>
+      ${wpnStatsStripHTML}
+      ${upgradesHTML}
       ${wpnLine}
-      <div class="pr-equip">${equipHTML}</div>
       <div class="pr-abilities">${abilitiesHTML}</div>
       <div class="pr-vit-track">${vitBoxes}</div>
     </div>`;
@@ -2191,42 +2583,42 @@ function buildPrintRoster() {
 
   // Quick reference
   const actionItems = [
-    ['MOVE', 'Move up to MOV inches. Cannot end on same space as another model.'],
-    ['DASH', 'Move up to MOV inches a second time. Cannot attack same activation.'],
-    ['ATTACK', 'Make a Combat Check against an adjacent enemy (or ranged if equipped).'],
-    ['PUSH', 'Move an adjacent enemy 1" in any direction. If they hit a board edge, they must pass a Skill Check or fall.'],
-    ['STANDBY', 'Pause activation. Trigger one Attack against the first enemy that takes an action within range.'],
-    ['CLIMB', 'Move onto or off a climbing item base. No Skill Check needed.'],
-    ['SCALE', 'Move from base to top (or top to base) of a climbing item in one action.'],
-    ['SCALE DOWN', 'Move from top to base of a climbing item. No Skill Check unless Immobilized.'],
-    ['CONCENTRATE', 'Reroll one die from your last Action. Must accept the new result.'],
-    ['JUMP', 'Leap a gap up to 2" wide. Skill Check required — fail = fall.'],
-    ['EXPEND', 'Use a carried item (consumable or cache loot). Free action unless stated otherwise.'],
+    ['MOVE', 'Move your model up to their MOV stat in inches. Models may not end their movement on the same space as another model.'],
+    ['DASH', 'Move your model up to their MOV stat in inches a second time. A model that uses DASH may not use ATTACK during the same activation.'],
+    ['ATTACK', 'Make a COMBAT Check against an enemy model in melee range (base contact), or at range if equipped with a ranged weapon.'],
+    ['PUSH', 'Move an adjacent enemy model 1" in any direction. If pushed to a board edge, they must pass a SKILL Check or fall.'],
+    ['STANDBY', 'Pause your activation. You may trigger one ATTACK against the first enemy model that takes any action within your weapon\'s range. STANDBY ends your activation.'],
+    ['CLIMB', 'Move your model onto or off the base of a climbing item. No SKILL Check required.'],
+    ['SCALE', 'Move your model from the base to the top (or top to base) of a climbing item in a single action.'],
+    ['SCALE DOWN', 'Move your model from the top to the base of a climbing item. No SKILL Check required unless the model is Immobilized.'],
+    ['CONCENTRATE', 'Reroll a single die from your last Action. You must accept the new result.'],
+    ['JUMP', 'Leap a gap up to 2" wide. Requires a SKILL Check — failure means the model falls.'],
+    ['EXPEND', 'Use a carried consumable or cache item. This is a free action unless otherwise stated.'],
     ['HANDOFF', 'Pass a carried item to an adjacent friendly model.'],
     ['SET LADDER', 'Place your Ladder against a structure within reach.'],
-    ['SET GRAPPLING HOOK', 'Throw your Hook to a structure within range. Skill Check required.'],
-    ['RETRIEVE CLIMBING GEAR', 'Pick up a Ladder or Hook at your current position.'],
-    ['INSPECT CACHE', 'Attempt to loot a Resource Cache you are in contact with. Roll a Skill Check.'],
-    ['OPEN DOOR', 'Open or close an adjacent door. No Skill Check required.'],
-    ['PIERCING BLOW', 'Roll of 6 on Combat — ignores Defense. First time on a model: they become Breached.'],
+    ['SET GRAPPLING HOOK', 'Throw your Grappling Hook to a structure within range. Requires a SKILL Check to set.'],
+    ['RETRIEVE CLIMBING GEAR', 'Pick up a Ladder or Grappling Hook at your current position.'],
+    ['INSPECT CACHE', 'Attempt to loot a Resource Cache you are in base contact with. Roll a SKILL Check.'],
+    ['OPEN DOOR', 'Open or close an adjacent door. No SKILL Check required.'],
+    ['PIERCING BLOW', 'When a model rolls a 6 on a COMBAT Check, the hit ignores DEFENSE. The first time a model is hit by a Piercing Blow, they become Breached.'],
   ];
 
   const statusItems = [
-    ['BREACHED', 'Roll Skill Check each activation — fail = 1 dmg, ignores Defense. Permanent until removed.'],
-    ['STUNNED', 'Cannot take actions until end of next activation.'],
-    ['IMMOBILIZED', 'Cannot move or climb until end of next activation.'],
-    ['HINDERED', 'Lose your next action. Status then clears.'],
-    ['SUNDERED', 'Weapon has -1 Combat for rest of game. Permanent.'],
-    ['SWARMED', 'Suffer -1 to all Combat Checks while this status persists.'],
+    ['BREACHED', 'At the start of each activation, roll a SKILL Check. On a failure, lose 1 VITALITY — this ignores DEFENSE. Breached is permanent until removed by an ability.'],
+    ['STUNNED', 'The model cannot take any actions until the end of their next activation.'],
+    ['IMMOBILIZED', 'The model cannot move or climb until the end of their next activation.'],
+    ['HINDERED', 'The model loses their next action. The status then clears.'],
+    ['SUNDERED', 'The model\'s weapon has -1 COMBAT for the rest of the game. Permanent.'],
+    ['SWARMED', 'The model suffers -1 to all COMBAT Checks while this status persists.'],
   ];
 
   const cacheItems = [
-    ['1', 'HERBS & TONIC — Expend: gain +3 Vitality (cannot exceed starting max).'],
-    ['2', 'FOOD — Expend: gain 1 additional action this activation (cannot repeat actions).'],
-    ['3', 'SCHOLARLY SCROLL — Expend on a failed Skill Check to immediately pass it.'],
-    ['4', 'MAP — Expend: all your warriors immediately move (3 alive = 2" each; 2 alive = 3" each; 1 alive = 4").'],
-    ['5', 'CLOAK — Expend: cannot be targeted by or make Attack/Push actions until next activation.'],
-    ['6', 'RELIQUARY — Expend: regain one use of any Once Per Game ability.'],
+    ['1', 'HERBS & TONIC — When EXPENDED, the model gains +3 VITALITY. Cannot exceed starting maximum VITALITY.'],
+    ['2', 'FOOD — When EXPENDED, the model gains 1 additional action this activation. This does not allow them to repeat actions.'],
+    ['3', 'SCHOLARLY SCROLL — Anytime the model fails a SKILL Check, they may immediately EXPEND this to pass it instead.'],
+    ['4', 'MAP — When EXPENDED, every model in your Doom Company immediately moves: 3 alive = 2" each; 2 alive = 3" each; 1 alive = 4".'],
+    ['5', 'CLOAK — When EXPENDED, the model may not be targeted by or make ATTACK or PUSH actions until their next activation.'],
+    ['6', 'RELIQUARY — When EXPENDED, the model regains one additional use of a "Once Per Game" ability.'],
   ];
 
   const actionsHTML = actionItems.map(([k, v]) => `<div class="pr-ref-item"><strong>${k}:</strong> ${v}</div>`).join('');
@@ -2265,29 +2657,36 @@ function buildPrintRoster() {
       <div class="pr-bottom">
         <div class="pr-ref">
           <div class="pr-ref-header">Quick Reference</div>
-          <div class="pr-ref-panels" style="grid-template-columns: 2fr 1.2fr 1.5fr 1.5fr;">
+          <div class="pr-ref-panels" style="grid-template-columns: 1fr 1fr 0.38fr 0.38fr;">
             <div>
               <div class="pr-ref-panel-header">Actions</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 4pt;">${actionsHTML}</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 6pt;">${actionsHTML}</div>
             </div>
             <div>
               <div class="pr-ref-panel-header">Statuses</div>
               ${statusHTML}
-              <div style="margin-top:5pt;">
-                <div class="pr-ref-panel-header">Falling (2"+ fall)</div>
-                <div class="pr-ref-item" style="margin-bottom:3pt;">Roll 2D6. +1 if fell 4"+. +3 if fell 6"+. Model becomes Immobilized.</div>
-                <table class="pr-fall-table">
-                  <tr><td>1–2</td><td>0 dmg</td></tr>
-                  <tr><td>3–4</td><td>1 dmg</td></tr>
-                  <tr><td>5–6</td><td>2 dmg</td></tr>
-                  <tr><td>7</td><td>3 dmg</td></tr>
-                  <tr><td>8+</td><td>☠ Death</td></tr>
-                </table>
-              </div>
+            </div>
+            <div>
+              <div class="pr-ref-panel-header">Falling (D6, 2″+ fall)</div>
+              <div class="pr-ref-item" style="margin-bottom:3pt;font-style:italic;">+1 if fell 4″+. +3 if fell 6″+. Model becomes Immobilized.</div>
+              <table class="pr-fall-table">
+                <tr><td>1–2</td><td>0 dmg</td></tr>
+                <tr><td>3–4</td><td>1 dmg</td></tr>
+                <tr><td>5–6</td><td>2 dmg</td></tr>
+                <tr><td>7</td><td>3 dmg</td></tr>
+                <tr><td>8+</td><td>☠ Death</td></tr>
+              </table>
             </div>
             <div>
               <div class="pr-ref-panel-header">Resource Caches (D6)</div>
-              ${cacheHTML}
+              <table class="pr-fall-table">
+                <tr><td>1</td><td>Herbs &amp; Tonic</td></tr>
+                <tr><td>2</td><td>Food</td></tr>
+                <tr><td>3</td><td>Scholarly Scroll</td></tr>
+                <tr><td>4</td><td>Map</td></tr>
+                <tr><td>5</td><td>Cloak</td></tr>
+                <tr><td>6</td><td>Reliquary</td></tr>
+              </table>
             </div>
           </div>
         </div>
@@ -2324,7 +2723,7 @@ const _ENC = {
   CL: ['None','Ladder','Grappling Hook'],
   CO: ['None','Canister of Creeping Death','Concentrated Creeping Death Serum','Fog of War Flask'],
   MK: ['','Graveborn','Tower Born','Ashbound','Doomed Choir','Fog Walkers','Relic Bitten','Silent Pact','Hearth'],
-  ST: ['','MOV','ATK','VIT','SKL','DEF','CMB'],
+  ST: ['','MOV','ATK','VIT','SKL','DEF','COM'],
   IP: ['stat','weapon2','climbing','consumable'],
 };
 function _idx(arr, val) { const i = arr.indexOf(val); return i < 0 ? 0 : i; }
@@ -2451,7 +2850,7 @@ const ARCHETYPES = [
     warriors: [
       { type: "Brute",    weapon: "Heavy Weapon", ip: ["stat"],    statImprove: "ATK", climbing: "None", consumable: "None", weapon2: "" },
       { type: "Fighter",  weapon: "Heavy Weapon", ip: ["stat","consumable"], statImprove: "VIT", climbing: "None", consumable: "Concentrated Creeping Death Serum", weapon2: "" },
-      { type: "Blacksmith", weapon: "Heavy Weapon", ip: ["stat"], statImprove: "CMB", climbing: "None", consumable: "None", weapon2: "" },
+      { type: "Blacksmith", weapon: "Heavy Weapon", ip: ["stat"], statImprove: "COM", climbing: "None", consumable: "None", weapon2: "" },
     ],
     weaponOverrides: [null, null, null],
   },
@@ -2473,8 +2872,8 @@ const ARCHETYPES = [
     mark: "Fog Walkers",
     captain: 0,
     warriors: [
-      { type: "Doom Hunter", weapon: "Crossbow",     ip: ["stat"],    statImprove: "CMB", climbing: "None", weapon2: "", consumable: "None" },
-      { type: "Blacksmith",  weapon: "Light Weapon", ip: ["stat","climbing"], statImprove: "CMB", climbing: "Grappling Hook", weapon2: "", consumable: "None" },
+      { type: "Doom Hunter", weapon: "Crossbow",     ip: ["stat"],    statImprove: "COM", climbing: "None", weapon2: "", consumable: "None" },
+      { type: "Blacksmith",  weapon: "Light Weapon", ip: ["stat","climbing"], statImprove: "COM", climbing: "Grappling Hook", weapon2: "", consumable: "None" },
       { type: "Fighter",     weapon: "Light Weapon", ip: ["weapon2"], weapon2: "Light Weapon", climbing: "None", consumable: "None", statImprove: "" },
     ],
     weaponOverrides: [null, null, null],
@@ -2510,7 +2909,7 @@ const ARCHETYPES = [
     captain: 2,
     warriors: [
       { type: "Brute",     weapon: "Heavy Weapon", ip: ["climbing"], climbing: "Ladder", weapon2: "", consumable: "None", statImprove: "" },
-      { type: "Fighter",   weapon: "Heavy Weapon", ip: ["climbing","stat"], climbing: "Grappling Hook", statImprove: "CMB", weapon2: "", consumable: "None" },
+      { type: "Fighter",   weapon: "Heavy Weapon", ip: ["climbing","stat"], climbing: "Grappling Hook", statImprove: "COM", weapon2: "", consumable: "None" },
       { type: "Scout",     weapon: "Bow",          ip: ["stat"],    statImprove: "MOV", climbing: "None", weapon2: "", consumable: "None" },
     ],
     weaponOverrides: [null, null, null],
@@ -2535,7 +2934,7 @@ const ARCHETYPES = [
     warriors: [
       { type: "Saboteur",    weapon: "Light Weapon", ip: ["consumable","stat"], consumable: "Fog of War Flask", statImprove: "SKL", climbing: "None", weapon2: "" },
       { type: "Assassin",    weapon: "Light Weapon", ip: ["climbing"],  climbing: "Grappling Hook", weapon2: "", consumable: "None", statImprove: "" },
-      { type: "Doom Hunter", weapon: "Crossbow",     ip: ["stat"],     statImprove: "CMB", climbing: "None", weapon2: "", consumable: "None" },
+      { type: "Doom Hunter", weapon: "Crossbow",     ip: ["stat"],     statImprove: "COM", climbing: "None", weapon2: "", consumable: "None" },
     ],
     weaponOverrides: [null, null, null],
   },
@@ -2632,6 +3031,602 @@ function dismissArchetype() {
 })();
 renderAll();
 renderSavedList();
+</script>
+<!-- TRACKER MODAL -->
+<div id="trackerModal" style="display:none;position:fixed;inset:0;background:#0d0d0d;z-index:300;font-family:'Crimson Text',serif;color:#e8dcc8;flex-direction:column;">
+
+  <!-- TOP BAR -->
+  <div class="tk-topbar">
+    <button onclick="closeTracker()" class="tk-topbar-btn">✕</button>
+    <span id="trackerCompanyName" class="tk-topbar-name"></span>
+    <div class="tk-round-ctrl">
+      <button onclick="trackerRound(-1)" class="tk-round-btn">−</button>
+      <div class="tk-round-display">
+        <span class="tk-round-label">RND</span>
+        <span id="trackerRound" class="tk-round-num">1</span>
+      </div>
+      <button onclick="trackerRound(1)" class="tk-round-btn">+</button>
+    </div>
+    <button onclick="resetTracker()" class="tk-topbar-btn tk-reset-btn">↺</button>
+  </div>
+
+  <!-- CARD AREA — single warrior shown at a time -->
+  <div id="trackerCardArea" class="tk-card-area" style="position:relative;">
+    <div id="trackerCards"></div>
+    <!-- Quick Reference overlay -->
+    <div id="tkRefOverlay" class="tk-ref-overlay"></div>
+  </div>
+
+  <!-- BOTTOM TAB BAR -->
+  <div id="trackerTabBar" class="tk-tab-bar"></div>
+
+</div>
+
+<style>
+  /* ── TRACKER SHELL ──────────────────────────────────────── */
+  #trackerModal { display:flex; }
+  .tk-topbar {
+    display:flex;align-items:center;gap:0.5rem;
+    padding:0.5rem 0.75rem;
+    background:#111;border-bottom:1px solid #2a2a2a;
+    flex-shrink:0;height:52px;box-sizing:border-box;
+  }
+  .tk-topbar-btn {
+    background:none;border:1px solid #333;color:#888;
+    padding:0.25rem 0.55rem;cursor:pointer;
+    font-family:'Oswald',sans-serif;font-size:0.85rem;
+    flex-shrink:0;
+  }
+  .tk-topbar-btn:active { color:#e8dcc8;border-color:#666; }
+  .tk-topbar-name {
+    font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:700;
+    letter-spacing:0.08em;text-transform:uppercase;flex:1;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    color:#e8dcc8;
+  }
+  .tk-round-ctrl { display:flex;align-items:center;gap:0.3rem;flex-shrink:0; }
+  .tk-round-btn {
+    background:#1a1a1a;border:1px solid #333;color:#e8dcc8;
+    width:32px;height:32px;cursor:pointer;font-size:1.1rem;line-height:1;
+    flex-shrink:0;
+  }
+  .tk-round-btn:active { background:#2a2a2a; }
+  .tk-round-display { text-align:center;min-width:36px; }
+  .tk-round-label { font-family:'Oswald',sans-serif;font-size:0.5rem;letter-spacing:0.15em;color:#555;display:block;line-height:1; }
+  .tk-round-num { font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;display:block;line-height:1; }
+
+  /* ── CARD AREA ───────────────────────────────────────────── */
+  .tk-card-area {
+    flex:1;overflow-y:auto;
+    padding:0.75rem;
+    -webkit-overflow-scrolling:touch;
+  }
+  #trackerCards { max-width:640px;margin:0 auto; }
+
+  /* Cards: only the active one is shown */
+  .tk-card { display:none;background:#111;border:1px solid #2a2a2a;padding:0.8rem; }
+  .tk-card.tk-active { display:block; }
+  .tk-card.tk-dead { opacity:0.5;filter:grayscale(0.5); }
+
+  /* ── CARD HEADER ────────────────────────────────────────── */
+  .tk-card-header { display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;flex-wrap:wrap; }
+  .tk-name { font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;flex:1; }
+  .tk-dead-badge { font-family:'Oswald',sans-serif;font-size:0.65rem;letter-spacing:0.12em;background:#5a0000;color:#ff8888;padding:2px 7px;text-transform:uppercase; }
+  .tk-captain-badge { font-family:'Oswald',sans-serif;font-size:0.65rem;letter-spacing:0.12em;background:#b8972a;color:#000;padding:2px 6px;text-transform:uppercase;font-weight:700; }
+
+  /* ── STAT STRIP ─────────────────────────────────────────── */
+  .tk-stats-strip { display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:0.85rem; }
+  .tk-stat { background:#1a1a1a;border:1px solid #2a2a2a;text-align:center;padding:5px 2px; }
+  .tk-stat-improved { border-color:#b8972a; }
+  .tk-stat-lbl { font-family:'Oswald',sans-serif;font-size:0.55rem;letter-spacing:0.1em;color:#555;text-transform:uppercase;display:block;line-height:1;margin-bottom:2px; }
+  .tk-stat-val { font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;line-height:1;display:block; }
+  .tk-stat-improved .tk-stat-val { color:#b8972a; }
+
+  /* ── VITALITY ───────────────────────────────────────────── */
+  .tk-section-label { font-family:'Oswald',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#555;margin-bottom:0.35rem; }
+  .tk-vit-row { display:flex;flex-wrap:wrap;gap:5px;align-items:center; }
+  .tk-vit-box {
+    width:36px;height:36px;border:1.5px solid #444;background:#1a1a1a;
+    cursor:pointer;transition:background 0.1s,border-color 0.1s;flex-shrink:0;
+    /* bigger tap target on mobile */
+  }
+  .tk-vit-box.lost { background:#5a0000;border-color:#7a0000; }
+  .tk-vit-count { font-family:'Oswald',sans-serif;font-size:1rem;color:#555;margin-left:4px; }
+
+  /* ── WEAPONS ────────────────────────────────────────────── */
+  .tk-equip-block { display:flex;flex-direction:column;gap:0.35rem; }
+  .tk-wpn-row { display:flex;align-items:flex-start;gap:0.5rem;background:#1a1a1a;border:1px solid #2a2a2a;padding:0.45rem 0.55rem; }
+  .tk-wpn-body { flex:1;min-width:0; }
+  .tk-wpn-name-line { display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:2px; }
+  .tk-wpn-name { font-family:'Oswald',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase; }
+  .tk-wpn-pill { background:#333;color:#e8dcc8;padding:1px 5px;font-family:'Oswald',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.06em;white-space:nowrap; }
+  .tk-wpn-note { font-size:0.82rem;color:#777;font-style:italic;line-height:1.35; }
+
+  /* ── ABILITIES ──────────────────────────────────────────── */
+  .tk-abilities-block { display:flex;flex-direction:column;gap:0.4rem; }
+  .tk-ability {
+    background:#1a1a1a;border:1px solid #2a2a2a;border-left:2px solid #333;
+    padding:0.5rem 0.6rem;transition:border-color 0.15s,background 0.15s;
+  }
+  .tk-ability.tk-ability-used { background:#0f0f0f;border-left-color:#222; }
+  .tk-ability-header { display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.3rem; }
+  .tk-ability-name { font-family:'Oswald',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;line-height:1.2; }
+  .tk-ability.tk-ability-used .tk-ability-name { color:#3a3a3a;text-decoration:line-through; }
+  .tk-ability-desc { font-size:0.88rem;color:#888;line-height:1.4;font-style:italic; }
+  .tk-ability.tk-ability-used .tk-ability-desc { color:#2a2a2a; }
+  .tk-opg-badge { font-family:'Oswald',sans-serif;font-size:0.58rem;letter-spacing:0.1em;background:#1f1900;color:#b8972a;border:1px solid #3a2e00;padding:2px 5px;white-space:nowrap;flex-shrink:0; }
+  .tk-opg-badge.tk-opg-used { background:#0d0d0d;color:#2a2a2a;border-color:#1a1a1a; }
+  .tk-opg-badge.tk-opg-permanent { background:#1a0000;color:#7a2a2a;border-color:#3a1010; }
+
+  /* ── RESTRICTIONS ───────────────────────────────────────── */
+  .tk-restrictions { font-size:0.8rem;color:#555;font-style:italic;margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid #1e1e1e;line-height:1.35; }
+
+  /* ── RELIQUARY ──────────────────────────────────────────── */
+  .tk-reliquary-btn {
+    border:1px solid #b8972a;background:#1a1510;color:#b8972a;
+    padding:0.3rem 0.8rem;cursor:pointer;
+    font-family:'Oswald',sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
+    display:block;width:100%;margin-top:0.5rem;
+  }
+  .tk-reliquary-btn:active { background:#2a2010; }
+
+  /* ── PERISH BUTTON ──────────────────────────────────────── */
+  .tk-perish-btn {
+    background:none;border:1px solid #5a0000;color:#7a2a2a;
+    padding:0.25rem 0.7rem;cursor:pointer;
+    font-family:'Oswald',sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
+  }
+  .tk-perish-btn.alive { border-color:#1a5a1a;color:#3a7a3a; }
+
+  /* ── BOTTOM TAB BAR ─────────────────────────────────────── */
+  .tk-tab-bar {
+    display:flex;
+    background:#0a0a0a;border-top:1px solid #222;
+    flex-shrink:0;
+    width:100%;
+  }
+  .tk-tab {
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:0.5rem 0.1rem 0.6rem;
+    cursor:pointer;border-right:1px solid #1a1a1a;
+    transition:background 0.12s;
+    position:relative;
+    -webkit-tap-highlight-color:transparent;
+    min-width:0;
+  }
+  .tk-tab:last-child { border-right:none; }
+  .tk-tab:active { background:#1a1a1a; }
+  .tk-tab.tk-tab-active { background:#1a1a1a;border-top:2px solid #b8972a; }
+  .tk-tab.tk-tab-dead { opacity:0.35; }
+  .tk-tab-vit {
+    font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;line-height:1;
+    color:#e8dcc8;
+  }
+  .tk-tab.tk-tab-active .tk-tab-vit { color:#b8972a; }
+  .tk-tab-name {
+    font-family:'Oswald',sans-serif;font-size:0.5rem;letter-spacing:0.06em;
+    text-transform:uppercase;color:#555;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    width:100%;text-align:center;padding:0 2px;box-sizing:border-box;
+  }
+  .tk-tab.tk-tab-active .tk-tab-name { color:#888; }
+  .tk-tab-dead-icon { position:absolute;top:3px;right:3px;font-size:0.55rem;color:#5a0000; }
+  .tk-tab-captain-dot { position:absolute;top:3px;left:3px;font-size:0.5rem;color:#b8972a; }
+
+  /* REF tab */
+  .tk-tab-ref { border-left:1px solid #2a2a2a; }
+  .tk-tab-ref .tk-tab-vit { font-size:0.85rem;color:#555; }
+  .tk-tab-ref.tk-tab-active .tk-tab-vit { color:#b8972a; }
+  .tk-tab-ref .tk-tab-name { color:#444; }
+  .tk-tab-ref.tk-tab-active .tk-tab-name { color:#b8972a; }
+
+  /* ── QUICK REF OVERLAY ───────────────────────────────────── */
+  .tk-ref-overlay {
+    display:none;position:absolute;inset:0;top:52px;bottom:60px;
+    background:#0d0d0d;overflow-y:auto;z-index:10;
+    padding:0.75rem;box-sizing:border-box;
+    -webkit-overflow-scrolling:touch;
+  }
+  .tk-ref-overlay.open { display:block; }
+  .tk-ref-section { margin-bottom:1rem; }
+  .tk-ref-section-title {
+    font-family:'Oswald',sans-serif;font-size:0.65rem;letter-spacing:0.2em;
+    text-transform:uppercase;color:#b8972a;border-bottom:1px solid #2a2a2a;
+    padding-bottom:0.3rem;margin-bottom:0.5rem;
+  }
+  .tk-ref-item {
+    font-size:0.88rem;line-height:1.4;color:#999;margin-bottom:0.4rem;
+    padding-bottom:0.4rem;border-bottom:1px solid #1a1a1a;
+  }
+  .tk-ref-item:last-child { border-bottom:none;margin-bottom:0; }
+  .tk-ref-item strong {
+    font-family:'Oswald',sans-serif;font-size:0.8rem;font-weight:700;
+    letter-spacing:0.05em;text-transform:uppercase;color:#e8dcc8;
+    display:block;margin-bottom:1px;
+  }
+  .tk-ref-table { width:100%;border-collapse:collapse;font-size:0.85rem; }
+  .tk-ref-table td { padding:0.35rem 0.5rem;border:1px solid #222; color:#999; }
+  .tk-ref-table td:first-child { font-family:'Oswald',sans-serif;font-weight:700;background:#1a1a1a;color:#e8dcc8;text-align:center;white-space:nowrap;width:20%; }
+  .tk-ref-fall-note { font-size:0.8rem;color:#666;font-style:italic;margin-bottom:0.4rem;line-height:1.35; }
+</style>
+</style>
+
+<script>
+// ── TRACKER STATE ─────────────────────────────────────────────────────────────
+let trackerState = null;
+let activeWarriorIdx = 0;
+
+// Abilities that cannot be restored by Reliquary (permanent effect)
+const NO_RESTORE_OPG = new Set(['THE SHATTERED SHIELD']);
+
+function getOPGAbilities(warriorType) {
+  const wdata = WARRIORS[warriorType];
+  if (!wdata) return [];
+  return wdata.abilities.filter(ab => ab.desc.toLowerCase().includes('once per game'));
+}
+
+function canRestoreWithReliquary(abilityName) {
+  return !NO_RESTORE_OPG.has(abilityName);
+}
+
+function openTracker() {
+  const activeWarriors = state.warriors.filter(w => w.type);
+  if (!activeWarriors.length) { showToast('Add some warriors first!'); return; }
+
+  trackerState = {
+    round: 1,
+    companyName: state.companyName || 'Unnamed Company',
+    captain: state.captain,
+    mark: state.mark || '',
+    warriors: state.warriors.map((w, i) => {
+      if (!w.type) return null;
+      const wdata = WARRIORS[w.type];
+      const baseVit = parseInt(wdata.stats.VIT);
+      const bonusVit = (w.ipSpent.includes('stat') && w.statImprove === 'VIT') ? 1 : 0;
+      const maxVit = baseVit + bonusVit;
+      return {
+        index: i,
+        type: w.type,
+        weapon: w.weapon,
+        weapon2: w.weapon2,
+        climbing: w.climbing,
+        consumable: w.consumable !== 'None' ? w.consumable : null,
+        ipSpent: w.ipSpent,
+        statImprove: w.statImprove,
+        maxVit,
+        currentVit: maxVit,
+        dead: false,
+        opgUsed: {},
+        consumableUsed: false,
+        reliquaryUsed: false,
+        isCaptain: state.captain === i,
+      };
+    }).filter(Boolean),
+  };
+
+  activeWarriorIdx = 0;
+  document.getElementById('trackerCompanyName').textContent = trackerState.companyName;
+  document.getElementById('trackerRound').textContent = trackerState.round;
+  document.getElementById('trackerModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  renderTrackerCards();
+}
+
+function closeTracker() {
+  document.getElementById('trackerModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function resetTracker() {
+  if (!trackerState) return;
+  trackerState.round = 1;
+  trackerState.warriors.forEach(w => {
+    w.currentVit = w.maxVit;
+    w.dead = false;
+    w.opgUsed = {};
+    w.consumableUsed = false;
+    w.reliquaryUsed = false;
+  });
+  document.getElementById('trackerRound').textContent = 1;
+  renderTrackerCards();
+}
+
+function trackerRound(delta) {
+  trackerState.round = Math.max(1, trackerState.round + delta);
+  document.getElementById('trackerRound').textContent = trackerState.round;
+}
+
+function trackerHit(wi, vi) {
+  const w = trackerState.warriors[wi];
+  if (w.dead) return;
+  const lostCount = w.maxVit - w.currentVit;
+  const dmgIdx = w.maxVit - 1 - vi;
+  if (dmgIdx < lostCount) w.currentVit = w.maxVit - dmgIdx;
+  else w.currentVit = w.maxVit - dmgIdx - 1;
+  w.currentVit = Math.max(0, Math.min(w.maxVit, w.currentVit));
+  renderTrackerCards();
+}
+
+function trackerToggleOPG(wi, abilityName) {
+  const w = trackerState.warriors[wi];
+  if (w.dead) return;
+  w.opgUsed[abilityName] = !w.opgUsed[abilityName];
+  renderTrackerCards();
+}
+
+function trackerToggleConsumable(wi) {
+  const w = trackerState.warriors[wi];
+  if (w.dead) return;
+  w.consumableUsed = !w.consumableUsed;
+  renderTrackerCards();
+}
+
+function trackerUseReliquary(wi) {
+  const w = trackerState.warriors[wi];
+  if (w.dead || w.reliquaryUsed) return;
+  Object.keys(w.opgUsed).forEach(name => {
+    if (w.opgUsed[name] && canRestoreWithReliquary(name)) w.opgUsed[name] = false;
+  });
+  w.reliquaryUsed = true;
+  renderTrackerCards();
+}
+
+function trackerToggleDead(wi) {
+  const w = trackerState.warriors[wi];
+  w.dead = !w.dead;
+  w.currentVit = w.dead ? 0 : w.maxVit;
+  renderTrackerCards();
+}
+
+function renderTrackerCards() {
+  const container = document.getElementById('trackerCards');
+
+  container.innerHTML = trackerState.warriors.map(function(w, wi) {
+    const wdata = WARRIORS[w.type];
+    const isDualWield = w.weapon === 'Light Weapon' && w.weapon2 === 'Light Weapon';
+    const allAbilities = wdata.abilities;
+    const hasConsumable = !!w.consumable;
+    const hasReliquary = w.consumable === 'Reliquary';
+    const improvedStat = (w.statImprove && w.ipSpent && w.ipSpent.includes('stat')) ? w.statImprove : null;
+
+    // ── STAT STRIP ───────────────────────────────────────────
+    const statKeys = ['MOV','ATK','VIT','SKL','DEF','COM'];
+    const statsHTML = statKeys.map(function(s) {
+      const base = wdata.stats[s];
+      let val = base;
+      if (improvedStat === s) {
+        if (s === 'SKL' || s === 'DEF' || s === 'COM') val = (parseInt(base) - 1) + '+';
+        else val = parseInt(base) + 1;
+      }
+      if (s === 'VIT') val = w.currentVit + '<span style="font-size:0.6rem;opacity:0.5">/' + w.maxVit + '</span>';
+      return '<div class="tk-stat ' + (improvedStat === s ? 'tk-stat-improved' : '') + '">' +
+        '<span class="tk-stat-lbl">' + s + '</span>' +
+        '<span class="tk-stat-val">' + val + '</span>' +
+        '</div>';
+    }).join('');
+
+    // ── VIT BOXES ────────────────────────────────────────────
+    const vitBoxes = Array.from({length: w.maxVit}, function(_, vi) {
+      return '<div class="tk-vit-box ' + (vi >= w.currentVit ? 'lost' : '') + '" onclick="trackerHit(' + wi + ',' + vi + ')"></div>';
+    }).join('');
+
+    // ── WEAPON ROW ───────────────────────────────────────────
+    function weaponRow(iconKey, name, wpnData, overrideNote) {
+      if (!name) return '';
+      const ic = ITEM_ICONS[iconKey] || ITEM_ICONS[name] || '';
+      const iconHTML = ic ? '<img src="' + ic + '" style="width:18px;height:18px;filter:sepia(0.3) brightness(0.95);opacity:0.85;flex-shrink:0;">' : '';
+      const dmgPill = wpnData && wpnData.damage > 0 ? '<span class="tk-wpn-pill">DMG ' + wpnData.damage + '</span>' : '';
+      const rngPill = wpnData && wpnData.range && wpnData.range !== '—' ? '<span class="tk-wpn-pill">RNG ' + wpnData.range + '</span>' : '';
+      const noteText = overrideNote !== undefined ? overrideNote : (wpnData ? [wpnData.note, wpnData.special].filter(Boolean).join(' — ') : '');
+      return '<div class="tk-wpn-row">' + iconHTML +
+        '<div class="tk-wpn-body">' +
+          '<div class="tk-wpn-name-line"><span class="tk-wpn-name">' + name + '</span>' + dmgPill + rngPill + '</div>' +
+          (noteText ? '<div class="tk-wpn-note">' + noteText + '</div>' : '') +
+        '</div></div>';
+    }
+
+    let weaponsHTML = '';
+    if (isDualWield) {
+      weaponsHTML = weaponRow('Dual Wield', 'Dual Light Weapons',
+        {damage:1, range:'Contact', note:'Two light weapons.', special:'+1 Attack die on all attacks.'});
+    } else {
+      weaponsHTML = weaponRow(w.weapon, w.weapon, WEAPONS[w.weapon]);
+      if (w.weapon2 && WEAPONS[w.weapon2]) weaponsHTML += weaponRow(w.weapon2, w.weapon2, WEAPONS[w.weapon2]);
+    }
+    if (wdata.fixedShield && w.weapon2 !== 'Shield') weaponsHTML += weaponRow('Shield', 'Shield', WEAPONS['Shield']);
+
+    // ── CLIMBING ─────────────────────────────────────────────
+    let climbHTML = '';
+    if (w.climbing && w.climbing !== 'None') {
+      const cdata = CLIMBING_ITEMS[w.climbing];
+      const cdesc = CLIMBING_DESCS[w.climbing] || '';
+      const ic = ITEM_ICONS[w.climbing] || '';
+      const iconHTML = ic ? '<img src="' + ic + '" style="width:18px;height:18px;filter:sepia(0.3) brightness(0.95);opacity:0.85;flex-shrink:0;">' : '';
+      const pills = cdata ? '<span class="tk-wpn-pill">HT ' + cdata.height + '</span><span class="tk-wpn-pill">SKILL ' + cdata.skillCheck + '</span>' : '';
+      climbHTML = '<div class="tk-wpn-row">' + iconHTML +
+        '<div class="tk-wpn-body"><div class="tk-wpn-name-line"><span class="tk-wpn-name">' + w.climbing + '</span>' + pills + '</div>' +
+        (cdesc ? '<div class="tk-wpn-note">' + cdesc + '</div>' : '') + '</div></div>';
+    }
+
+    // ── ABILITIES ─────────────────────────────────────────────
+    const abilitiesHTML = allAbilities.map(function(ab) {
+      const isOPG = ab.desc.toLowerCase().includes('once per game');
+      const permanent = NO_RESTORE_OPG.has(ab.name);
+      const used = !!w.opgUsed[ab.name];
+      let badge = '';
+      if (isOPG) {
+        const cls = 'tk-opg-badge' + (permanent ? ' tk-opg-permanent' : '') + (used ? ' tk-opg-used' : '');
+        const label = permanent ? 'PERMANENT' : (used ? '✓ USED' : 'ONCE PER GAME');
+        badge = '<span class="' + cls + '">' + label + '</span>';
+      }
+      const abilityKey = ab.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      const clickAttr = isOPG ? ' onclick="trackerToggleOPG(' + wi + ', \\"' + abilityKey + '\\")" style="cursor:pointer;"' : '';
+      return '<div class="tk-ability' + (isOPG && used ? ' tk-ability-used' : '') + '"' + clickAttr + '>' +
+        '<div class="tk-ability-header"><span class="tk-ability-name">' + ab.name + '</span>' + badge + '</div>' +
+        '<div class="tk-ability-desc">' + ab.desc + '</div>' +
+        '</div>';
+    }).join('');
+
+    // ── CAPTAIN ──────────────────────────────────────────────
+    const capUsed = !!w.opgUsed['__captain__'];
+    const captainAbility = w.isCaptain
+      ? '<div class="tk-ability' + (capUsed ? ' tk-ability-used' : '') + '" onclick="trackerToggleOPG(' + wi + ', \\"__captain__\\")" style="cursor:pointer;">' +
+        '<div class="tk-ability-header"><span class="tk-ability-name">★ Captain Re-Roll</span>' +
+        '<span class="tk-opg-badge' + (capUsed ? ' tk-opg-used' : '') + '">' + (capUsed ? '✓ USED' : 'ONCE PER GAME') + '</span></div>' +
+        '<div class="tk-ability-desc">Once per game, the Captain may re-roll a single die.</div></div>'
+      : '';
+
+    // ── CONSUMABLE ────────────────────────────────────────────
+    let consumableHTML = '';
+    if (hasConsumable) {
+      const ic = ITEM_ICONS[w.consumable] || '';
+      const iconStyle = w.consumableUsed
+        ? 'width:18px;height:18px;flex-shrink:0;opacity:0.2;filter:grayscale(1);'
+        : 'width:18px;height:18px;flex-shrink:0;filter:sepia(0.3) brightness(0.95);opacity:0.85;';
+      const iconHTML = ic ? '<img src="' + ic + '" style="' + iconStyle + '">' : '';
+      const desc = CONSUMABLES[w.consumable] || '';
+      const reliquaryRestore = hasReliquary && !w.reliquaryUsed &&
+        allAbilities.some(function(ab) { return w.opgUsed[ab.name] && canRestoreWithReliquary(ab.name); });
+      const badge2cls = 'tk-opg-badge' + (w.consumableUsed ? ' tk-opg-used' : '');
+      const badge2label = 'CONSUMABLE · ' + (w.consumableUsed ? 'EXPENDED' : 'AVAILABLE');
+      consumableHTML =
+        '<div class="tk-ability' + (w.consumableUsed ? ' tk-ability-used' : '') + '" onclick="trackerToggleConsumable(' + wi + ')" style="cursor:pointer;">' +
+        '<div class="tk-ability-header">' +
+          '<div style="display:flex;align-items:center;gap:0.4rem;">' + iconHTML + '<span class="tk-ability-name">' + w.consumable + '</span></div>' +
+          '<span class="' + badge2cls + '">' + badge2label + '</span>' +
+        '</div>' +
+        '<div class="tk-ability-desc">' + desc + '</div>' +
+        (reliquaryRestore ? '<button class="tk-reliquary-btn" style="margin-top:0.5rem;" onclick="event.stopPropagation();trackerUseReliquary(' + wi + ')">⟳ Expend Reliquary — Restore Once Per Game Abilities</button>' : '') +
+        (hasReliquary && w.reliquaryUsed ? '<div style="font-family:\'Oswald\',sans-serif;font-size:0.65rem;color:#444;letter-spacing:0.1em;margin-top:0.3rem;">RELIQUARY EXPENDED</div>' : '') +
+        '</div>';
+    }
+
+    // ── RESTRICTIONS + MARK ──────────────────────────────────
+    const restrictHTML = wdata.restrictions
+      ? '<div class="tk-restrictions">' + wdata.restrictions + '</div>' : '';
+    const markHTML = (wi === 0 && trackerState.mark && MARKS[trackerState.mark])
+      ? '<div class="tk-section-label" style="margin-top:0.6rem;">Company Mark — ' + trackerState.mark + '</div><div class="tk-restrictions">' + MARKS[trackerState.mark] + '</div>'
+      : '';
+
+    return '<div class="tk-card ' + (w.dead ? 'tk-dead' : '') + '">' +
+      '<div class="tk-card-header">' +
+        (w.isCaptain ? '<span class="tk-captain-badge">★ Captain</span>' : '') +
+        '<span class="tk-name">' + w.type + '</span>' +
+        (w.dead ? '<span class="tk-dead-badge">☠ Perished</span>' : '') +
+        '<button class="tk-perish-btn ' + (w.dead ? 'alive' : '') + '" onclick="trackerToggleDead(' + wi + ')">' + (w.dead ? '↩ Revive' : '☠ Perish') + '</button>' +
+      '</div>' +
+      '<div class="tk-stats-strip">' + statsHTML + '</div>' +
+      '<div class="tk-section-label">Vitality Track</div>' +
+      '<div class="tk-vit-row" style="margin-bottom:0.8rem;">' + vitBoxes + '<span class="tk-vit-count">' + w.currentVit + ' / ' + w.maxVit + '</span></div>' +
+      '<div class="tk-section-label">Equipment</div>' +
+      '<div class="tk-equip-block">' + weaponsHTML + climbHTML + '</div>' +
+      '<div class="tk-section-label" style="margin-top:0.7rem;">Abilities</div>' +
+      '<div class="tk-abilities-block">' + abilitiesHTML + captainAbility + '</div>' +
+      (hasConsumable ? '<div class="tk-section-label" style="margin-top:0.7rem;">Consumable</div>' + consumableHTML : '') +
+      restrictHTML + markHTML +
+    '</div>';
+  }).join('');
+
+  // Apply active class to the right card
+  const cards = container.querySelectorAll('.tk-card');
+  cards.forEach(function(c, i) { c.classList.toggle('tk-active', i === activeWarriorIdx); });
+
+  // Render tab bar — warriors + REF tab
+  const tabBar = document.getElementById('trackerTabBar');
+  const isRef = activeWarriorIdx === -1;
+  tabBar.innerHTML = trackerState.warriors.map(function(w, wi) {
+    const isActive = wi === activeWarriorIdx;
+    const shortName = w.type.split(' ')[0];
+    return '<div class="tk-tab' + (isActive?' tk-tab-active':'') + (w.dead?' tk-tab-dead':'') + '" onclick="selectTrackerWarrior(' + wi + ')">' +
+      (w.isCaptain ? '<span class="tk-tab-captain-dot">★</span>' : '') +
+      (w.dead ? '<span class="tk-tab-dead-icon">☠</span>' : '') +
+      '<span class="tk-tab-vit">' + w.currentVit + '</span>' +
+      '<span class="tk-tab-name">' + shortName + '</span>' +
+    '</div>';
+  }).join('') +
+  '<div class="tk-tab tk-tab-ref' + (isRef?' tk-tab-active':'') + '" onclick="selectTrackerWarrior(' + (isRef ? '0' : '-1') + ')">' +
+    '<span class="tk-tab-vit">' + (isRef ? '✕' : '?') + '</span>' +
+    '<span class="tk-tab-name">' + (isRef ? 'Back' : 'Ref') + '</span>' +
+  '</div>';
+}
+
+function selectTrackerWarrior(wi) {
+  activeWarriorIdx = wi;
+  const overlay = document.getElementById('tkRefOverlay');
+  if (wi === -1) {
+    // Show quick reference overlay
+    overlay.classList.add('open');
+    overlay.innerHTML = buildTrackerRefHTML();
+  } else {
+    overlay.classList.remove('open');
+  }
+  renderTrackerCards();
+}
+function buildTrackerRefHTML() {
+  const actions = [
+    ['MOVE', 'Move up to MOV inches. Cannot end on another model.'],
+    ['DASH', 'Move up to MOV inches again. Cannot ATTACK same turn.'],
+    ['ATTACK', 'Make a COMBAT Check vs an enemy in range.'],
+    ['PUSH', 'Move an adjacent enemy 1″. If pushed to edge, SKILL Check or fall.'],
+    ['STANDBY', 'Pause activation. Trigger one ATTACK on the first enemy that acts within range. Ends activation.'],
+    ['CLIMB', 'Move onto or off the base of a climbing item. No check.'],
+    ['SCALE', 'Move from base to top (or top to base) in one action.'],
+    ['CONCENTRATE', 'Reroll one die from your last action. Must accept new result.'],
+    ['JUMP', 'Leap a gap up to 2″. SKILL Check — fail = fall.'],
+    ['EXPEND', 'Use a consumable or cache item. Free action unless stated.'],
+    ['HANDOFF', 'Pass a carried item to an adjacent friendly model.'],
+    ['INSPECT CACHE', 'Loot a Resource Cache in base contact. Roll SKILL Check.'],
+    ['PIERCING BLOW', 'Rolling a 6 on COMBAT ignores DEFENSE. First hit = Breached.'],
+  ];
+  const statuses = [
+    ['BREACHED', 'Start of activation: SKILL Check. Fail = lose 1 VIT (ignores DEF). Permanent until removed.'],
+    ['STUNNED', 'Cannot take any actions until end of next activation.'],
+    ['IMMOBILIZED', 'Cannot move or climb until end of next activation.'],
+    ['HINDERED', 'Loses next action, then clears.'],
+    ['SUNDERED', 'Weapon has -1 COMBAT for rest of game. Permanent.'],
+    ['SWARMED', '-1 to all COMBAT Checks while active.'],
+  ];
+
+  const actHTML = actions.map(function(a) {
+    return '<div class="tk-ref-item"><strong>' + a[0] + '</strong>' + a[1] + '</div>';
+  }).join('');
+
+  const stHTML = statuses.map(function(s) {
+    return '<div class="tk-ref-item"><strong>' + s[0] + '</strong>' + s[1] + '</div>';
+  }).join('');
+
+  return '<div class="tk-ref-section">' +
+    '<div class="tk-ref-section-title">Actions</div>' + actHTML +
+  '</div>' +
+  '<div class="tk-ref-section">' +
+    '<div class="tk-ref-section-title">Statuses</div>' + stHTML +
+  '</div>' +
+  '<div class="tk-ref-section">' +
+    '<div class="tk-ref-section-title">Falling (D6, 2″+ fall)</div>' +
+    '<div class="tk-ref-fall-note">+1 if fell 4″+. +3 if fell 6″+. Model becomes Immobilized. 8+ = Death.</div>' +
+    '<table class="tk-ref-table">' +
+      '<tr><td>1–2</td><td>0 dmg</td></tr>' +
+      '<tr><td>3–4</td><td>1 dmg</td></tr>' +
+      '<tr><td>5–6</td><td>2 dmg</td></tr>' +
+      '<tr><td>7</td><td>3 dmg</td></tr>' +
+      '<tr><td>8+</td><td>☠ Death</td></tr>' +
+    '</table>' +
+  '</div>' +
+  '<div class="tk-ref-section">' +
+    '<div class="tk-ref-section-title">Resource Caches (D6)</div>' +
+    '<table class="tk-ref-table">' +
+      '<tr><td>1</td><td><strong style="font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#e8dcc8;display:inline;">Herbs &amp; Tonic</strong> — +3 VIT (max starting VIT).</td></tr>' +
+      '<tr><td>2</td><td><strong style="font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#e8dcc8;display:inline;">Food</strong> — +1 action this activation (no repeats).</td></tr>' +
+      '<tr><td>3</td><td><strong style="font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#e8dcc8;display:inline;">Scholarly Scroll</strong> — Expend to pass a failed SKILL Check.</td></tr>' +
+      '<tr><td>4</td><td><strong style="font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#e8dcc8;display:inline;">Map</strong> — All living warriors move: 3 alive=2″, 2 alive=3″, 1 alive=4″.</td></tr>' +
+      '<tr><td>5</td><td><strong style="font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#e8dcc8;display:inline;">Cloak</strong> — Untargetable and cannot attack until next activation.</td></tr>' +
+      '<tr><td>6</td><td><strong style="font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#e8dcc8;display:inline;">Reliquary</strong> — Regain one Once Per Game ability.</td></tr>' +
+    '</table>' +
+  '</div>';
+}
+
+
 </script>
 </body>
 </html>
