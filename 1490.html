@@ -1869,6 +1869,40 @@ const IP_OPTIONS = [
 ];
 
 // ============================================================
+// SHARED REFERENCE DEFINITIONS (source of truth)
+// Used by both print quick reference and play mode quick reference
+// ============================================================
+const ACTION_DEFS = [
+  ['MOVE', 'Move a model up to its movement value in inches.'],
+  ['DASH', 'Move a model up to 2 inches.'],
+  ['ATTACK', 'Attack with one equipped weapon or two equipped light melee weapons.'],
+  ['PUSH', 'Move an enemy model in base contact with you 1 inch in any direction. If this model comes in contact with another model or a barrier, it stops. If that model comes in contact with an edge they could fall off of, or they were already in contact with a barrier against an edge before being pushed, they make a SKILL Check. If they fail the SKILL Check, they fall and roll for fall damage. If they succeed they stop short of falling.'],
+  ['STANDBY', "The model readies an ATTACK with its weapon(s) and automatically performs that ATTACK action on the first enemy that carries out an action within your weapon(s) range. Your model's ATTACK happens after that enemy model has completed their current action. A model cannot use Standby if they used ATTACK this round. Standby lasts until the model's next activation."],
+  ['EXPEND', 'Use a consumable item purchased during Doom Company creation or acquired from a cache. Expend does not cost an action, but may trigger actions that do.'],
+  ['SCALE', 'The model scales the full distance/height of an unoccupied climbing item. They are then placed at the top as close as possible to the ladder or hook. The next action the model uses must be MOVE, DASH, or RETRIEVE CLIMBING GEAR. Until then, they are considered to be on the ladder or rope.'],
+  ['CONCENTRATE', 'During the next COMBAT or SKILL Check you make during this activation, add +1 to the result.'],
+  ['JUMP', "A model standing on an edge of a structure attempts to jump to another surface on the same or lower elevation that's a maximum of 3 inches away. The model performs a SKILL Check. If they pass, place them on the surface they jumped to. If they fail, they fall directly below the edge they were standing on and roll for falling damage."],
+  ['HANDOFF', 'Transfer any consumable item or climbing item to another friendly model within one inch, or pick up an item off the ground left by a perished Doom Warrior.'],
+  ['SCALE DOWN', 'The model scales down the full distance/height of an unoccupied climbing item. They are then placed at the bottom as close as possible to the ladder or hook. The model is no longer on the climbing item.'],
+  ['SET LADDER', 'A model sets a ladder they have against a structure they are in base contact with. The structure can be a maximum of 4 inches high. Ladders can also be set between structures as an improvised bridge.'],
+  ['SET GRAPPLING HOOK', 'A model makes a SKILL Check. If they pass, they hook their Grappling Hook to the top of a structure they are in base contact with. The structure can be a maximum of 6 inches high.'],
+  ['RETRIEVE CLIMBING GEAR', 'A model picks up a climbing item they are in base contact with that has no models on it. Models must be at the top of a Grappling Hook to retrieve it, but can retrieve Ladders from the top or bottom.'],
+  ['CLIMB', 'If a model is in base contact with a wall or structure greater than 1 inch but not greater than 3 inches tall, they may CLIMB it with a successful SKILL Check. Climbing distance is unaffected by environmental conditions. If you roll a 1 on your SKILL Check you fall the full length of the attempted climb and must roll on the falling table.'],
+  ['INSPECT RESOURCE CACHE', 'The model makes a SKILL Check. If they pass, they reveal the contents of the resource cache. If they fail, the action ends. If a model fails to reveal the contents of a Cache and it is the second time a model has failed to do so, the Cache is destroyed. Remove the Cache from play.'],
+  ['OPEN DOOR', 'A model makes a SKILL Check. If they succeed, they can open or close a door they are in base contact with. This skill can also open a portcullis, a trap door, a lock, or anything agreed upon prior to the start of a game.'],
+  ['PIERCING BLOW', 'When a model rolls a 6 on a COMBAT Check, the hit ignores DEFENSE. The first time a model is hit by a Piercing Blow, they become Breached.'],
+];
+
+const STATUS_DEFS = [
+  ['BREACHED', 'At the start of each activation, roll a SKILL Check. On a failure, lose 1 VITALITY — this ignores DEFENSE. Breached is permanent until removed by an ability.'],
+  ['STUNNED', 'The model cannot take any actions until the end of their next activation.'],
+  ['IMMOBILIZED', 'The model cannot move or climb until the end of their next activation.'],
+  ['HINDERED', 'The model loses their next action. The status then clears.'],
+  ['SUNDERED', "The model's weapon has -1 COMBAT for the rest of the game. Permanent."],
+  ['SWARMED', 'The model suffers -1 to all COMBAT Checks while this status persists.'],
+];
+
+// ============================================================
 // STATE
 // ============================================================
 let state = {
@@ -2480,10 +2514,8 @@ function buildPrintRoster() {
         range && range !== '—' ? `RNG ${range}` : null,
       ].filter(Boolean);
       const pillsHTML = pills.map(p => `<span class="pr-wpn-pill">${p}</span>`).join('');
-      const desc = [note, special].filter(Boolean).join(' — ');
-      const descHTML = desc ? `<span class="pr-wpn-note">${desc}</span>` : '';
       const iconHTML = iconSrc ? `<img src="${iconSrc}" class="pr-wpn-row-icon">` : '';
-      return `<div class="pr-wpn-stat-row">${iconHTML}<span class="pr-wpn-stat-label">${name}</span>${pillsHTML}${descHTML}</div>`;
+      return `<div class="pr-wpn-stat-row">${iconHTML}<span class="pr-upgrade-tag">${name}</span>${pillsHTML}</div>`;
     }
 
     const wpnCards = [];
@@ -2581,36 +2613,9 @@ function buildPrintRoster() {
     markHTML = ``;
   }
 
-  // Quick reference
-  const actionItems = [
-    ['MOVE', 'Move your model up to their MOV stat in inches. Models may not end their movement on the same space as another model.'],
-    ['DASH', 'Move your model up to their MOV stat in inches a second time. A model that uses DASH may not use ATTACK during the same activation.'],
-    ['ATTACK', 'Make a COMBAT Check against an enemy model in melee range (base contact), or at range if equipped with a ranged weapon.'],
-    ['PUSH', 'Move an adjacent enemy model 1" in any direction. If pushed to a board edge, they must pass a SKILL Check or fall.'],
-    ['STANDBY', 'Pause your activation. You may trigger one ATTACK against the first enemy model that takes any action within your weapon\'s range. STANDBY ends your activation.'],
-    ['CLIMB', 'Move your model onto or off the base of a climbing item. No SKILL Check required.'],
-    ['SCALE', 'Move your model from the base to the top (or top to base) of a climbing item in a single action.'],
-    ['SCALE DOWN', 'Move your model from the top to the base of a climbing item. No SKILL Check required unless the model is Immobilized.'],
-    ['CONCENTRATE', 'Reroll a single die from your last Action. You must accept the new result.'],
-    ['JUMP', 'Leap a gap up to 2" wide. Requires a SKILL Check — failure means the model falls.'],
-    ['EXPEND', 'Use a carried consumable or cache item. This is a free action unless otherwise stated.'],
-    ['HANDOFF', 'Pass a carried item to an adjacent friendly model.'],
-    ['SET LADDER', 'Place your Ladder against a structure within reach.'],
-    ['SET GRAPPLING HOOK', 'Throw your Grappling Hook to a structure within range. Requires a SKILL Check to set.'],
-    ['RETRIEVE CLIMBING GEAR', 'Pick up a Ladder or Grappling Hook at your current position.'],
-    ['INSPECT CACHE', 'Attempt to loot a Resource Cache you are in base contact with. Roll a SKILL Check.'],
-    ['OPEN DOOR', 'Open or close an adjacent door. No SKILL Check required.'],
-    ['PIERCING BLOW', 'When a model rolls a 6 on a COMBAT Check, the hit ignores DEFENSE. The first time a model is hit by a Piercing Blow, they become Breached.'],
-  ];
-
-  const statusItems = [
-    ['BREACHED', 'At the start of each activation, roll a SKILL Check. On a failure, lose 1 VITALITY — this ignores DEFENSE. Breached is permanent until removed by an ability.'],
-    ['STUNNED', 'The model cannot take any actions until the end of their next activation.'],
-    ['IMMOBILIZED', 'The model cannot move or climb until the end of their next activation.'],
-    ['HINDERED', 'The model loses their next action. The status then clears.'],
-    ['SUNDERED', 'The model\'s weapon has -1 COMBAT for the rest of the game. Permanent.'],
-    ['SWARMED', 'The model suffers -1 to all COMBAT Checks while this status persists.'],
-  ];
+  // Quick reference — use shared source of truth
+  const actionItems = ACTION_DEFS;
+  const statusItems = STATUS_DEFS;
 
   const cacheItems = [
     ['1', 'HERBS & TONIC — When EXPENDED, the model gains +3 VITALITY. Cannot exceed starting maximum VITALITY.'],
@@ -3512,6 +3517,7 @@ function renderTrackerCards() {
     return '<div class="tk-card ' + (w.dead ? 'tk-dead' : '') + '">' +
       '<div class="tk-card-header">' +
         (w.isCaptain ? '<span class="tk-captain-badge">★ Captain</span>' : '') +
+        (WARRIOR_IMAGES[w.type] ? '<img src="' + WARRIOR_IMAGES[w.type] + '" style="width:2.2rem;height:2.2rem;border-radius:50%;object-fit:cover;object-position:top;border:1px solid #333;flex-shrink:0;" alt="">' : '') +
         '<span class="tk-name">' + w.type + '</span>' +
         (w.dead ? '<span class="tk-dead-badge">☠ Perished</span>' : '') +
         '<button class="tk-perish-btn ' + (w.dead ? 'alive' : '') + '" onclick="trackerToggleDead(' + wi + ')">' + (w.dead ? '↩ Revive' : '☠ Perish') + '</button>' +
@@ -3538,10 +3544,11 @@ function renderTrackerCards() {
   tabBar.innerHTML = trackerState.warriors.map(function(w, wi) {
     const isActive = wi === activeWarriorIdx;
     const shortName = w.type.split(' ')[0];
-    return '<div class="tk-tab' + (isActive?' tk-tab-active':'') + (w.dead?' tk-tab-dead':'') + '" onclick="selectTrackerWarrior(' + wi + ')">' +
+    const isDead = w.dead || w.currentVit <= 0;
+    return '<div class="tk-tab' + (isActive?' tk-tab-active':'') + (isDead?' tk-tab-dead':'') + '" onclick="selectTrackerWarrior(' + wi + ')">' +
       (w.isCaptain ? '<span class="tk-tab-captain-dot">★</span>' : '') +
-      (w.dead ? '<span class="tk-tab-dead-icon">☠</span>' : '') +
-      '<span class="tk-tab-vit">' + w.currentVit + '</span>' +
+      (isDead ? '<span class="tk-tab-dead-icon">☠</span>' : '') +
+      '<span class="tk-tab-vit">' + (isDead ? '0' : w.currentVit) + '</span>' +
       '<span class="tk-tab-name">' + shortName + '</span>' +
     '</div>';
   }).join('') +
@@ -3564,29 +3571,8 @@ function selectTrackerWarrior(wi) {
   renderTrackerCards();
 }
 function buildTrackerRefHTML() {
-  const actions = [
-    ['MOVE', 'Move up to MOV inches. Cannot end on another model.'],
-    ['DASH', 'Move up to MOV inches again. Cannot ATTACK same turn.'],
-    ['ATTACK', 'Make a COMBAT Check vs an enemy in range.'],
-    ['PUSH', 'Move an adjacent enemy 1″. If pushed to edge, SKILL Check or fall.'],
-    ['STANDBY', 'Pause activation. Trigger one ATTACK on the first enemy that acts within range. Ends activation.'],
-    ['CLIMB', 'Move onto or off the base of a climbing item. No check.'],
-    ['SCALE', 'Move from base to top (or top to base) in one action.'],
-    ['CONCENTRATE', 'Reroll one die from your last action. Must accept new result.'],
-    ['JUMP', 'Leap a gap up to 2″. SKILL Check — fail = fall.'],
-    ['EXPEND', 'Use a consumable or cache item. Free action unless stated.'],
-    ['HANDOFF', 'Pass a carried item to an adjacent friendly model.'],
-    ['INSPECT CACHE', 'Loot a Resource Cache in base contact. Roll SKILL Check.'],
-    ['PIERCING BLOW', 'Rolling a 6 on COMBAT ignores DEFENSE. First hit = Breached.'],
-  ];
-  const statuses = [
-    ['BREACHED', 'Start of activation: SKILL Check. Fail = lose 1 VIT (ignores DEF). Permanent until removed.'],
-    ['STUNNED', 'Cannot take any actions until end of next activation.'],
-    ['IMMOBILIZED', 'Cannot move or climb until end of next activation.'],
-    ['HINDERED', 'Loses next action, then clears.'],
-    ['SUNDERED', 'Weapon has -1 COMBAT for rest of game. Permanent.'],
-    ['SWARMED', '-1 to all COMBAT Checks while active.'],
-  ];
+  const actions = ACTION_DEFS;
+  const statuses = STATUS_DEFS;
 
   const actHTML = actions.map(function(a) {
     return '<div class="tk-ref-item"><strong>' + a[0] + '</strong>' + a[1] + '</div>';
