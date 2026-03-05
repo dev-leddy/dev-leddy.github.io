@@ -3205,14 +3205,6 @@ renderSavedList();
   }
   .tk-reliquary-btn:active { background:#2a2010; }
 
-  /* ── PERISH BUTTON ──────────────────────────────────────── */
-  .tk-perish-btn {
-    background:none;border:1px solid #5a0000;color:#7a2a2a;
-    padding:0.25rem 0.7rem;cursor:pointer;
-    font-family:'Oswald',sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
-  }
-  .tk-perish-btn.alive { border-color:#1a5a1a;color:#3a7a3a; }
-
   /* ── BOTTOM TAB BAR ─────────────────────────────────────── */
   .tk-tab-bar {
     display:flex;
@@ -3336,6 +3328,7 @@ function openTracker() {
         consumableUsed: false,
         reliquaryUsed: false,
         cacheItems: [],
+        statuses: [],
         isCaptain: state.captain === i,
       };
     }).filter(Boolean),
@@ -3379,6 +3372,7 @@ function resetTracker() {
     w.consumableUsed = false;
     w.reliquaryUsed = false;
     w.cacheItems = [];
+    w.statuses = [];
   });
   document.getElementById('trackerRound').textContent = 1;
   renderTrackerCards();
@@ -3409,8 +3403,21 @@ function trackerHit(wi, vi) {
 function trackerToggleOPG(wi, abilityName) {
   const w = trackerState.warriors[wi];
   if (w.dead) return;
-  w.opgUsed[abilityName] = !w.opgUsed[abilityName];
-  renderTrackerCards();
+  if (!w.opgUsed[abilityName]) {
+    // Marking as used — confirm
+    const label = abilityName === '__captain__' ? 'Captain Re-Roll' : abilityName;
+    showConfirm('Use ' + label + '?', 'This once per game ability will be marked as used.', function() {
+      w.opgUsed[abilityName] = true;
+      renderTrackerCards();
+    });
+  } else {
+    // Restoring — also confirm
+    const label = abilityName === '__captain__' ? 'Captain Re-Roll' : abilityName;
+    showConfirm('Restore ' + label + '?', 'Mark this ability as available again.', function() {
+      w.opgUsed[abilityName] = false;
+      renderTrackerCards();
+    });
+  }
 }
 
 function trackerToggleConsumable(wi) {
@@ -3469,9 +3476,98 @@ function trackerAddCacheItem(wi, roll) {
 
 function trackerUseCacheItem(wi, itemId) {
   const w = trackerState.warriors[wi];
-  // Remove the item entirely — it's consumed
-  w.cacheItems = w.cacheItems.filter(function(c) { return c.id !== itemId; });
+  const item = w.cacheItems.find(function(c) { return c.id === itemId; });
+  if (!item) return;
+  showConfirm(
+    'Expend ' + item.name + '?',
+    'This item will be removed permanently.',
+    function() {
+      w.cacheItems = w.cacheItems.filter(function(c) { return c.id !== itemId; });
+      renderTrackerCards();
+    }
+  );
+}
+
+// ── STATUS EFFECTS ───────────────────────────────────────────
+function openStatusModal(wi) {
+  let overlay = document.getElementById('statusModalOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'statusModalOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML =
+    '<div style="background:#111;border:1px solid #333;max-width:360px;width:100%;padding:1.2rem;font-family:\'Crimson Text\',serif;color:#e8dcc8;">' +
+      '<div style="font-family:\'Oswald\',sans-serif;font-size:0.8rem;letter-spacing:0.15em;color:#888;margin-bottom:0.75rem;">APPLY STATUS EFFECT</div>' +
+      STATUS_DEFS.map(function(s) {
+        return '<button onclick="trackerAddStatus(' + wi + ',\'' + s[0] + '\');closeStatusModal()" style="' +
+          'display:block;width:100%;text-align:left;background:#1a1a1a;border:1px solid #2a2a2a;' +
+          'color:#e8dcc8;padding:0.55rem 0.7rem;margin-bottom:0.4rem;cursor:pointer;font-family:\'Crimson Text\',serif;font-size:0.95rem;">' +
+          '<strong style="font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#9a9add;letter-spacing:0.08em;">' + s[0] + '</strong>' +
+          '<div style="font-size:0.8rem;color:#777;margin-top:2px;">' + s[1] + '</div>' +
+        '</button>';
+      }).join('') +
+      '<button onclick="closeStatusModal()" style="margin-top:0.4rem;width:100%;background:none;border:1px solid #333;color:#666;padding:0.4rem;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:0.75rem;letter-spacing:0.1em;">CANCEL</button>' +
+    '</div>';
+  overlay.style.display = 'flex';
+}
+
+function closeStatusModal() {
+  const overlay = document.getElementById('statusModalOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function trackerAddStatus(wi, statusName) {
+  const w = trackerState.warriors[wi];
+  const def = STATUS_DEFS.find(function(s) { return s[0] === statusName; });
+  if (!def) return;
+  // Don't add duplicates
+  if (w.statuses.find(function(s) { return s.name === statusName; })) return;
+  w.statuses.push({ id: Date.now(), name: statusName, desc: def[1] });
   renderTrackerCards();
+}
+
+function trackerRemoveStatus(wi, statusId) {
+  const w = trackerState.warriors[wi];
+  const status = w.statuses.find(function(s) { return s.id === statusId; });
+  if (!status) return;
+  showConfirm(
+    'Remove ' + status.name + '?',
+    'Mark this status as cleared.',
+    function() {
+      w.statuses = w.statuses.filter(function(s) { return s.id !== statusId; });
+      renderTrackerCards();
+    }
+  );
+}
+
+// ── CONFIRM MODAL ────────────────────────────────────────────
+function showConfirm(title, subtitle, onConfirm) {
+  let overlay = document.getElementById('confirmModalOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'confirmModalOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML =
+    '<div style="background:#111;border:1px solid #444;max-width:300px;width:100%;padding:1.3rem;font-family:\'Crimson Text\',serif;color:#e8dcc8;text-align:center;">' +
+      '<div style="font-family:\'Oswald\',sans-serif;font-size:1rem;letter-spacing:0.1em;margin-bottom:0.4rem;">' + title + '</div>' +
+      '<div style="font-size:0.85rem;color:#777;margin-bottom:1.1rem;">' + subtitle + '</div>' +
+      '<div style="display:flex;gap:0.6rem;">' +
+        '<button id="confirmNo" style="flex:1;background:none;border:1px solid #333;color:#666;padding:0.5rem;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:0.8rem;letter-spacing:0.1em;">CANCEL</button>' +
+        '<button id="confirmYes" style="flex:1;background:#1a1a0a;border:1px solid #4a3a00;color:#c8a840;padding:0.5rem;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:0.8rem;letter-spacing:0.1em;font-weight:700;">CONFIRM</button>' +
+      '</div>' +
+    '</div>';
+  overlay.style.display = 'flex';
+  overlay.querySelector('#confirmYes').onclick = function() {
+    overlay.style.display = 'none';
+    onConfirm();
+  };
+  overlay.querySelector('#confirmNo').onclick = function() {
+    overlay.style.display = 'none';
+  };
 }
 
 function trackerUseReliquary(wi) {
@@ -3624,8 +3720,7 @@ function renderTrackerCards() {
         (WARRIOR_IMAGES[w.type] ? '<img src="' + WARRIOR_IMAGES[w.type] + '" style="width:2.2rem;height:2.2rem;border-radius:50%;object-fit:cover;object-position:top;border:1px solid #333;flex-shrink:0;" alt="">' : '') +
         '<span class="tk-name">' + w.type + '</span>' +
         '<button onclick="openCacheLootModal(' + wi + ')" style="background:#0d1a0d;border:1px solid #1a3a1a;color:#4a9a4a;padding:0.3rem 0.6rem;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:0.7rem;letter-spacing:0.1em;flex-shrink:0;">+ CACHE</button>' +
-        (w.dead ? '<span class="tk-dead-badge">☠ Perished</span>' : '') +
-        '<button class="tk-perish-btn ' + (w.dead ? 'alive' : '') + '" onclick="trackerToggleDead(' + wi + ')">' + (w.dead ? '↩ Revive' : '☠ Perish') + '</button>' +
+        '<button onclick="openStatusModal(' + wi + ')" style="background:#0d0d1f;border:1px solid #1a1a4a;color:#6a6aaa;padding:0.3rem 0.6rem;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:0.7rem;letter-spacing:0.1em;flex-shrink:0;">+ STATUS</button>' +
       '</div>' +
       '<div class="tk-stats-strip">' + statsHTML + '</div>' +
       '<div class="tk-section-label">Vitality Track</div>' +
@@ -3642,6 +3737,16 @@ function renderTrackerCards() {
               '<span class="tk-opg-badge" style="background:#0d1f0d;color:#4a9a4a;border-color:#1a3a1a;">TAP TO EXPEND</span>' +
             '</div>' +
             '<div class="tk-ability-desc">' + item.desc + '</div>' +
+          '</div>';
+        }).join('') : '') +
+      (w.statuses.length ? '<div class="tk-section-label" style="margin-top:0.7rem;color:#9a9add;">Active Statuses</div>' +
+        w.statuses.map(function(status) {
+          return '<div class="tk-ability" style="cursor:pointer;border-left-color:#3a3a88;background:#0f0f1f;" onclick="trackerRemoveStatus(' + wi + ',' + status.id + ')">' +
+            '<div class="tk-ability-header">' +
+              '<span class="tk-ability-name" style="color:#9a9add;">' + status.name + '</span>' +
+              '<span class="tk-opg-badge" style="background:#0d0d1f;color:#6a6aaa;border-color:#2a2a5a;">TAP TO CLEAR</span>' +
+            '</div>' +
+            '<div class="tk-ability-desc">' + status.desc + '</div>' +
           '</div>';
         }).join('') : '') +
       '<div class="tk-section-label" style="margin-top:0.7rem;">Abilities</div>' +
