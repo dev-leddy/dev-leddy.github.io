@@ -3043,7 +3043,13 @@ renderSavedList();
   <!-- TOP BAR -->
   <div class="tk-topbar">
     <button onclick="closeTracker()" class="tk-topbar-btn">✕</button>
-    <span id="trackerCompanyName" class="tk-topbar-name"></span>
+    <div class="tk-topbar-identity">
+      <img id="trackerMarkImg" class="tk-topbar-mark-img" src="" alt="" style="display:none;">
+      <div class="tk-topbar-names">
+        <span id="trackerCompanyName" class="tk-topbar-name"></span>
+        <span id="trackerMarkName" class="tk-topbar-mark-name"></span>
+      </div>
+    </div>
     <div class="tk-round-ctrl">
       <button onclick="trackerRound(-1)" class="tk-round-btn">−</button>
       <div class="tk-round-display">
@@ -3083,11 +3089,26 @@ renderSavedList();
     flex-shrink:0;
   }
   .tk-topbar-btn:active { color:#e8dcc8;border-color:#666; }
+  .tk-topbar-identity {
+    display:flex;align-items:center;gap:0.45rem;flex:1;min-width:0;
+  }
+  .tk-topbar-mark-img {
+    width:2rem;height:2rem;border-radius:50%;object-fit:cover;object-position:top;
+    border:1px solid #444;flex-shrink:0;
+  }
+  .tk-topbar-names {
+    display:flex;flex-direction:column;gap:1px;min-width:0;
+  }
   .tk-topbar-name {
     font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:700;
-    letter-spacing:0.08em;text-transform:uppercase;flex:1;
+    letter-spacing:0.08em;text-transform:uppercase;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    color:#e8dcc8;
+    color:#e8dcc8;line-height:1.1;
+  }
+  .tk-topbar-mark-name {
+    font-family:'Oswald',sans-serif;font-size:0.6rem;letter-spacing:0.12em;
+    text-transform:uppercase;color:#b8972a;line-height:1;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .tk-round-ctrl { display:flex;align-items:center;gap:0.3rem;flex-shrink:0; }
   .tk-round-btn {
@@ -3129,14 +3150,23 @@ renderSavedList();
 
   /* ── VITALITY ───────────────────────────────────────────── */
   .tk-section-label { font-family:'Oswald',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#555;margin-bottom:0.35rem; }
-  .tk-vit-row { display:flex;flex-wrap:wrap;gap:5px;align-items:center; }
+  .tk-vit-row { display:flex;flex-wrap:wrap;gap:6px;align-items:center; }
   .tk-vit-box {
-    width:36px;height:36px;border:1.5px solid #444;background:#1a1a1a;
-    cursor:pointer;transition:background 0.1s,border-color 0.1s;flex-shrink:0;
-    /* bigger tap target on mobile */
+    width:44px;height:44px;border:2px solid #2a5a2a;background:#1a3a1a;
+    cursor:pointer;flex-shrink:0;position:relative;
+    transition:background 0.15s,border-color 0.15s;
+    border-radius:3px;
   }
-  .tk-vit-box.lost { background:#5a0000;border-color:#7a0000; }
-  .tk-vit-count { font-family:'Oswald',sans-serif;font-size:1rem;color:#555;margin-left:4px; }
+  .tk-vit-box:active { opacity:0.7; }
+  .tk-vit-box.lost {
+    background:#111;border-color:#222;
+  }
+  .tk-vit-box.lost::after {
+    content:'';position:absolute;inset:6px;
+    background:linear-gradient(135deg,transparent 45%,#2a2a2a 45%,#2a2a2a 55%,transparent 55%),
+               linear-gradient(45deg,transparent 45%,#2a2a2a 45%,#2a2a2a 55%,transparent 55%);
+  }
+  .tk-vit-count { font-family:'Oswald',sans-serif;font-size:1.1rem;color:#4a9a4a;margin-left:6px;font-weight:700; }
 
   /* ── WEAPONS ────────────────────────────────────────────── */
   .tk-equip-block { display:flex;flex-direction:column;gap:0.35rem; }
@@ -3305,6 +3335,7 @@ function openTracker() {
         opgUsed: {},
         consumableUsed: false,
         reliquaryUsed: false,
+        cacheItems: [],
         isCaptain: state.captain === i,
       };
     }).filter(Boolean),
@@ -3313,6 +3344,21 @@ function openTracker() {
   activeWarriorIdx = 0;
   document.getElementById('trackerCompanyName').textContent = trackerState.companyName;
   document.getElementById('trackerRound').textContent = trackerState.round;
+
+  // Company mark in topbar
+  const markImgEl = document.getElementById('trackerMarkImg');
+  const markNameEl = document.getElementById('trackerMarkName');
+  const markSrc = trackerState.mark === 'Ashbound'
+    ? (MARK_IMAGES['Wretched Survivors'] || '')
+    : (MARK_IMAGES[trackerState.mark] || '');
+  if (markSrc) {
+    markImgEl.src = markSrc;
+    markImgEl.style.display = '';
+  } else {
+    markImgEl.style.display = 'none';
+  }
+  markNameEl.textContent = trackerState.mark ? trackerState.mark : '';
+
   document.getElementById('trackerModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
   renderTrackerCards();
@@ -3332,6 +3378,7 @@ function resetTracker() {
     w.opgUsed = {};
     w.consumableUsed = false;
     w.reliquaryUsed = false;
+    w.cacheItems = [];
   });
   document.getElementById('trackerRound').textContent = 1;
   renderTrackerCards();
@@ -3345,10 +3392,16 @@ function trackerRound(delta) {
 function trackerHit(wi, vi) {
   const w = trackerState.warriors[wi];
   if (w.dead) return;
-  const lostCount = w.maxVit - w.currentVit;
-  const dmgIdx = w.maxVit - 1 - vi;
-  if (dmgIdx < lostCount) w.currentVit = w.maxVit - dmgIdx;
-  else w.currentVit = w.maxVit - dmgIdx - 1;
+  // vi is 0-indexed from left. Tapping a filled box (vi < currentVit) removes it.
+  // Tapping a lost box (vi >= currentVit) restores up to that point.
+  // Either way, toggle: if vi is the last filled box, remove it; otherwise set currentVit to vi+1.
+  if (vi === w.currentVit - 1) {
+    w.currentVit = vi; // remove last filled box
+  } else if (vi < w.currentVit) {
+    w.currentVit = vi; // tap deeper into filled = set health to that point
+  } else {
+    w.currentVit = vi + 1; // tap a lost box = restore up to here
+  }
   w.currentVit = Math.max(0, Math.min(w.maxVit, w.currentVit));
   renderTrackerCards();
 }
@@ -3364,6 +3417,60 @@ function trackerToggleConsumable(wi) {
   const w = trackerState.warriors[wi];
   if (w.dead) return;
   w.consumableUsed = !w.consumableUsed;
+  renderTrackerCards();
+}
+
+// ── CACHE LOOT ───────────────────────────────────────────────
+const CACHE_ITEMS = [
+  { roll: 1, name: 'Herbs & Tonic',           desc: 'When EXPENDED, the model gains +3 VITALITY. Cannot exceed starting maximum VITALITY.' },
+  { roll: 2, name: 'Food',                     desc: 'When EXPENDED, the model gains 1 additional action this activation. This does not allow them to repeat actions.' },
+  { roll: 3, name: 'Scholarly Scroll',         desc: 'Anytime the model fails a SKILL Check, they may immediately EXPEND this to pass it instead.' },
+  { roll: 4, name: 'Map',                      desc: 'When EXPENDED, every model in your Doom Company immediately moves: 3 alive = 2″ each; 2 alive = 3″ each; 1 alive = 4″.' },
+  { roll: 5, name: 'Cloak',                    desc: 'When EXPENDED, the model may not be targeted by or make ATTACK or PUSH actions until their next activation.' },
+  { roll: 6, name: 'Reliquary',               desc: 'When EXPENDED, the model regains one additional use of a "Once Per Game" ability.' },
+];
+
+function openCacheLootModal(wi) {
+  let overlay = document.getElementById('cacheLootOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'cacheLootOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML =
+    '<div style="background:#111;border:1px solid #333;max-width:360px;width:100%;padding:1.2rem;font-family:\'Crimson Text\',serif;color:#e8dcc8;">' +
+      '<div style="font-family:\'Oswald\',sans-serif;font-size:0.8rem;letter-spacing:0.15em;color:#888;margin-bottom:0.75rem;">RESOURCE CACHE — PICK ITEM</div>' +
+      CACHE_ITEMS.map(function(item) {
+        return '<button onclick="trackerAddCacheItem(' + wi + ',' + item.roll + ');closeCacheLootModal()" style="' +
+          'display:block;width:100%;text-align:left;background:#1a1a1a;border:1px solid #2a2a2a;' +
+          'color:#e8dcc8;padding:0.55rem 0.7rem;margin-bottom:0.4rem;cursor:pointer;font-family:\'Crimson Text\',serif;font-size:0.95rem;">' +
+          '<span style="font-family:\'Oswald\',sans-serif;font-size:0.65rem;color:#b8972a;margin-right:0.4rem;">' + item.roll + '</span>' +
+          '<strong>' + item.name + '</strong>' +
+        '</button>';
+      }).join('') +
+      '<button onclick="closeCacheLootModal()" style="margin-top:0.4rem;width:100%;background:none;border:1px solid #333;color:#666;padding:0.4rem;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:0.75rem;letter-spacing:0.1em;">CANCEL</button>' +
+    '</div>';
+  overlay.style.display = 'flex';
+}
+
+function closeCacheLootModal() {
+  const overlay = document.getElementById('cacheLootOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function trackerAddCacheItem(wi, roll) {
+  const w = trackerState.warriors[wi];
+  const item = CACHE_ITEMS.find(function(c) { return c.roll === roll; });
+  if (!item) return;
+  w.cacheItems.push({ id: Date.now(), name: item.name, desc: item.desc, used: false });
+  renderTrackerCards();
+}
+
+function trackerUseCacheItem(wi, itemId) {
+  const w = trackerState.warriors[wi];
+  // Remove the item entirely — it's consumed
+  w.cacheItems = w.cacheItems.filter(function(c) { return c.id !== itemId; });
   renderTrackerCards();
 }
 
@@ -3465,9 +3572,8 @@ function renderTrackerCards() {
         const label = permanent ? 'PERMANENT' : (used ? '✓ USED' : 'ONCE PER GAME');
         badge = '<span class="' + cls + '">' + label + '</span>';
       }
-      const abilityKey = ab.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-      const clickAttr = isOPG ? ' onclick="trackerToggleOPG(' + wi + ', \\"' + abilityKey + '\\")" style="cursor:pointer;"' : '';
-      return '<div class="tk-ability' + (isOPG && used ? ' tk-ability-used' : '') + '"' + clickAttr + '>' +
+      const clickAttr = isOPG ? ' data-opg-wi="' + wi + '" data-opg-name="' + ab.name.replace(/"/g, '&quot;') + '" style="cursor:pointer;"' : '';
+      return '<div class="tk-ability' + (isOPG ? ' tk-opg-clickable' : '') + (isOPG && used ? ' tk-ability-used' : '') + '"' + clickAttr + '>' +
         '<div class="tk-ability-header"><span class="tk-ability-name">' + ab.name + '</span>' + badge + '</div>' +
         '<div class="tk-ability-desc">' + ab.desc + '</div>' +
         '</div>';
@@ -3476,7 +3582,7 @@ function renderTrackerCards() {
     // ── CAPTAIN ──────────────────────────────────────────────
     const capUsed = !!w.opgUsed['__captain__'];
     const captainAbility = w.isCaptain
-      ? '<div class="tk-ability' + (capUsed ? ' tk-ability-used' : '') + '" onclick="trackerToggleOPG(' + wi + ', \\"__captain__\\")" style="cursor:pointer;">' +
+      ? '<div class="tk-ability tk-opg-clickable' + (capUsed ? ' tk-ability-used' : '') + '" data-opg-wi="' + wi + '" data-opg-name="__captain__" style="cursor:pointer;">' +
         '<div class="tk-ability-header"><span class="tk-ability-name">★ Captain Re-Roll</span>' +
         '<span class="tk-opg-badge' + (capUsed ? ' tk-opg-used' : '') + '">' + (capUsed ? '✓ USED' : 'ONCE PER GAME') + '</span></div>' +
         '<div class="tk-ability-desc">Once per game, the Captain may re-roll a single die.</div></div>'
@@ -3507,18 +3613,17 @@ function renderTrackerCards() {
         '</div>';
     }
 
-    // ── RESTRICTIONS + MARK ──────────────────────────────────
+    // ── RESTRICTIONS ─────────────────────────────────────────
     const restrictHTML = wdata.restrictions
       ? '<div class="tk-restrictions">' + wdata.restrictions + '</div>' : '';
-    const markHTML = (wi === 0 && trackerState.mark && MARKS[trackerState.mark])
-      ? '<div class="tk-section-label" style="margin-top:0.6rem;">Company Mark — ' + trackerState.mark + '</div><div class="tk-restrictions">' + MARKS[trackerState.mark] + '</div>'
-      : '';
+    const markHTML = '';
 
     return '<div class="tk-card ' + (w.dead ? 'tk-dead' : '') + '">' +
       '<div class="tk-card-header">' +
         (w.isCaptain ? '<span class="tk-captain-badge">★ Captain</span>' : '') +
         (WARRIOR_IMAGES[w.type] ? '<img src="' + WARRIOR_IMAGES[w.type] + '" style="width:2.2rem;height:2.2rem;border-radius:50%;object-fit:cover;object-position:top;border:1px solid #333;flex-shrink:0;" alt="">' : '') +
         '<span class="tk-name">' + w.type + '</span>' +
+        '<button onclick="openCacheLootModal(' + wi + ')" style="background:#0d1a0d;border:1px solid #1a3a1a;color:#4a9a4a;padding:0.3rem 0.6rem;cursor:pointer;font-family:\'Oswald\',sans-serif;font-size:0.7rem;letter-spacing:0.1em;flex-shrink:0;">+ CACHE</button>' +
         (w.dead ? '<span class="tk-dead-badge">☠ Perished</span>' : '') +
         '<button class="tk-perish-btn ' + (w.dead ? 'alive' : '') + '" onclick="trackerToggleDead(' + wi + ')">' + (w.dead ? '↩ Revive' : '☠ Perish') + '</button>' +
       '</div>' +
@@ -3527,6 +3632,18 @@ function renderTrackerCards() {
       '<div class="tk-vit-row" style="margin-bottom:0.8rem;">' + vitBoxes + '<span class="tk-vit-count">' + w.currentVit + ' / ' + w.maxVit + '</span></div>' +
       '<div class="tk-section-label">Equipment</div>' +
       '<div class="tk-equip-block">' + weaponsHTML + climbHTML + '</div>' +
+      (w.cacheItems.length ? '<div class="tk-section-label" style="margin-top:0.7rem;">Cache Items</div>' +
+        w.cacheItems.map(function(item) {
+          const icon = ITEM_ICONS[item.name] || '';
+          const iconHTML = icon ? '<img src="' + icon + '" style="width:18px;height:18px;flex-shrink:0;filter:sepia(0.3) brightness(0.95);opacity:0.85;">' : '';
+          return '<div class="tk-ability" style="cursor:pointer;" onclick="trackerUseCacheItem(' + wi + ',' + item.id + ')">' +
+            '<div class="tk-ability-header">' +
+              '<div style="display:flex;align-items:center;gap:0.4rem;">' + iconHTML + '<span class="tk-ability-name">' + item.name + '</span></div>' +
+              '<span class="tk-opg-badge" style="background:#0d1f0d;color:#4a9a4a;border-color:#1a3a1a;">TAP TO EXPEND</span>' +
+            '</div>' +
+            '<div class="tk-ability-desc">' + item.desc + '</div>' +
+          '</div>';
+        }).join('') : '') +
       '<div class="tk-section-label" style="margin-top:0.7rem;">Abilities</div>' +
       '<div class="tk-abilities-block">' + abilitiesHTML + captainAbility + '</div>' +
       (hasConsumable ? '<div class="tk-section-label" style="margin-top:0.7rem;">Consumable</div>' + consumableHTML : '') +
@@ -3612,6 +3729,14 @@ function buildTrackerRefHTML() {
   '</div>';
 }
 
+// Delegated click handler for OPG abilities (avoids inline onclick escaping issues)
+document.addEventListener('click', function(e) {
+  const el = e.target.closest('.tk-opg-clickable');
+  if (!el) return;
+  const wi = parseInt(el.dataset.opgWi);
+  const name = el.dataset.opgName;
+  if (!isNaN(wi) && name) trackerToggleOPG(wi, name);
+});
 
 </script>
 </body>
